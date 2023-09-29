@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "Hash": "WaDprit1tfD2vkIKllFfW4OJuVTnNO5ibR52lHFRgt8=",
+  "Source": "WorkSpaceAPI",
+  "BasePath": "_content/WorkSpaceAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "WorkSpaceAPI\\wwwroot",
+      "Source": "WorkSpaceAPI",
+      "ContentRoot": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/WorkSpaceAPI",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\Uploads\\ProjectWorkItemAttchments\\Common-Language-Infrastructure-1024x672-20230912060315.png",
+      "SourceId": "WorkSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/WorkSpaceAPI",
+      "RelativePath": "Uploads/ProjectWorkItemAttchments/Common-Language-Infrastructure-1024x672-20230912060315.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\ProjectWorkItemAttchments\\Common-Language-Infrastructure-1024x672-20230912060315.png"
+    },
+    {
+      "Identity": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\Uploads\\ProjectWorkItemAttchments\\image_2023_05_16T10_44_54_650Z-20230912060106.png",
+      "SourceId": "WorkSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/WorkSpaceAPI",
+      "RelativePath": "Uploads/ProjectWorkItemAttchments/image_2023_05_16T10_44_54_650Z-20230912060106.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\ProjectWorkItemAttchments\\image_2023_05_16T10_44_54_650Z-20230912060106.png"
+    },
+    {
+      "Identity": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\Uploads\\ProjectWorkItemAttchments\\image_2023_05_16T10_44_54_650Z-20230912060528.png",
+      "SourceId": "WorkSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\MyWork\\Project\\WorkspaceApi\\WorkSpaceAPI\\WorkSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/WorkSpaceAPI",
+      "RelativePath": "Uploads/ProjectWorkItemAttchments/image_2023_05_16T10_44_54_650Z-20230912060528.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\ProjectWorkItemAttchments\\image_2023_05_16T10_44_54_650Z-20230912060528.png"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.deps.json
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.dll
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.pdb
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.AssemblyReference.cache
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfoInputs.cache
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfo.cs
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.CoreCompileInputs.cache
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.dll
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+C:\Users\pci60\Desktop\NEW PROJECT\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.pdb
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.deps.json
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.dll
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.pdb
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.AssemblyReference.cache
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfoInputs.cache
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfo.cs
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.CoreCompileInputs.cache
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.dll
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+C:\Users\pci243\Desktop\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.pdb
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.deps.json
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.dll
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\bin\Debug\net6.0\WorkSpaceAPIEntites.pdb
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.AssemblyReference.cache
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.GeneratedMSBuildEditorConfig.editorconfig
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfoInputs.cache
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.AssemblyInfo.cs
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.csproj.CoreCompileInputs.cache
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.dll
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\ref\WorkSpaceAPIEntites.dll
+D:\MyWork\Project\WorkspaceApi\WorkSpaceAPI\WorkSpaceAPIEntites\obj\Debug\net6.0\WorkSpaceAPIEntites.pdb
