@@ -1,0 +1,157 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container">
+        <div style="padding-bottom: 10px;"><i class="navic ic2"></i> My Workspace <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Projects</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">My Projects</h2>
+        <form [formGroup]="searchProjectForm">
+            <div class="projectfilter">
+                <mat-form-field appearance="outline">
+                    <mat-label>Project Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option [value]="null">
+                            Select
+                        </mat-option>
+                        <span *ngFor="let project of projectStatus | keyvalue; let i = index; let max = count;">
+                            <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                {{project.value}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Project Name</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Project Type</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-option [value]="null">
+                            Select
+                        </mat-option>
+                        <span *ngFor="let project of projectType | keyvalue; let i = index; let max = count;">
+                            <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                {{project.value}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Project Tech</mat-label>
+                    <mat-select formControlName="tech">
+                        <mat-option [value]="null">
+                            Select
+                        </mat-option>
+                        <mat-option *ngFor="let tech of projectTech" [value]="tech.keyId">
+                            {{tech.dataValue}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="projectfilter-actions">
+                <button class="btn btn-primary theme-btn me-2 rounded-0" (click)="updateResponce()"><i
+                        class="fa fa-search"></i> Search</button>
+                <button class="btn btn-default rounded-0" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    Reset</button>
+            </div>
+            <div class="project-responce">
+                <div>
+                    <div class="colordiv"></div>
+                    [Actual Utilize Time is greater than (Estimated Hrs + CR) for Fixed Cost projects]
+                </div>
+                <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell long" *ngIf="'projectCode' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Code</div>
+                            <div class="table-cell long" *ngIf="'projectName' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Name</div>
+                            <div class="table-cell long" *ngIf="'projectType' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Type</div>
+                            <div class="table-cell" *ngIf="'projectStatus' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Status</div>
+                            <div class="table-cell long" *ngIf="'dueDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Due Date</div>
+                            <div class="table-cell long" *ngIf="'endDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">My End Date</div>
+                            <div class="table-cell long">Billable Users</div>
+                            <div class="table-cell" *ngIf="'totalHours' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Total Hrs</div>
+                            <div class="table-cell" *ngIf="'assignedHours' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Assi. Hrs</div>
+                            <div class="table-cell" *ngIf="'workHours' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Work Hrs</div>
+                            <div class="table-cell long">Hrs Utilized(%)</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-row" *ngFor="let project of projects">
+                                <div class="table-cell long">{{project.projectCode}}</div>
+                                <div class="table-cell long"><a href="project/work-group/{{project.projectId}}">{{project.projectName}}</a></div>
+                                <div class="table-cell long">{{projectType[project.projectType]}}</div>
+                                <div class="table-cell">{{projectStatus[project.projectStatus]}}</div>
+                                <div class="table-cell long">{{project.dueDate | date}}</div>
+                                <div class="table-cell long">{{project.endDate | date}}</div>
+                                <div class="table-cell long">{{project.userCount}}</div>
+                                <div class="table-cell">{{project.totalHours}}</div>
+                                <div class="table-cell">{{project.assignedHours}}</div>
+                                <div class="table-cell">{{project.workHours}}</div>
+                                <div class="table-cell long">{{project.hrsUtilized}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        <span>
+                            Page Size:
+                            <select formControlName="pagesize" (change)="updateResponce()">
+                                <option *ngFor="let size of pageSizes;" [value]="size">
+                                    {{size}}
+                                </option>
+                            </select>
+                        </span>
+                        <span>Records {{1 + (searchProjectForm.value.pagesize ?? 1)*(currentpage-1)}} to
+                            {{(((searchProjectForm.value.pagesize ?? 1)*currentpage) < totalProjectCount ) ? ((searchProjectForm.value.pagesize ?? 1)*currentpage) : totalProjectCount}} of ({{totalProjectCount}})</span>
+                        <span>
+                            <button (click)="Previous(currentpage)"> Previous </button>
+                            <button *ngFor="let i of Pages" [ngClass]="{'currentPage' : i == currentpage}"
+                                (click)="currentpage = i; updateResponce()">
+                                {{i}}
+                            </button>
+                            <button (click)="Next(currentpage)"> Next </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-side-bar>

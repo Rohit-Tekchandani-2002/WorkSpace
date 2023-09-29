@@ -1,0 +1,4 @@
+<div *ngFor="let alert of alerts" class="{{cssClass(alert)}} flex-between my-2">
+    <span [innerHTML]="alert.message"></span>
+    <button class="btn ml-auto close" (click)="removeAlert(alert)">&times;</button>
+</div>

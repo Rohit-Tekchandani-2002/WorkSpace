@@ -1,0 +1,86 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="row">
+        <div class="col news_events">
+            <h3 class="border_bottom">News/Events</h3>
+            <ul>
+                <li *ngFor="let news of newsAndUpdates">
+                    <a href="javascript:void(0);" (click)="OpenNewsEventModal(news.newsId);">{{news.newsTitle}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col monthly_average">
+            <h3 class="db_title">My Monthly Average</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="33%" class="border_right">
+                            <p>Time-Log</p>
+                            <div class="av_ats">08:30</div>
+                        </td>
+                        <td class="box_bord border_right">
+                            <p>Work-Log</p>
+                            <div class="av_pms">08:30</div>
+                        </td>
+                        <td class="box_bord" width="33%">
+                            <p>Difference</p>
+                            <div class="dif">00:00</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="db_text">
+                Pending Entry <span class="pentry">0 day(s)</span>
+            </div>
+        </div>
+        <div class="col my_leave">
+            <h3 class="db_title">My Monthly Leaves</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="33%" class="border_right">
+                            <p>Leaves</p>
+                            <div class="ml_leaves">0</div>
+                        </td>
+                        <td class="box_bord border_right">
+                            <p>Full/Half</p>
+                            <div class="ml_fh">0/0</div>
+                        </td>
+                        <td class="box_bord" width="33%">
+                            <p>Total</p>
+                            <div class="ml_total">0</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="db_text">
+                Leave Date: <span></span>
+            </div>
+        </div>
+        <div class="col my_assignment">
+            <h3 class="db_title">My Assigments</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td width="33%" class="border_right">
+                            <p>Ass. Hrs</p>
+                            <div class="ma_ah">00:00</div>
+                        </td>
+                        <td class="box_bord border_right">
+                            <p>Work Hrs</p>
+                            <div class="ma_wh">00:00</div>
+                        </td>
+                        <td class="box_bord" width="33%">
+                            <p>Rem. Hrs</p>
+                            <div class="ma_rem">00:00</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="db_text">
+                Total Work Items: <span>0</span>
+            </div>
+        </div>
+    </div>
+</app-side-bar>

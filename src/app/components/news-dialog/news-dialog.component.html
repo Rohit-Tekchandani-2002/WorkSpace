@@ -1,0 +1,16 @@
+<div class="flex-between blue_border">
+    <h2 mat-dialog-title class="news_title">{{ data.selectedNews.newsTitle }}</h2>
+    <button class="news_close" (click)="closeDialog()"><img src="/assets/img/btn_close.png"/></button>
+</div>
+<div mat-dialog-content class="news_content">
+    <div class="flex-between">
+        <p>Discription: </p>
+        <p>{{ data.selectedNews.newsDate | date : "dd/MM/yyyy" }}</p>
+    </div>
+    {{ data.selectedNews.newsDescription }}
+    <a href="{{data.selectedNews.documentPath}}">{{ data.selectedNews.newsTitle }}</a>
+    <!-- Display other properties as needed -->
+</div>
+<!-- <div mat-dialog-actions>
+    <button mat-button (click)="closeDialog()">Close</button>
+</div> -->

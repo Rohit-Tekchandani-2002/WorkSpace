@@ -1,0 +1,99 @@
+<div class="side-bar" [ngClass]="{'open': isSidebarOpen}">
+    <ul>
+        <a href="/home/index">
+            <li class="no-dropdown" [ngClass]="{'active': activeItem === 'dashboard'}"
+                (click)="activateItem('dashboard')">
+                <i class="navic ic1"></i>
+                Dashboard
+            </li>
+        </a>
+        <li [ngClass]="{'active': activeItem === 'workspace'}" (click)="activateItem('workspace')">
+            <a>
+                <i class="navic ic2"></i>
+                My Workspace
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="seconnd-dropdown">
+                <a href="/workspace/attendance">
+                    <li>Attendance</li>
+                </a>
+                <a href="/workspace/projects">
+                    <li>Projects</li>
+                </a>
+                <a href="/workspace/work-item/my">
+                    <li>Work Items</li>
+                </a>
+                <a href="/workspace/timesheets/my">
+                    <li>Timesheets</li>
+                </a>
+                <a href="workspace/time-logs/my">
+                    <li>Time Logs</li>
+                </a>
+                <a href="workspace/leave-request/my">
+                    <li>Leave Request</li>
+                </a>
+                <a href="workspace/service-request/my">
+                    <li>Service Request</li>
+                </a>
+                <li><a>Library</a></li>
+                <li><a>Documents</a></li>
+                <li><a>Knoleadge Repository</a></li>
+            </ul>
+        </li>
+        <li *ngIf="showProjects" [ngClass]="{'active': activeItem === 'projects'}" (click)="activateItem('projects')">
+            <a>
+                <i class="navic icp"></i>
+                Projects
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="seconnd-dropdown">
+                <a href="project/project-backlog/{{projectId}}">
+                    <li>Product Backlog</li>
+                </a>
+                <a (click)="routeToWorkGroup()">
+                    <li>Work Groups</li>
+                </a>
+                <a href="project/work-backlog/{{workGroupId}}">
+                    <li>Work Backlog</li>
+                </a>
+                <li><a>Burn Down</a></li>
+                <li><a>Documentations</a></li>
+            </ul>
+        </li>
+        <li [ngClass]="{'active': activeItem === 'traning'}" (click)="activateItem('traning')">
+            <a>
+                <i class="navic ic3"></i>
+                Traning
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="seconnd-dropdown">
+                <li><a>My Traning As Faculty</a></li>
+                <li><a>My Traning As Trainee</a></li>
+                <li><a>Upcoming Traning</a></li>
+                <li><a>Completed Traning</a></li>
+                <li><a>Download Material</a></li>
+                <li><a>eLarning</a></li>
+            </ul>
+        </li>
+        <li class="no-dropdown" [ngClass]="{'active': activeItem === 'device-management'}"
+            (click)="activateItem('device-management')">
+            <a>
+                <i class="navic"></i>
+                Device Management
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="main-content" [ngClass]="{'open': isSidebarOpen}">
+    <ng-content></ng-content>
+</div>
+<footer class="footer" [ngClass]="{'open': isSidebarOpen}">
+    <div class="company-logo">
+        <img src="/assets/img/tatvalogo.png">
+    </div>
+    <div class="copyright">
+        Version : 1.0
+        <span>|</span>
+        Copyright © TatvaSoft All rights reserved.
+    </div>
+</footer>

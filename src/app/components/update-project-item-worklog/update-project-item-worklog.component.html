@@ -1,0 +1,77 @@
+<div class="updatelog-Dialog">
+    <div class="flex-between dialog-box-title">
+        <h2 class="m-0">Work Log</h2>
+        <button class="dialog-box-close" (click)="closeDialog()"><img src="/assets/img/btn_close.png" /></button>
+    </div>
+    <div class="dialog-box-content">
+        <div class="loader" *ngIf="(loading$ | async)"><img src="/assets/img/1.gif" /></div>
+        <form *ngIf="!(loading$ | async)" [formGroup]="updateWorkLogForm">
+            <div style="width: auto; overflow-y: auto;">
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Work Item Name</label>
+                    <div class="col-sm-9">
+                        <p><img src="/assets/img/task.png"> TA{{data.workLog.workLogId}}: {{data.workLog.title}}</p>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Work Done By</label>
+                    <div class="col-sm-9">
+                        {{data.workLog.employee}}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Work Done On</label>
+                    <div class="col-sm-9">
+                        <mat-form-field appearance="outline">
+                            <input matInput [matDatepicker]="workDoneOn" formControlName="workDoneOn"
+                                [matDatepickerFilter]="dateFilter">
+                            <mat-datepicker-toggle matIconSuffix [for]="workDoneOn"></mat-datepicker-toggle>
+                            <mat-datepicker #workDoneOn></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Work Time</label>
+                    <div class="col-sm-9 flex-between">
+                        <mat-form-field appearance="outline" class="me-2">
+                            <mat-label>Hours</mat-label>
+                            <input matInput type="number" min="0" max="23" formControlName="workTimeHours"
+                                (change)="updateTime()">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Minutes</mat-label>
+                            <mat-select formControlName="workTimeMinutes" (selectionChange)="updateTime()">
+                                <mat-option [value]="0">
+                                    0
+                                </mat-option>
+                                <mat-option [value]="0.25">
+                                    15
+                                </mat-option>
+                                <mat-option [value]="0.5">
+                                    30
+                                </mat-option>
+                                <mat-option [value]="0.75">
+                                    45
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 control-label">Description</label>
+                    <div class="col-sm-9 flex-between">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <textarea matInput formControlName="description"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer border-top m-2 pt-2">
+        <button type="button" class="btn btn-primary theme-btn rounded-0 me-2" (click)="updateWorkLog()"><i
+                class="fa fa-save"></i>&nbsp;Save</button>
+        <button type="button" class="btn btn-default" (click)="closeDialog()"><i
+                class="fa fa-close"></i>&nbsp;Close</button>
+    </div>
+</div>

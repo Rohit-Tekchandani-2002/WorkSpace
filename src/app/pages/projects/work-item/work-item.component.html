@@ -1,0 +1,369 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container pb-0">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span> Projuct Backlog</span>&nbsp;
+            <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Work Item</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0 mb-0">Work Item <span><button class="btn theme-btn rounded-0 mb-1"
+                    (click)="gotoWorkgroup()" style="color: white;"><i
+                        class="fa fa-chevron-left"></i>&nbsp;&nbsp;Back</button></span></h2>
+        <div class="py-2">
+            <button class="btn btn-default-page m-1" (click)="editWorkItem()"><i class="fa fa-edit"></i> Edit</button>
+            <button class="btn btn-default-page m-1" (click)="openUpdateWorklogMode()">Add Work Log</button>
+            <button class="btn btn-default-page m-1" (click)="toggelDiv('comments-toggel')">Comments</button>
+            <button class="btn btn-default-page m-1" (click)="openAddAttachmentsDialog(id)">Attachment</button>
+            <button class="btn btn-default-page m-1">Check Point</button>
+        </div>
+        <h3 class="work-title"><img style="vertical-align:-4px" src="/assets/img/task.png"> TA{{id}}: {{workItem.title}}
+        </h3>
+        <div class="divDetails row m-0 form-group" [@slideInOut]="(commentsToggel == true) ? 'in' : 'out'">
+            <div class="mb-3 search_box p-0">
+                <h3 class="sb_title"><i class="fas fa-comment-alt"></i>&nbsp;Add Comment</h3>
+                <div class="search_box_content" id="pnlComment" style="padding-bottom: 15px;">
+                    <form [formGroup]="addCommentsForm">
+                        <mat-form-field class="w-100" appearance="outline">
+                            <textarea matInput formControlName="comments" style="max-height: 250px;"></textarea>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <div class="search_box_footer mt-2">
+                    <button type="button" class="btn btn-primary theme-btn rounded-0 me-2" (click)="saveComment()">
+                        <i class="fa fa-save"></i>&nbsp;Save
+                    </button>
+                    <button type="button" class="btn btn-default" (click)="toggelDiv('comments-toggel')">
+                        <i class="fa fa-close"></i>&nbsp;Close
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="sub-head flex-between mb-0">
+            <span>
+                <i class="fa fa-align-justify"></i> &nbsp; Details
+            </span>
+            <span>
+                <i class="fa fa-chevron-down" *ngIf="detailsToggel == true"
+                    (click)="toggelDiv('details-head-toggel')"></i>
+                <i class="fa fa-chevron-up" *ngIf="detailsToggel == false"
+                    (click)="toggelDiv('details-head-toggel')"></i>
+            </span>
+        </div>
+        <div class="p-1 divDetails row m-0 form-group" [@slideInOut]="(detailsToggel == true) ? 'in' : 'out'">
+            <div class="col-lg-6">
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Work Flow Type</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0"><img class="imgPadding" src="/assets/img/task.png">
+                        {{workFlowType[(workItem.workFlow ?? 1) - 1]}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Work Group</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{getWorkGroupName(workItem.workGroupId ?? '')}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Priority</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.priority}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Status</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">
+                        <span *ngIf="workItem.projectStatusId == 1" id="spanColorForWorkLog"
+                            style="background-color: #64a3e4; margin-right: 5px;">&nbsp;</span>
+                        <span *ngIf="workItem.projectStatusId == 2" id="spanColorForWorkLog"
+                            style="background-color: #f4b24c; margin-right: 5px;">&nbsp;</span>
+                        <span *ngIf="workItem.projectStatusId == 3" id="spanColorForWorkLog"
+                            style="background-color: #54bed9; margin-right: 5px;">&nbsp;</span>
+                        <span *ngIf="workItem.projectStatusId == 4" id="spanColorForWorkLog"
+                            style="background-color: #9cc847; margin-right: 5px;">&nbsp;</span>
+                        <span *ngIf="workItem.projectStatusId == 5" id="spanColorForWorkLog"
+                            style="background-color: #ababab; margin-right: 5px;">&nbsp;</span>
+                        {{projectStatus[(workItem.projectStatusId ?? 1) - 1]}}
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Assign To</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{assignedEmployeeName}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Reported By</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{reportedEmployeeName}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">RSI</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.rsi | number : '1.1'}}</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Created Date</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.createdAt | date: 'dd-MMM-yyyy'}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Last Modified Date</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.updateAt | date: 'dd-MMM-yyyy'}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Start Date</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.startDate | date: 'dd-MMM-yyyy'}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">End Date</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.endDate | date: 'dd-MMM-yyyy'}}</div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Original Est</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.originalEstTime | number : '1.1'}}&nbsp;
+                        <i class="fa fa-question-circle" placement="bottom" theme="light" contentType='html'
+                            tooltip="<div class='status-tooltip'><div class='status-title'>Estimated Hours</div><div>This amount of time required to complete the work item.</div></div>"></i>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Remaining Est</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0">{{workItem.remainingEstTime | number : '1.1'}}&nbsp;
+                        <i class="fa fa-question-circle" placement="bottom" theme="light" contentType='html'
+                            tooltip="<div class='status-tooltip'><div class='status-title'>Remaining Hours</div><div>This amount of time required to complete the work item in its current state. This is depend on how often assignee update this.</div></div>"></i>
+                    </div>
+                </div>
+                <div class="row mx-0">
+                    <div class="col-sm-4 control-label ps-2 pe-0 py-0 strong">Work Logged</div>
+                    <div class="col-sm-8 ps-2 pe-0 py-0"><span id="spanColorForWorkLog"
+                            style="background-color: rgb(244, 178, 76); margin-right: 5px;">&nbsp;</span>{{workItem.totalWorkDone
+                        | number : '1.1'}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="sub-head flex-between mb-0">
+            <span>
+                <i class="fa fa-list"></i> &nbsp; Description
+            </span>
+            <span>
+                <i class="fa fa-chevron-down" *ngIf="descriptionToggel == true"
+                    (click)="toggelDiv('description-head-toggel')"></i>
+                <i class="fa fa-chevron-up" *ngIf="descriptionToggel == false"
+                    (click)="toggelDiv('description-head-toggel')"></i>
+            </span>
+        </div>
+        <div class="p-1 divDetails row m-0 form-group" [@slideInOut]="(descriptionToggel == true) ? 'in' : 'out'">
+            <div [innerHTML]="workItem.description" style="padding: 10px"></div>
+        </div>
+        <div class="sub-head flex-between mb-0">
+            <span>
+                <i class="fa fa-paperclip"></i> &nbsp; Attachment&nbsp;<i class="fa fa-plus"></i>
+            </span>
+            <span>
+                <i class="fa fa-chevron-down" *ngIf="attachmentToggel == true"
+                    (click)="toggelDiv('attachment-head-toggel')"></i>
+                <i class="fa fa-chevron-up" *ngIf="attachmentToggel == false"
+                    (click)="toggelDiv('attachment-head-toggel')"></i>
+            </span>
+        </div>
+        <div class="p-1 divDetails row m-0 form-group" [@slideInOut]="(attachmentToggel == true) ? 'in' : 'out'">
+            <div class="table" *ngIf="ProjectWorkAttchments.length !== 0">
+                <div class="table-responsive">
+                    <div class="table-head">
+                        <div class="table-cell verylong">Attacgment</div>
+                        <div class="table-cell verylong">Desciption</div>
+                        <div class="table-cell long">Uploaded On</div>
+                        <div class="table-cell medium text-center">Action</div>
+                    </div>
+                    <div class="table-body">
+                        <div class="table-row" *ngFor="let item of ProjectWorkAttchments">
+                            <div class="table-cell verylong"><a target="_blank" href="{{item.filePath}}">{{item.fileName ?? 'file' + item.filetype}}</a></div>
+                            <div class="table-cell verylong">{{item.description}}</div>
+                            <div class="table-cell long">{{item.createdAt | date: 'short'}}</div>
+                            <div class="table-cell medium text-center" style="font-size: 18px;"><i class="fa fa-close" (click)="deleteWorkItemAttchment(item.workItemAttachmentsId)"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        <div class="sub-head flex-between mb-0">
+            <span>
+                <i class="fa fa-signal"></i> &nbsp; State Graph
+            </span>
+            <span>
+                <i class="fa fa-chevron-down" *ngIf="stateGraphToggel == true"
+                    (click)="toggelDiv('state-graph-toggel')"></i>
+                <i class="fa fa-chevron-up" *ngIf="stateGraphToggel == false"
+                    (click)="toggelDiv('state-graph-toggel')"></i>
+            </span>
+        </div>
+        <div class="p-1 divDetails row m-0 form-group" [@slideInOut]="(stateGraphToggel == true) ? 'in' : 'out'">
+            <div class="progress_list" style="padding: 15px 0;">
+                <ul>
+                    <li *ngFor="let item of ProjectStatusState">
+                        <div class="pgl_ar">{{item.employee}}<span>{{item.createdAt | date: 'dd-MMM-yyyy hh:mm a'}}</span></div>
+                        <div *ngIf="item.projectStatusId == 1" class="pgl_status" style="background-color: #64a3e4    ">
+                            {{projectStatus[item.projectStatusId - 1]}}</div>
+                        <div *ngIf="item.projectStatusId == 2" class="pgl_status" style="background-color: #f4b24c    ">
+                            {{projectStatus[item.projectStatusId - 1]}}</div>
+                        <div *ngIf="item.projectStatusId == 3" class="pgl_status" style="background-color: #54bed9    ">
+                            {{projectStatus[item.projectStatusId - 1]}}</div>
+                        <div *ngIf="item.projectStatusId == 4" class="pgl_status" style="background-color: #9cc847    ">
+                            {{projectStatus[item.projectStatusId - 1]}}</div>
+                        <div *ngIf="item.projectStatusId == 5" class="pgl_status" style="background-color: #ababab    ">
+                            {{projectStatus[item.projectStatusId - 1]}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="work-item-comments">
+            <div class="navTabs">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0 active" data-bs-toggle="tab" href="#WorkItemComments"><i
+                                class="fas fa-comment-alt"></i>&nbsp;Comments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" data-bs-toggle="tab" href="#WorkItemHistory"><i
+                                class="fa fa-indent" aria-hidden="true"></i>&nbsp;History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" data-bs-toggle="tab" href="#WorkItemLink"><i class="fa fa-link"
+                                aria-hidden="true"></i>&nbsp;Work Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" data-bs-toggle="tab" href="#WorkItemLog"><i
+                                class="fa fa-clock-o"></i>&nbsp;Work Log</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded-0" data-bs-toggle="tab" href="#WorkItemReview">Review</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane m-3 active" id="WorkItemComments">
+                        <div *ngFor="let comments of WorkItemComments" class="comments">
+                            <div class="m-2">
+                                {{comments.comments}}
+                            </div>
+                            <div class="comment-info">
+                                {{comments.employee}}
+                                {{comments.createdAt | date: 'dd-MMM-yyyy HH:mm a'}}
+                                <i class="fa fa-close" (click)="deleteWorkComment(comments.workItemCommentId)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-2 fade" id="WorkItemHistory">
+                        <form [formGroup]="searchProjectLogForm">
+                            <div class="project-responce">
+                                <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                                <div class="table">
+                                    <div class="table-responsive">
+                                        <div class="table-head">
+                                            <div class="table-cell long" *ngIf="'Field' as sortVar" [ngClass]="{
+                                                'sorting': sortBy != sortVar, 
+                                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                                            }" (click)="Sort(sortVar)">Field</div>
+                                            <div class="table-cell long" *ngIf="'E.FirstName' as sortVar" [ngClass]="{
+                                                'sorting': sortBy != sortVar, 
+                                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                                            }" (click)="Sort(sortVar)">Changed By</div>
+                                            <div class="table-cell long" *ngIf="'WIH.CreatedAt' as sortVar" [ngClass]="{
+                                                'sorting': sortBy != sortVar, 
+                                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                                            }" (click)="Sort(sortVar)">Changed On</div>
+                                            <div class="table-cell long" *ngIf="'OldValue' as sortVar" [ngClass]="{
+                                                'sorting': sortBy != sortVar, 
+                                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                                            }" (click)="Sort(sortVar)">Old Value</div>
+                                            <div class="table-cell long" *ngIf="'NewValue' as sortVar" [ngClass]="{
+                                                'sorting': sortBy != sortVar, 
+                                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                                            }" (click)="Sort(sortVar)">New Value</div>
+                                        </div>
+                                        <div class="table-body">
+                                            <div class="table-row" *ngFor="let project of WorkItemHistorys">
+                                                <div class="table-cell long">{{project.field}}</div>
+                                                <div class="table-cell long">{{project.changedBy}}</div>
+                                                <div class="table-cell long">{{project.changedOn | date: 'short'}}</div>
+                                                <div class="table-cell long" *ngIf="project.field == 'Work Flow Step'">{{projectStatus[(+(project.oldValue ?? 0)) - 1]}}</div>
+                                                <div class="table-cell long" *ngIf="project.field != 'Work Flow Step'">{{formatTime(+(project.oldValue ?? 0))}} Hrs</div>
+                                                <div class="table-cell long" *ngIf="project.field == 'Work Flow Step'">{{projectStatus[(+(project.newValue ?? 0)) - 1]}}</div>
+                                                <div class="table-cell long" *ngIf="project.field != 'Work Flow Step'">{{formatTime(+(project.newValue ?? 0))}} Hrs</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="WorkItemHistorys.length != 0" class="table-footer"
+                                        style="user-select: none;">
+                                        <span>
+                                            Page Size:
+                                            <select formControlName="pageSize" (change)="updateResponce()">
+                                                <option *ngFor="let size of pageSizes;" [value]="size">
+                                                    {{size}}
+                                                </option>
+                                            </select>
+                                        </span>
+                                        <span>Records {{1 + (searchProjectLogForm.value.pageSize ?? 1)*(currentpage-1)}}
+                                            to
+                                            {{(((searchProjectLogForm.value.pageSize ?? 1)*currentpage) <
+                                                workItemHistoryCount ) ? ((searchProjectLogForm.value.pageSize ??
+                                                1)*currentpage) : workItemHistoryCount}} of ({{workItemHistoryCount}})
+                                                </span>
+                                                <span class="pagination">
+                                                    <button (click)="Previous(currentpage)">Previous</button>
+                                                    <ng-container *ngFor="let item of visiblePages">
+                                                        <button *ngIf="isPageNumber(item); else ellipsisButton"
+                                                            [ngClass]="{'currentPage': item === currentpage}"
+                                                            (click)="currentpage = item; updateResponce()">
+                                                            {{ item }}
+                                                        </button>
+                                                        <ng-template #ellipsisButton>
+                                                            <button disabled>...</button>
+                                                        </ng-template>
+                                                    </ng-container>
+                                                    <button (click)="Next(currentpage)">Next</button>
+                                                </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane m-2 fade" id="WorkItemLink">
+                        <a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Link</a>
+                    </div>
+                    <div class="tab-pane m-2 fade" id="WorkItemLog">
+                        <div class="table">
+                            <div class="table-responsive">
+                                <div class="table-head">
+                                    <div class="table-cell long">Work Done On</div>
+                                    <div class="table-cell long">Worked Hours</div>
+                                    <div class="table-cell long">Employee</div>
+                                    <div class="table-cell long">Description</div>
+                                    <div class="table-cell">Action</div>
+                                </div>
+                                <div class="table-body">
+                                    <div class="table-row" *ngFor="let project of WorkItemLogs">
+                                        <div class="table-cell long">{{project.workDoneOn | date: 'dd-MMM-yyyy'}}</div>
+                                        <div class="table-cell long">{{formatTime(project.workedHours)}} Hrs</div>
+                                        <div class="table-cell long">{{project.employee}}</div>
+                                        <div class="table-cell long">{{project.description}}</div>
+                                        <div class="table-cell" style="font-size: 18px;"><span
+                                                (click)="openUpdateProjectItemWorklogModule(project)"><i
+                                                    class="fa fa-edit"></i></span>&nbsp;<span
+                                                (click)="deleteWorkItemLog(project.workLogId)"><i
+                                                    class="fa fa-close"></i></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane m-2 fade" id="WorkItemReview">
+                        <!-- WorkItemReview -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</app-side-bar>

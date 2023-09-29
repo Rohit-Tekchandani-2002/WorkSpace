@@ -1,0 +1,200 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container" style="user-select: none;">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Time Logs</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">My Time Logs</h2>
+        <form [formGroup]="searchProjectLogForm">
+            <div class="projectfilter">
+                <mat-form-field appearance="outline">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select formControlName="type">
+                        <mat-option [value]="'monthly'"> Monthly </mat-option>
+                        <mat-option [value]="'yearly'"> Yearly </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" *ngIf="searchProjectLogForm.value.type == 'monthly'">
+                    <mat-label>Select Month</mat-label>
+                    <mat-select formControlName="month">
+                        <mat-option [value]="0"> {{monthNames[0]}} </mat-option>
+                        <mat-option [value]="1"> {{monthNames[1]}} </mat-option>
+                        <mat-option [value]="2"> {{monthNames[2]}} </mat-option>
+                        <mat-option [value]="3"> {{monthNames[3]}} </mat-option>
+                        <mat-option [value]="4"> {{monthNames[4]}} </mat-option>
+                        <mat-option [value]="5"> {{monthNames[5]}} </mat-option>
+                        <mat-option [value]="6"> {{monthNames[6]}} </mat-option>
+                        <mat-option [value]="7"> {{monthNames[7]}} </mat-option>
+                        <mat-option [value]="8"> {{monthNames[8]}} </mat-option>
+                        <mat-option [value]="9"> {{monthNames[9]}} </mat-option>
+                        <mat-option [value]="10"> {{monthNames[10]}} </mat-option>
+                        <mat-option [value]="11"> {{monthNames[11]}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Select Year</mat-label>
+                    <mat-select formControlName="year">
+                        <mat-option [value]="currentMonth"> {{currentMonth}} </mat-option>
+                        <mat-option [value]="currentMonth - 1"> {{currentMonth - 1}} </mat-option>
+                        <mat-option [value]="currentMonth - 2"> {{currentMonth - 2}} </mat-option>
+                        <mat-option [value]="currentMonth - 3"> {{currentMonth - 3}} </mat-option>
+                        <mat-option [value]="currentMonth - 4"> {{currentMonth - 4}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="projectfilter-actions">
+                <button class="btn btn-primary theme-btn me-2 rounded-0" (click)="updateResponce()"><i
+                        class="fa fa-search"></i> Search</button>
+                <button class="btn btn-default rounded-0" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    Reset</button>
+            </div>
+            <div class="project-responce">
+                <div class="my-1">
+                    <span class="ColorBox me-1" style="background-color: red; margin-bottom:-2px !important"></span>
+                    <label>Low Work Log Hours&nbsp;</label>
+                    &nbsp;
+                    <span class="ColorBox me-1" style="background-color: blue; margin-bottom:-2px !important"></span>
+                    <label>Over Work Log Hours&nbsp;</label>
+                    &nbsp;
+                    <label>Shift Time: 09:00 To 18:30&nbsp;</label>
+                </div>
+                <div *ngIf="projectResponce == 'monthly' && employeeInfo != null">
+                    <div class="table">
+                        <div class="table-responsive">
+                            <div class="table-head">
+                                <div class="table-cell medium">Employee No</div>
+                                <div class="table-cell long">Name</div>
+                                <div class="table-cell medium">Shift</div>
+                                <div class="table-cell medium">Experience</div>
+                                <div class="table-cell medium">Hours</div>
+                                <div class="table-cell medium">P Days</div>
+                                <div class="table-cell medium">L Days</div>
+                                <div class="table-cell medium">Half Leaves</div>
+                                <div class="table-cell medium">Late Days</div>
+                                <div class="table-cell medium">Avg Time Log</div>
+                                <div class="table-cell medium">Avg Work Log</div>
+                                <div class="table-cell long">Difference [TL/WL]</div>
+                                <div class="table-cell long">Out Hours [Avg.]</div>
+                            </div>
+                            <div class="table-body">
+                                <div class="table-row">
+                                    <div class='table-cell medium'>{{employeeInfo.employeeNo}}</div>
+                                    <div class='table-cell long'>{{employeeInfo.name}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.shift}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.experience}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.hours}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.presentDays}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.leaveDays}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.halfLeave}}</div>
+                                    <div class='table-cell medium'>{{employeeInfo.lateDays}}</div>
+                                    <div class='table-cell medium' [ngStyle]="{'color': (employeeInfo.avgTimeLog >= 8.5) ? 'blue' : 'red'}">{{formatTime(employeeInfo.avgTimeLog)}}</div>
+                                    <div class='table-cell medium' [ngStyle]="{'color': (employeeInfo.avgWorkLog >= 8.5) ? 'blue' : 'red'}">{{formatTime(employeeInfo.avgWorkLog)}}</div>
+                                    <div class='table-cell long' [ngStyle]="{'color': (employeeInfo.avgWorkLog <= 1) ? 'blue' : 'red'}">{{formatTime(employeeInfo.difference)}}</div>
+                                    <div class='table-cell long'>{{formatTime(employeeInfo.outHours)}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="p-3"></span>
+                    <div class="table">
+                        <div class="table-responsive">
+                            <div class="table-head">
+                                <div class="table-cell verylong">Date</div>
+                                <div class="table-cell medium">Late Comer?</div>
+                                <div class="table-cell medium">First In Time</div>
+                                <div class="table-cell medium">Last Out Time</div>
+                                <div class="table-cell medium">Total Out Hours</div>
+                                <div class="table-cell medium">Time Log</div>
+                                <div class="table-cell medium">Work Log</div>
+                                <div class="table-cell long">Difference [TL/WL]</div>
+                            </div>
+                            <div class="table-body">
+                                <div class="table-row" *ngFor="let item of employeeMonthlyLogs" popover-class="increase-timelog-popover-width"
+                                    [ngbPopover]="popContent" placement="top" triggers="hover">
+                                    <ng-template #popContent>
+                                        <div class="table">
+                                            <div class="table-responsive">
+                                                <div class="table-head">
+                                                    <div class="table-cell medium">Time In</div>
+                                                    <div class="table-cell medium">Time Out</div>
+                                                    <div class="table-cell medium">Out Hrs</div>
+                                                    <div class="table-cell medium">Work Hrs</div>
+                                                </div>
+                                                <div class="table-body">
+                                                    <ng-container *ngFor="let hoverVal of timelogHover">
+                                                        <div class="table-row" *ngIf="item.date == hoverVal.date">
+                                                            <div class='table-cell medium'>{{hoverVal.timein}}</div>
+                                                            <div class='table-cell medium'>{{hoverVal.timeout}}</div>
+                                                            <div class='table-cell medium'>{{hoverVal.outHrs}}</div>
+                                                            <div class='table-cell medium'>{{hoverVal.workHrs}}</div>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                    <div class='table-cell verylong'>{{item.date}}</div>
+                                    <div class='table-cell medium'>
+                                        {{(item.lateComer == null) ? '-' : ((item.lateComer == true) ? 'Yes' : '-')}}
+                                    </div>
+                                    <div class='table-cell medium'>{{item.firstInTime}}</div>
+                                    <div class='table-cell medium'>{{item.lastOutTime}}</div>
+                                    <div class='table-cell medium'>{{item.totalOutHours}}</div>
+                                    <div class='table-cell medium'>{{item.lastOutTime - item.firstInTime - item.totalOutHours}}</div>
+                                    <div class='table-cell medium'>{{item.workLog}}</div>
+                                    <div class='table-cell long'>{{formatTime(item.lastOutTime - item.firstInTime - item.totalOutHours)}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="projectResponce == 'yearly' && employeeYearlyLog.length != 0">
+                    <div class="table">
+                        <div class="table-responsive">
+                            <div class="table-head">
+                                <div class="table-cell medium">Employee No</div>
+                                <div class="table-cell long">Name</div>
+                                <div class="table-cell medium">Month</div>
+                                <div class="table-cell medium">Hours</div>
+                                <div class="table-cell medium">P Days</div>
+                                <div class="table-cell medium">L Days</div>
+                                <div class="table-cell medium">Half Leaves</div>
+                                <div class="table-cell medium">Late Days</div>
+                                <div class="table-cell medium">Avg Time Log</div>
+                                <div class="table-cell medium">Avg Work Log</div>
+                                <div class="table-cell long">Difference [TL/WL]</div>
+                                <div class="table-cell long">Out Hours [Avg.]</div>
+                            </div>
+                            <div class="table-body">
+                                <div class="table-row" *ngFor="let item of employeeYearlyLog">
+                                    <div class='table-cell medium'>{{item.employeeNo}}</div>
+                                    <div class='table-cell long'>{{item.name}}</div>
+                                    <div class='table-cell medium'>{{item.month}}</div>
+                                    <div class='table-cell medium'>{{item.hours}}</div>
+                                    <div class='table-cell medium'>{{item.pDays}}</div>
+                                    <div class='table-cell medium'>{{item.lDays}}</div>
+                                    <div class='table-cell medium'>{{item.halfLeaves}}</div>
+                                    <div class='table-cell medium'>{{item.lateDays}}</div>
+                                    <div class='table-cell medium' [ngStyle]="{'color': (item.avgTimeLog >= 8.5) ? 'blue' : 'red'}">{{formatTime(item.avgTimeLog)}}</div>
+                                    <div class='table-cell medium' [ngStyle]="{'color': (item.avgWorkLog >= 8.5) ? 'blue' : 'red'}">{{formatTime(item.avgWorkLog)}}</div>
+                                    <div class='table-cell long' [ngStyle]="{'color': (item.avgWorkLog <= 1) ? 'blue' : 'red'}">{{formatTime(item.difference)}}</div>
+                                    <div class='table-cell long'>{{formatTime(item.outHours)}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border p-2 my-1" *ngIf="projectResponce == 'monthly' && employeeInfo == null">
+                    No Record Founds.
+                </div>
+                <div class="border p-2 my-1" *ngIf="projectResponce == 'yearly' && employeeYearlyLog.length == 0">
+                    No Record Founds.
+                </div>
+            </div>
+        </form>
+    </div>
+</app-side-bar>

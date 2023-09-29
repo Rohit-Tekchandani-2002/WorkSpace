@@ -1,0 +1,193 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="loader" *ngIf="(loading$ | async)"><img src="/assets/img/1.gif" /></div>
+    <div class="attendance-container" style="user-select: none;" *ngIf="!(loading$ | async)">
+        <div style="padding-bottom: 10px;"><i class="navic ic2"></i> My Workspace <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Timesheets</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">My Timesheet</h2>
+        <div class="mt-3 mb-1" style="display: flex; justify-content: flex-end; flex-wrap: wrap;">
+            <span><span class="FullLeaveBox ColorBox" style="margin-bottom:-2px !important"></span>&nbsp;<label>Full
+                    Leave&nbsp;</label></span>
+            <span><span class="HalfLeaveBox ColorBox" style="margin-bottom:-2px !important"></span>&nbsp;<label>Half
+                    Leave&nbsp;</label></span>
+            <span><span class="CurrentDateBox  ColorBox"
+                    style="margin-bottom:-2px !important"></span>&nbsp;<label>Today's
+                    Date&nbsp;</label></span>
+            <span><span class="WeekendBox ColorBox"
+                    style="margin-bottom:-2px !important"></span>&nbsp;<label>Weekend&nbsp;</label></span>
+            <span><span class="HolidayBox ColorBox" style="margin-bottom:-2px !important"></span>&nbsp;<label>Public
+                    Holiday&nbsp;</label></span>
+        </div>
+        <div class="border">
+            <div class="timesheet-title p-1">
+                <i class="fa fa-chevron-left p-2" (click)="subtractOneMonth()"></i>{{currentMonthName}}-{{currentYear}}
+                <i class="fa fa-chevron-right p-2" (click)="addOneMonth()"></i>
+            </div>
+            <!-- <div *ngFor="let item of response">
+                {{ item.ProjectName }}
+                {{ item.ProjectTitle }}
+                <ng-container *ngFor="let date of item | keys">
+                    <div *ngIf="isDate(date)">
+                        {{date}} {{ item[date] ?? 'NULL'}}
+                    </div>
+                </ng-container>
+            </div> -->
+            <div style="overflow: auto;">
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="border-bottom"
+                        style="display: flex; align-items: center; min-width: 425px; width: 100%; padding: 5px;">Work
+                        Items
+                    </div>
+                    <div class="border-bottom"
+                        style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">p</div>
+                    <div class="border-bottom"
+                        style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">Σ</div>
+                    <div *ngFor="let item of TimeSheet" class="border"
+                        [ngClass]="{'borderRight': (item.currentDate | date: 'EEEE') === 'Saturday'}"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                        <span>{{item.currentDate | date: 'd'}}</span>
+                        <span>{{item.currentWeekDay}}</span>
+                    </div>
+                </div>
+                <span *ngIf="{ flag : true } as variable">
+                    <span *ngFor="let projectList of projectList">
+                        <div class="sub-head mb-0 p-0"
+                            style="display: flex; justify-content: space-between; width: 100%;">
+                            <div class="border-bottom"
+                                style="display: flex; align-items: center; min-width: 425px; width: 100%; padding: 5px;">
+                                <span>
+                                    <i class="fa fa-chevron-down" *ngIf="variable.flag == true"
+                                        (click)="variable.flag = !variable.flag"></i>
+                                    <i class="fa fa-chevron-up" *ngIf="variable.flag == false"
+                                        (click)="variable.flag = !variable.flag"></i> &nbsp; {{projectList ??
+                                    "Project"}}
+                                </span>
+                            </div>
+                            <div class="border-bottom"
+                                style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                                0</div>
+                            <div class="border-bottom"
+                                style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                                {{formatTime(totalWork)}}</div>
+                            <div *ngFor="let item of TimeSheet" class="border"
+                                [ngClass]="{'borderRight': (item.currentDate | date: 'EEEE') === 'Saturday'}"
+                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 35px; font-size: smaller; padding: 8px 0 !important;">
+                                <span *ngFor="let log of workList">
+                                    <span
+                                        *ngIf="(item.currentDate | date: 'dd-MM-yyyy') === (log.workDoneOn | date: 'dd-MM-yyyy')">{{formatTime(log.workTime)}}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <ng-container *ngFor="let item of response">
+                            <div [@slideInOut]="(variable.flag == true) ? 'in' : 'out'"
+                                *ngIf="projectList === item.ProjectName">
+                                <div style="display: flex; justify-content: space-between; width: 100%;">
+                                    <div *ngIf="item.ProjectStatusId === 1"
+                                        style="padding: 2px; background-color: #64a3e4;"></div>
+                                    <div *ngIf="item.ProjectStatusId === 2"
+                                        style="padding: 2px; background-color: #f4b24c;"></div>
+                                    <div *ngIf="item.ProjectStatusId === 3"
+                                        style="padding: 2px; background-color: #54bed9;"></div>
+                                    <div *ngIf="item.ProjectStatusId === 4"
+                                        style="padding: 2px; background-color: #9cc847;"></div>
+                                    <div *ngIf="item.ProjectStatusId === 5"
+                                        style="padding: 2px; background-color: #ababab;"></div>
+                                    <div class="border-bottom"
+                                        style="display: flex; align-items: center; min-width: 421px; width: 100%; padding: 5px;">
+                                        <a href="project/project-backlog/workItem/{{getProjectId(item.ProjectTitle)}}"
+                                            style="text-decoration: none; text-overflow: ellipsis;">
+                                            <img src="/assets/img/task.png" class="imgPadding">
+                                            TA{{ item.ProjectTitle }}
+                                        </a>
+                                    </div>
+                                    <div class="border-bottom"
+                                        style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                                        {{formatTime(item.P)}}
+                                    </div>
+                                    <div class="border-bottom"
+                                        style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                                        {{formatTime(item.TotalWorkLog)}}
+                                    </div>
+                                    <div *ngFor="let sheetItem of TimeSheet" class="border"
+                                        [ngClass]="{'holidayColor': isholyday(sheetItem.currentDate), 
+                                        'CurrentDateBox': (sheetItem.currentDate | date: 'dd-MM-YYYY') === (DateTimeNow | date: 'dd-MM-YYYY'), 
+                                        'WeekendBox p-0': sheetItem.currentWeekDay === 'S', 'borderRight': (sheetItem.currentDate | date: 'EEEE') === 'Saturday',
+                                        'hoverPenBox' : (IsEditAllowed(sheetItem.currentDate)) && (sheetItem.currentDate | date: 'dd-MM-YYYY') !== (DateTimeNow | date: 'dd-MM-YYYY')}"
+                                        style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                                        <ng-container *ngFor="let date of item | keys">
+                                            <span style="padding: 8px 0 !important; width: 100%; text-align: center;"
+                                                *ngIf="(IsEditAllowed(sheetItem.currentDate)) 
+                                                && (isDate(date) && (sheetItem.currentDate | date: 'dd-MM-YYYY') === (date | date: 'dd-MM-YYYY'))"
+                                                (click)="OpenEditWorkLog(item.ProjectTitle.split(':')[0], sheetItem.currentDate)">
+                                                {{ formatTime(item[date]) }}
+                                            </span>
+                                            <span style="padding: 8px 0 !important; width: 100%; text-align: center" 
+                                                *ngIf="(!IsEditAllowed(sheetItem.currentDate)) 
+                                                && isDate(date) && (sheetItem.currentDate | date: 'dd-MM-YYYY') === (date | date: 'dd-MM-YYYY')">
+                                                {{ formatTime(item[date]) }}
+                                            </span>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </span>
+                </span>
+                <div *ngIf="response && response.length != 0"
+                    style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="border"
+                        style="display: flex; justify-content: flex-end; align-items: center; min-width: 425px; width: 100%; padding: 5px 10px;">
+                        Daily work log hours
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div *ngFor="let item of TimeSheet"
+                        [ngClass]="{'borderRight': (item.currentDate | date: 'EEEE') === 'Saturday'}"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                        <span *ngFor="let log of workList">
+                            <span
+                                *ngIf="(item.currentDate | date: 'dd-MM-yyyy') === (log.workDoneOn | date: 'dd-MM-yyyy')">{{formatTime(log.workTime)}}</span>
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="response && response.length != 0"
+                    style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="border"
+                        style="display: flex; justify-content: flex-end; align-items: center; min-width: 425px; width: 100%; padding: 5px 10px;">
+                        Daily time log hours
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div *ngFor="let item of TimeSheet"
+                        [ngClass]="{'borderRight': (item.currentDate | date: 'EEEE') === 'Saturday'}"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                        <span *ngFor="let log of timeList">
+                            <span
+                                *ngIf="(item.currentDate | date: 'dd-MM-yyyy') === (log.logDate | date: 'dd-MM-yyyy')">{{formatTime(log.timeLog)}}</span>
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="response && response.length != 0"
+                    style="display: flex; justify-content: space-between; width: 100%;">
+                    <div class="border"
+                        style="display: flex; justify-content: flex-end; align-items: center; min-width: 425px; width: 100%; padding: 5px 10px;">
+                        Weekly hours total
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;"></div>
+                    <div *ngFor="let item of TimeSheet"
+                        [ngClass]="{'borderRight': (item.currentDate | date: 'EEEE') === 'Saturday'}"
+                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 35px; font-size: smaller;">
+                        <span *ngFor="let log of weeklyTimeList">
+                            <span *ngIf="((item.currentDate | date: 'dd-MM-yyyy') === (log.workDoneOn| date: 'dd-MM-yyyy')) && (IsgivenDateIsSmallerThenCurrentDate(item.currentDate) || log.workTime !== 0)">{{formatTime(log.workTime)}}</span>
+                        </span>
+                        <!-- <span>{{item.currentDate | date: 'd'}}</span> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-side-bar>

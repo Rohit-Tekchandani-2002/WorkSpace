@@ -1,0 +1,35 @@
+<div style="height: 35px; margin: 20px 0px 5px 15px;">
+    <span class="strong">PC/Laptop No</span> - {{systemSpecifications?.pcOrLaptopNumber}}
+    <span class="strong">PC Location</span> - {{systemSpecifications?.pcLocation}}
+    <span class="strong">Is Primary PC</span> - {{systemSpecifications?.isPrimaryPC ? "Yes" :
+    "No"}}
+</div>
+<div id="divSystemInfo" style="padding-left:15px;padding-right:15px;margin-bottom:15px;">
+    <h4>System Configuration Details</h4>
+    <table cellspacing="0" class="table table-hover table-stripped" width="100%" id="tblSystemInfo"
+        style="border: 1px solid #ddd">
+        <thead>
+            <tr>
+                <th style="width:25%">Item Type</th>
+                <th style="width:25%">Item Model</th>
+                <th style="width:20%">Quantity</th>
+                <th style="width:20%">Has Taken Item Home</th>
+                <th style="width:10%;">Serail Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let system of systemItems">
+                <td>{{systemType[system.systemType - 1]}}</td>
+                <td>{{system.systemItemModel}}</td>
+                <td>{{system.systemQuantity}}</td>
+                <td>{{system.hasTakenHome ? "Yes" : "No"}}</td>
+                <td style="text-align: center">
+                    <a href="javascript:void(0);" title="" id="ankSerialNo">
+                        <i class="fa fa-slack fa-lg" title="View Detail"></i>
+                    </a>
+                    {{system.serailId}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

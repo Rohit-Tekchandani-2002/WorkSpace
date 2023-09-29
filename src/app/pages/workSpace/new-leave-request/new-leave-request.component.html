@@ -1,0 +1,13 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container" style="user-select: none;">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Leave Request</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">My Leave Request</h2>
+        
+    </div>
+</app-side-bar>

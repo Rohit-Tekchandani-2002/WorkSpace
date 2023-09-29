@@ -1,0 +1,124 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Work Groups</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">Work Groups</h2>
+        <div class="active-work-group row">
+            <div class="loader col-lg-9" *ngIf="(loading$ | async)"><img src="/assets/img/1.gif"/></div>
+            <div class="workGroupList col-lg-9 mb-2" *ngIf="!(loading$ | async)">
+                <div>
+                    <div class="title">
+                        <h4 class="m-0">Active Work Gorups</h4>
+                    </div>
+                    <!-- <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-html="true" data-bs-placement="right"
+                        title="<div class='Work-status-tip'><em>Tooltip</em> <u>with</u> <b>HTML</b></div>">
+                        Tooltip with HTML
+                    </button> -->
+                    <div class="workgroupItem" *ngIf="WorkGroup.length == 0">No Work Group Found</div>
+                    <!-- <span>{{totalPersentage}}</span> -->
+                    <div class="workgroupItem" *ngFor="let work of WorkGroup; let i = index">
+                        <a href="project/work-backlog/{{work.workGroupId}}" style="text-decoration: none; color: inherit;"><span placement="right" theme="light" contentType='html' 
+                        tooltip="<div class='status-tooltip'><div class='status-title'>{{work.title}}</div></div>">
+                        {{work.title}}</span><span>{{work.startDate | date}} - {{work.endDate | date}}</span></a>
+                        <div class="progress" style="height: 10px !important;margin: 5px !important;"
+                            *ngIf="WorkGroup.length != 0 && totalPersentage.length != 0">
+                            <div class="progress-bar" role="progressbar"
+                                [ngStyle]="getProgressWidth(totalPersentage[i][1])"
+                                style="background-color:#64a3e4 !important"
+                                placement="right" theme="light" contentType='html' 
+                                tooltip="<div class='status-tooltip'><div class='status-title'>Dev Completed</div><div>{{totalPersentage[i][1] | number: '1.0-2'}}%</div></div>">
+                            </div>
+                            <div class="progress-bar" role="progressbar"
+                                [ngStyle]="getProgressWidth(totalPersentage[i][0])"
+                                style="background-color:#54bed9 !important"
+                                placement="right" theme="light" contentType='html' 
+                                tooltip="<div class='status-tooltip'><div class='status-title'>New</div><div>{{totalPersentage[i][0] | number: '1.0-2'}}%</div></div>">
+                            </div>
+                            <div class="progress-bar" role="progressbar"
+                                [ngStyle]="getProgressWidth(totalPersentage[i][3])"
+                                style="background-color:#ababab !important"
+                                placement="right" theme="light" contentType='html' 
+                                tooltip="<div class='status-tooltip'><div class='status-title'>Ready for Testing</div><div>{{totalPersentage[i][3] | number: '1.0-2'}}%</div></div>">
+                            </div>
+                            <div class="progress-bar" role="progressbar"
+                                [ngStyle]="getProgressWidth(totalPersentage[i][2])"
+                                style="background-color:#9cc847 !important"
+                                placement="right" theme="light" contentType='html' 
+                                tooltip="<div class='status-tooltip'><div class='status-title'>Closed</div><div>{{totalPersentage[i][2] | number: '1.0-2'}}%</div></div>">
+                            </div>
+                            <div class="progress-bar" role="progressbar"
+                                [ngStyle]="getProgressWidth(totalPersentage[i][4])"
+                                style="background-color:#f4b24c !important"
+                                placement="right" theme="light" contentType='html' 
+                                tooltip="<div class='status-tooltip'><div class='status-title'>In-Progress</div><div>{{totalPersentage[i][4] | number: '1.0-2'}}%</div></div>">
+                            </div>
+                        </div>
+                        <div>
+                            <button style="background: none; border: none;"
+                                (click)="OpenWorkHistoryEventModal(work.workGroupId)">
+                                <i class="fa fa-history fa-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="workGroupStatus col-lg-3">
+                <div class="new row">
+                    <div class="col-2 blob"></div>
+                    <div class="col-10 count-status">
+                        <span *ngIf="ProjectStatus.length >= 1" class="count">{{ProjectStatus[0].statusCount ??
+                            0}}</span>
+                        <span *ngIf="ProjectStatus.length < 1" class="count">0</span>
+                        <br>
+                        <span class="count-tag">New</span>
+                    </div>
+                </div>
+                <div class="dev-completed row">
+                    <div class="col-2 blob"></div>
+                    <div class="col-10 count-status">
+                        <span *ngIf="ProjectStatus.length >= 2" class="count">{{ProjectStatus[1].statusCount ??
+                            0}}</span>
+                        <span *ngIf="ProjectStatus.length < 2" class="count">0</span>
+                        <br>
+                        <span class="count-tag">Dev Completed</span>
+                    </div>
+                </div>
+                <div class="closed row">
+                    <div class="col-2 blob"></div>
+                    <div class="col-10 count-status">
+                        <span *ngIf="ProjectStatus.length >= 3" class="count">{{ProjectStatus[2].statusCount ??
+                            0}}</span>
+                        <span *ngIf="ProjectStatus.length < 3" class="count">0</span>
+                        <br>
+                        <span class="count-tag">Closed</span>
+                    </div>
+                </div>
+                <div class="ready-for-testing row">
+                    <div class="col-2 blob"></div>
+                    <div class="col-10 count-status">
+                        <span *ngIf="ProjectStatus.length >= 4" class="count">{{ProjectStatus[3].statusCount ??
+                            0}}</span>
+                        <span *ngIf="ProjectStatus.length < 4" class="count">0</span>
+                        <br>
+                        <span class="count-tag">Ready for Testing</span>
+                    </div>
+                </div>
+                <div class="in-progress row">
+                    <div class="col-2 blob"></div>
+                    <div class="col-10 count-status">
+                        <span *ngIf="ProjectStatus.length >= 5" class="count">{{ProjectStatus[4].statusCount ??
+                            0}}</span>
+                        <span *ngIf="ProjectStatus.length < 5" class="count">0</span>
+                        <br>
+                        <span class="count-tag">In-Progress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-side-bar>

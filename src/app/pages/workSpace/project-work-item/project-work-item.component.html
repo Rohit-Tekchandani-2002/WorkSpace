@@ -1,0 +1,241 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container" style="user-select: none;">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Product Backlog</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">Product Backlog</h2>
+        <form [formGroup]="searchProjectLogForm">
+            <div class="projectfilter">
+                <mat-form-field appearance="outline">
+                    <mat-label>Project</mat-label>
+                    <mat-select formControlName="projectId">
+                        <mat-option [value]="null">
+                            Select All
+                        </mat-option>
+                        <span *ngFor="let type of projects;">
+                            <mat-option [value]="type.projectId">
+                                {{type.projectName}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="projectfilter-actions">
+                <button class="btn btn-primary theme-btn me-2 rounded-0" (click)="updateResponce()"><i
+                        class="fa fa-search"></i> Search</button>
+                <button class="btn btn-default rounded-0" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    Reset</button>
+            </div>
+            <div class="project-responce">
+                <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short" *ngIf="'projectStatus' as sortVar" [ngClass]="{
+                            'sorting': sortBy != sortVar, 
+                            'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                            'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                        }" (click)="Sort(sortVar)"> </div>
+                            <div class="table-cell verylong" *ngIf="'title' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Title</div>
+                            <div class="table-cell medium" *ngIf="'projectStatus' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Step</div>
+                            <div class="table-cell medium" *ngIf="'workPriority' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Priority</div>
+                            <div class="table-cell medium" *ngIf="'originalEstTime' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Estimation</div>
+                            <div class="table-cell medium" *ngIf="'remainingEstTime' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Remaning</div>
+                            <div class="table-cell medium" *ngIf="'totalWorkDone' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Work Time</div>
+                            <div class="table-cell medium" *ngIf="'startDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Start Date</div>
+                            <div class="table-cell medium" *ngIf="'endDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">End Date</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <ng-container *ngFor="let project of ProjectWorkLogs">
+                                <ng-container
+                                    *ngIf="searchProjectLogForm.value.projectId === null && project.worklog.length !== 0">
+                                    <ng-container *ngIf="{ flag : true } as variable">
+                                        <div class="sub-head mb-0" style="border-right: 1px solid #ddd !important; border-left: 1px solid #ddd !important;">
+                                            <span>
+                                                <i class="fa fa-chevron-down" *ngIf="variable.flag == true"
+                                                    (click)="variable.flag = !variable.flag"></i>
+                                                <i class="fa fa-chevron-up" *ngIf="variable.flag == false"
+                                                    (click)="variable.flag = !variable.flag"></i> &nbsp;
+                                                {{gettingProjectNameFormId(project.projectId)}}
+                                            </span>
+                                        </div>
+                                        <ng-container *ngIf="project.worklog.length !== 0">
+                                            <div [@slideInOut]="(variable.flag == true) ? 'in' : 'out'" class="p-0">
+                                                <div class="table-row" *ngFor="let item of project.worklog">
+                                                    <div class="table-cell short">
+                                                        <div *ngIf="item.projectStatusId == 1"
+                                                            style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                            matTooltip="New">
+                                                        </div>
+                                                        <div *ngIf="item.projectStatusId == 2"
+                                                            style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                            matTooltip="In-Progress"></div>
+                                                        <div *ngIf="item.projectStatusId == 3"
+                                                            style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                            matTooltip="Dev. Completed"></div>
+                                                        <div *ngIf="item.projectStatusId == 4"
+                                                            style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                            matTooltip="Ready For Testing">
+                                                        </div>
+                                                        <div *ngIf="item.projectStatusId == 5"
+                                                            style="background-color:#ababab !important;height:25px;width:3px"
+                                                            matTooltip="Closed"></div>
+                                                    </div>
+                                                    <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                            class="imgPadding"><a
+                                                            href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                            : {{item.title}}</a></div>
+                                                    <div class='table-cell medium'>{{projectStatus[item.projectStatusId
+                                                        -
+                                                        1]}}
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.workPriority}}</div>
+                                                    <div class='table-cell medium'>{{formatTime(item.originalEstTime)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.startDate | date:
+                                                        'dd-MMM-yyyy'}}
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.endDate | date:
+                                                        'dd-MMM-yyyy'}}
+                                                    </div>
+                                                    <div class='table-cell short text-center' style="font-size: large;">
+                                                        <i class="fa fa-clock-o"
+                                                            (click)="openUpdateWorklogMode(item)"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="project.worklog.length === 0">
+                                            <div class="py-2 px-1 border">
+                                                No Record(s) Found
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="searchProjectLogForm.value.projectId !== null && searchProjectLogForm.value.projectId == project.projectId">
+                                    <ng-container *ngIf="{ flag : true } as variable">
+                                        <div class="sub-head mb-0" style="border-right: 1px solid #ddd !important; border-left: 1px solid #ddd !important;">
+                                            <span>
+                                                <i class="fa fa-chevron-down" *ngIf="variable.flag == true"
+                                                    (click)="variable.flag = !variable.flag"></i>
+                                                <i class="fa fa-chevron-up" *ngIf="variable.flag == false"
+                                                    (click)="variable.flag = !variable.flag"></i> &nbsp;
+                                                {{gettingProjectNameFormId(project.projectId)}}
+                                            </span>
+                                        </div>
+                                        <ng-container *ngIf="project.worklog.length !== 0">
+                                            <div [@slideInOut]="(variable.flag == true) ? 'in' : 'out'" class="p-0">
+                                                <div class="table-row" *ngFor="let item of project.worklog">
+                                                    <div class="table-cell short">
+                                                        <div *ngIf="item.projectStatusId == 1"
+                                                            style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                            matTooltip="New">
+                                                        </div>
+                                                        <div *ngIf="item.projectStatusId == 2"
+                                                            style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                            matTooltip="In-Progress"></div>
+                                                        <div *ngIf="item.projectStatusId == 3"
+                                                            style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                            matTooltip="Dev. Completed"></div>
+                                                        <div *ngIf="item.projectStatusId == 4"
+                                                            style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                            matTooltip="Ready For Testing">
+                                                        </div>
+                                                        <div *ngIf="item.projectStatusId == 5"
+                                                            style="background-color:#ababab !important;height:25px;width:3px"
+                                                            matTooltip="Closed"></div>
+                                                    </div>
+                                                    <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                            class="imgPadding"><a
+                                                            href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                            : {{item.title}}</a></div>
+                                                    <div class='table-cell medium'>{{projectStatus[item.projectStatusId
+                                                        -
+                                                        1]}}
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.workPriority}}</div>
+                                                    <div class='table-cell medium'>{{formatTime(item.originalEstTime)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}}
+                                                        Hrs
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.startDate | date:
+                                                        'dd-MMM-yyyy'}}
+                                                    </div>
+                                                    <div class='table-cell medium'>{{item.endDate | date:
+                                                        'dd-MMM-yyyy'}}
+                                                    </div>
+                                                    <div class='table-cell short text-center' style="font-size: large;">
+                                                        <i class="fa fa-clock-o"
+                                                            (click)="openUpdateWorklogMode(item)"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="project.worklog.length === 0">
+                                            <div class="py-2 px-1 border">
+                                                No Record(s) Found
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-side-bar>

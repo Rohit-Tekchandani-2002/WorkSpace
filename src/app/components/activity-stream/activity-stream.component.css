@@ -1,0 +1,17 @@
+.media-heading{
+    display: inline-block;
+    font-size: 0.8em;
+    color: #c4c4c4;
+    margin-left: 5px;
+}
+.showMorelink {
+    border-radius: 4px;
+    color: #428bca;
+    border: 1px solid #CCC;
+    display: block;
+    margin: 2em .2em 0 .2em;
+    overflow: hidden;
+    padding: 0.35em;
+    text-align: center;
+    background: #f6f6f6;
+}

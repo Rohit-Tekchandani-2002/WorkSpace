@@ -1,0 +1,35 @@
+<span *ngIf="data != null">
+    <div *ngFor="let itemKey of data.key">
+        <h3 class="border-bottom">{{(itemKey | date:'dd-MMM-yyyy') ?? ''}}</h3>
+        <div class="border-bottom p-0 mx-0" style="display: flex; justify-content: center; align-items: flex-start;">
+            <div class="p-2">
+                <img *ngIf="filePathChar != null" src="/assets/alpha/{{filePathChar}}.jpg" style="height: 40px;">
+            </div>
+            <div class="w-100">
+                <div *ngFor="let item of data.value[itemKey]">
+                    <div class="py-2" *ngIf="item.field === 'Remaining Time'"
+                        [ngClass]="{'border-bottom': groupByKey(ActivityStreamResponces, 'titleDate').value[itemKey].indexOf(item) !== (groupByKey(ActivityStreamResponces, 'titleDate').value[itemKey].length - 1)}">
+                        {{item.employeeName}} added work log of {{formatTime(item.newValue)}} hrs for
+                        <a href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                            style="text-decoration: none; text-overflow: ellipsis;">
+                            <img src="/assets/img/task.png" class="imgPadding">
+                            TA{{item.projectWorkId}}: {{item.title}}
+                        </a>
+                        <span class="media-heading"><i class="fa fa-clock-o"></i>{{item.updateAt | date:
+                            'HH:mm'}}</span>
+                    </div>
+                    <div class="py-2" *ngIf="item.field === 'Work Flow Step'"
+                        [ngClass]="{'border-bottom': groupByKey(ActivityStreamResponces, 'titleDate').value[itemKey].indexOf(item) !== (groupByKey(ActivityStreamResponces, 'titleDate').value[itemKey].length - 1)}">
+                        {{item.employeeName}} changed work flow step to {{projectStatus[item.newValue - 1]}} for
+                        <a href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                            style="text-decoration: none; text-overflow: ellipsis;">
+                            <img src="/assets/img/task.png" class="imgPadding">
+                            TA{{item.projectWorkId}}: {{item.title}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</span>
+<button id="lnkShowMore" (click)="showMore()" class="showMorelink w-100">Show More</button>

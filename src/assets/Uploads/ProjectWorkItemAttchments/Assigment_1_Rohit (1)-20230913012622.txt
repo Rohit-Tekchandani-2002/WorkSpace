@@ -1,0 +1,84 @@
+1)
+SELECT * FROM Employee;
+2)
+SELECT * FROM Country;
+3)
+SELECT * FROM States;
+4)
+SELECT * FROM States WHERE CountryID IN (SELECT TOP 5 CountryID FROM Country);
+5)
+SELECT * FROM Department;
+6)
+SELECT * FROM City;
+7)
+SELECT * FROM Employee WHERE EmployeeAddress IS NULL;
+8)
+SELECT * FROM Employee WHERE DepartmentID IN (SELECT TOP 5 DepartmentID FROM Department);
+9)
+SELECT * FROM Employee WHERE Gender = 'M';
+10)
+SELECT * FROM Employee WHERE Gender = 'F';
+11)
+SELECT * FROM Employee WHERE LastName IS NULL;
+12)
+SELECT * FROM Employee WHERE LastName IS NOT NULL;
+13)
+SELECT e.*, s.StateName, c.CountryName, d.DepartmentName 
+FROM CITY ci
+JOIN Employee e ON ci.CityID = e.CityID
+JOIN States s ON ci.StateID = s.StateID
+JOIN Country c ON s.CountryID = c.CountryID
+JOIN Department d ON e.DepartmentID = d.DepartmentID
+WHERE e.DepartmentID IN (SELECT TOP 5 DepartmentID FROM Department);
+14)
+SELECT e.*, s.StateName, c.CountryName, d.DepartmentName 
+FROM CITY ci
+JOIN Employee e ON ci.CityID = e.CityID
+JOIN States s ON ci.StateID = s.StateID
+JOIN Country c ON s.CountryID = c.CountryID
+JOIN Department d ON e.DepartmentID = d.DepartmentID
+WHERE s.StateID IN (SELECT TOP 5 StateID FROM States);
+15)
+SELECT e.*, s.StateName, c.CountryName, d.DepartmentName 
+FROM CITY ci
+JOIN Employee e ON ci.CityID = e.CityID
+JOIN States s ON ci.StateID = s.StateID
+JOIN Country c ON s.CountryID = c.CountryID
+JOIN Department d ON e.DepartmentID = d.DepartmentID
+WHERE e.CityID IN (SELECT TOP 5 CityID FROM City);
+16)
+SELECT * FROM Employee WHERE YEAR(DateOfBirth) > 2000;
+17)
+SELECT * FROM Employee WHERE YEAR(DateOfBirth) < 2000;
+18)
+SELECT * FROM Employee WHERE DateOfBirth = '1990-01-01';
+19)
+SELECT * FROM Employee WHERE DateOfBirth BETWEEN '1990-01-01' AND '1995-01-01';
+20)
+SELECT * FROM Employee ORDER BY DateOfBirth;
+21)
+SELECT * FROM Employee WHERE IsActive IS NOT NULL;
+22)
+SELECT * FROM Employee WHERE FirstName LIKE 'A%';
+23)
+SELECT * FROM Employee WHERE EmployeeAddress LIKE '%@server1.com%';
+24)
+SELECT * FROM Employee WHERE DepartmentID IS NULL;
+25)
+SELECT e.* FROM Employee e
+JOIN City c ON e.CityID = c.CityID
+JOIN States s ON c.StateID = s.StateID
+WHERE e.Gender = 'F' AND s.StateName = 'Gujarat';
+26)
+SELECT e.* FROM Employee e
+JOIN City c ON e.CityID = c.CityID
+WHERE e.Gender = 'M' AND c.CityName = 'Mumbai';
+27)
+SELECT e.*, d.DepartmentName 
+FROM Employee e
+JOIN Department d ON e.DepartmentID = d.DepartmentID
+WHERE d.DepartmentName = 'Account';
+28)
+SELECT e.*
+FROM Employee e
+WHERE e.PinCode = '380015';

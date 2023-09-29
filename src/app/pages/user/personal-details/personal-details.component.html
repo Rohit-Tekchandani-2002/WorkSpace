@@ -1,0 +1,261 @@
+<div class="sub-head full_width" style="margin-top: 15px;">Personal Information</div>
+<form [formGroup]="personalinfoRequestFrom">
+    <div class="validation" style="padding: 10px;">
+        <div *ngIf="personalinfoRequestFrom.controls['contactNumber'].invalid && (personalinfoRequestFrom.controls['contactNumber'].dirty || personalinfoRequestFrom.controls['contactNumber'].touched)"
+            class="alert alert-danger">
+            Contact number must be of 10 digits.
+        </div>
+        <div *ngIf="personalinfoRequestFrom.controls['alternateNumber'].invalid && (personalinfoRequestFrom.controls['alternateNumber'].dirty || personalinfoRequestFrom.controls['alternateNumber'].touched)"
+            class="alert alert-danger">
+            Alternate number must be of 10 digits.
+        </div>
+        <div *ngIf="personalinfoRequestFrom.controls['accountNumber'].invalid && (personalinfoRequestFrom.controls['accountNumber'].dirty || personalinfoRequestFrom.controls['accountNumber'].touched)"
+            class="alert alert-danger">
+            Account number must be of 11 digits.
+        </div>
+        <div *ngIf="personalinfoRequestFrom.controls['panCardNumber'].invalid && (personalinfoRequestFrom.controls['panCardNumber'].dirty || personalinfoRequestFrom.controls['panCardNumber'].touched)"
+            class="alert alert-danger">
+            Pan card number must be of 11 characters.
+        </div>
+        <div *ngIf="personalinfoRequestFrom.controls['companyMail'].invalid && (personalinfoRequestFrom.controls['companyMail'].dirty || personalinfoRequestFrom.controls['companyMail'].touched)"
+            class="alert alert-danger">
+            Company mail is not in a valid email format.
+        </div>
+        <div *ngIf="personalinfoRequestFrom.controls['personalMail'].invalid && (personalinfoRequestFrom.controls['personalMail'].dirty || personalinfoRequestFrom.controls['personalMail'].touched)"
+            class="alert alert-danger">
+            Personal mail is not in a valid email format.
+        </div>
+    </div>
+    <div class="personal-info row">
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Date of Birth</mat-label>
+                <input matInput [matDatepicker]="dateOfBirthpicker" formControlName="dateOfBirth">
+                <mat-datepicker-toggle matIconSuffix [for]="dateOfBirthpicker"></mat-datepicker-toggle>
+                <mat-datepicker #dateOfBirthpicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Gender</mat-label>
+                <mat-select formControlName="gender">
+                    <mat-option value="male">Male</mat-option>
+                    <mat-option value="female">Female</mat-option>
+                </mat-select>
+                <mat-icon matSuffix>face</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Martial Status</mat-label>
+                <mat-select formControlName="maritalStatus">
+                    <mat-option value="single">Single</mat-option>
+                    <mat-option value="married">Married</mat-option>
+                </mat-select>
+                <mat-icon matSuffix>group</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Blood Group</mat-label>
+                <input matInput formControlName="bloodGroup">
+                <mat-icon matSuffix>opacity</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Any Disease</mat-label>
+                <input matInput formControlName="anyDiseases">
+                <mat-icon matSuffix>local_hospital</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Contact Number</mat-label>
+                <input matInput formControlName="contactNumber">
+                <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Alternate Number</mat-label>
+                <input matInput formControlName="alternateNumber">
+                <mat-icon matSuffix>phone</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>HDFC A/c No.</mat-label>
+                <input matInput formControlName="accountNumber">
+                <mat-icon matSuffix>account_balance</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Pan Card Number</mat-label>
+                <input matInput formControlName="panCardNumber">
+                <mat-icon matSuffix>subtitles</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Present Address</mat-label>
+                <textarea matInput formControlName="presentAddress"></textarea>
+                <mat-icon matSuffix>location_on</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Permanent Address</mat-label>
+                <textarea matInput formControlName="permanentAddress"></textarea>
+                <mat-icon matSuffix>location_on</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Provident Fund Number</mat-label>
+                <input matInput formControlName="providentFundNumber">
+                <mat-icon matSuffix>account_balance_wallet</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>NSR Number</mat-label>
+                <input matInput formControlName="nsrNumber">
+                <mat-icon matSuffix>account_box</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>TatvaSoft Email</mat-label>
+                <input matInput formControlName="companyMail">
+                <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Personal Email</mat-label>
+                <input matInput formControlName="personalMail">
+                <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Messengers</mat-label>
+                <input matInput formControlName="messengers">
+                <mat-icon matSuffix>message</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="sub-head full_width" style="margin-top: 15px;">Passport Details</div>
+    <div class="personal-info row">
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Passport Number</mat-label>
+                <input matInput formControlName="passportNumber">
+                <mat-icon matSuffix>airplanemode_active</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-2">
+            <mat-form-field appearance="outline">
+                <mat-label>Date of Issue</mat-label>
+                <input matInput [matDatepicker]="dateOfIssuepicker" formControlName="dateOfIssue">
+                <mat-datepicker-toggle matIconSuffix [for]="dateOfIssuepicker"></mat-datepicker-toggle>
+                <mat-datepicker #dateOfIssuepicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-2">
+            <mat-form-field appearance="outline">
+                <mat-label>Place of Issue</mat-label>
+                <input matInput formControlName="placeOfIssue">
+                <mat-icon matSuffix>location_on</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <mat-form-field appearance="outline">
+                <mat-label>Name in Passport</mat-label>
+                <input matInput formControlName="nameInPassport">
+                <mat-icon matSuffix>perm_identity</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-2">
+            <mat-form-field appearance="outline">
+                <mat-label>Valid Upto</mat-label>
+                <input matInput [matDatepicker]="validUptopicker" formControlName="validUpto">
+                <mat-datepicker-toggle matIconSuffix [for]="validUptopicker"></mat-datepicker-toggle>
+                <mat-datepicker #validUptopicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <div style="display: flex;align-items: center;justify-content: space-between;">
+        <div _ngcontent-ng-c4044991272="" class="sub-head full_width" style="margin-top: 15px;">Countries Travelled
+        </div>
+        <button id="addTravelInfo" type="button" class="btn btn-primary theme-btn"
+            style="border-radius: 0;margin-bottom: 5px;" (click)="addTravelInfo()">
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
+    <div class="personal-info table-scroll row">
+        <div id="lblCountryErrorMessage" *ngIf="travelInfoFormArray.length === 0" class="alert alert-danger listerror"
+            style="display: block;">No Data Available
+        </div>
+        <table cellspacing="0" *ngIf="travelInfoFormArray.length > 0" class="table table-hover table-stripped"
+            width="100%" style="border: 1px solid #ddd">
+            <thead>
+                <tr>
+                    <th style="width:10%;">#</th>
+                    <th style="width:25%">Country Name</th>
+                    <th style="width:25%">Visa Type</th>
+                    <th style="width:20%">Visa Valid For</th>
+                    <th style="width:20%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container [formGroup]="travelInfoFormGroup">
+                    <ng-container formArrayName="travelInfoFormArray"
+                        *ngFor="let travelInfoForm of travelInfoFormArray.controls; let i = index">
+                        <ng-container formGroupName="{{i}}">
+                            <tr>
+                                <td style="padding-top: 25px;">{{ i + 1 }}</td>
+                                <td>
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <input matInput formControlName="countryName">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <input matInput formControlName="visaType">
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field appearance="outline">
+                                        <input matInput [matDatepicker]="validUptopicker"
+                                            formControlName="visaValidFor">
+                                        <mat-datepicker-toggle matIconSuffix
+                                            [for]="validUptopicker"></mat-datepicker-toggle>
+                                        <mat-datepicker #validUptopicker></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <button mat-icon-button color="primary" (click)="removeTravelInfo(i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" (click)="saveTravelInfo(i)">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+
+        </table>
+    </div>
+    <div class="text-right" style="float: right; margin-right: 10px">
+        <button id="btnSave" type="submit" class="btn btn-primary theme-btn" style="border-radius: 0;"
+            (click)="updatePersonalInfo()" [disabled]="!personalinfoRequestFrom.valid">
+            <i class="fa fa-save"></i> Save
+        </button>
+    </div>
+</form>

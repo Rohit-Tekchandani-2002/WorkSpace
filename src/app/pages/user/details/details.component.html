@@ -1,0 +1,161 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="details-container">
+        <h2 class="blue_border">Employss Details</h2>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab label="Employee Details">
+                <div class="employeeinfo-container">
+                    <div>
+                        <img src="{{employeeDetails?.profileImage}}" class="employee-img"
+                            onerror="this.src='/assets/img/default-user-image.png';" />
+                    </div>
+                    <div class="full_width" style="padding: 0 15px;">
+                        <div class="sub-head full_width">Employee Information</div>
+                        <div class="employeeinfo">
+                            <div class="full_width" style="line-height: 1;">
+                                <div class="row">
+                                    <div class="col strong">Employee ID</div>
+                                    <div class="col">{{designationchar}}{{employeeDetails?.employeeDeatilId}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Full Name</div>
+                                    <div class="col">{{employeeDetails?.firstName}} {{employeeDetails?.lastName}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Email</div>
+                                    <div class="col">{{employeeDetails?.email}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Report To</div>
+                                    <div class="col">{{employeeDetails?.seniorsFirstName}}
+                                        {{employeeDetails?.seniorsLastName}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Card No</div>
+                                    <div class="col">{{employeeDetails?.cardNo}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Department</div>
+                                    <div class="col">{{employeeDetails?.departmentName}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Sitting Place</div>
+                                    <div class="col">{{employeeDetails?.sittingPlace}}</div>
+                                </div>
+                            </div>
+                            <div class="full_width" style="line-height: 1;">
+                                <div class="row">
+                                    <div class="col strong">Username</div>
+                                    <div class="col">{{employeeDetails?.userName}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Experience</div>
+                                    <div class="col">{{employeeDetails?.experience}} years</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Joining Date</div>
+                                    <div class="col">{{employeeDetails?.joiningDate | date: 'dd/MM/yyyy' }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Senior's Email</div>
+                                    <div class="col">{{employeeDetails?.seniorsEmail}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Grade</div>
+                                    <div class="col">{{employeeDetails?.grade}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Designation</div>
+                                    <div class="col">{{employeeDetails?.designation}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col strong">Created On</div>
+                                    <div class="col">{{employeeDetails?.createdAt | date : 'dd/MM/yyyy'}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sub-head full_width" style="margin-top: 15px;">Change Password</div>
+                        <div class="sub-head full_width"
+                            [ngClass]="{'error-message': changePasswordForm.hasError('passwordMismatch') && (changePasswordForm.controls['confirmPassword'].dirty || changePasswordForm.controls['confirmPassword'].touched)}"
+                            *ngIf="changePasswordForm.hasError('passwordMismatch') && (changePasswordForm.controls['confirmPassword'].dirty || changePasswordForm.controls['confirmPassword'].touched)">
+                            Passwords don't match.
+                        </div>
+                        <div>
+                            <form [formGroup]="changePasswordForm" class="changepassword-form"
+                                (ngSubmit)="onChangePasswordSubmit()">
+                                <mat-form-field class="from-group">
+                                    <mat-label>Current Password</mat-label>
+                                    <input matInput type="password" formControlName="currentPassword" />
+                                </mat-form-field>
+                                <mat-form-field class="from-group">
+                                    <mat-label>New Password</mat-label>
+                                    <input matInput type="password" formControlName="newPassword" />
+                                </mat-form-field>
+                                <mat-form-field class="from-group">
+                                    <mat-label>Confirm Password</mat-label>
+                                    <input matInput type="password" formControlName="confirmPassword" />
+                                </mat-form-field>
+                                <div class="changepassword-control">
+                                    <button type="submit" class="btn btn-primary theme-btn"
+                                        [disabled]="!changePasswordForm.valid"><i class="fa fa-save"></i> Update
+                                        Password</button>
+                                    <button type="reset" class="btn btn-primary btn-default"><i
+                                            class="fa fa-remove"></i> Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="sub-head full_width" style="margin-top: 15px;">Notification Email Settings</div>
+                        <div>
+                            <form class="notification-form" #changeEmailSettingfrom="ngForm"
+                                (ngSubmit)="notificationFormSubmit()">
+                                <section class="notification-section">
+                                    <!-- [(ngModel)]="" -->
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationTypeResolutionChanged"
+                                        name="nsetting1">When team
+                                        member changed resolution of my created
+                                        Defect</mat-checkbox>
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationOnAssignedWorkItemChangeByTeamMember"
+                                        name="nsetting2">When
+                                        team member changed my assigned Work
+                                        Item</mat-checkbox>
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationCommnetOnWork"
+                                        name="nsetting3">When team member add
+                                        comment on my assigned Work
+                                        Item</mat-checkbox>
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationAssignedWork" name="nsetting4">When
+                                        team member
+                                        assigned any Work Item to
+                                        me</mat-checkbox>
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationDailyAlertEmail"
+                                        name="nsetting5">Daily Time Alert
+                                        Email ?</mat-checkbox>
+                                    <mat-checkbox color="primary"
+                                        [(ngModel)]="notificaiotnRequest.notificationOnCreatedWorkItemChangeByTeamMember"
+                                        name="nsetting6">
+                                        When team member changed my created Work
+                                        Item</mat-checkbox>
+                                </section>
+                                <div class="notification-control">
+                                    <button type="submit" class="btn btn-primary theme-btn" style="border-radius: 0;"><i
+                                            class="fa fa-save"></i> Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="Personal Details">
+                <app-personal-details></app-personal-details>
+            </mat-tab>
+            <mat-tab label="System Configuration">
+                <app-sysconfiginfo></app-sysconfiginfo>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</app-side-bar>

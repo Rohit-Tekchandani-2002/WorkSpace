@@ -1,0 +1,22 @@
+<div class="table" *ngIf="TeamRosTerResponces.length !== 0">
+    <div class="table-responsive">
+        <div class="table-head">
+            <div class="table-cell medium">EmployeeName</div>
+            <div class="table-cell medium">Capacity</div>
+            <div class="table-cell medium">Assigned Work</div>
+            <div class="table-cell medium">Remaning Work</div>
+            <div class="table-cell medium">% Complete</div>
+            <div class="table-cell medium">% Allocation</div>
+        </div>
+        <div class="table-body">
+            <div class="table-row" *ngFor="let item of TeamRosTerResponces">
+                <div class="table-cell medium">{{item.employeeName}}</div>
+                <div class="table-cell medium">{{item.capacity}}</div>
+                <div class="table-cell medium">{{item.assignedWork}}</div>
+                <div class="table-cell medium">{{item.remaningWork}}</div>
+                <div class="table-cell medium">{{item.presentageComplete}}</div>
+                <div class="table-cell medium">{{item.presentageAllocation}}</div>
+            </div>
+        </div>
+    </div>
+</div>

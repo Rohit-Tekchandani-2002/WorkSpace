@@ -1,0 +1,55 @@
+<header>
+    <mat-toolbar class="header">
+        <div class="menu-icon">
+            <button mat-icon-button (click)="toggleMenu()">
+                <mat-icon class="menu-icon-display">menu</mat-icon>
+            </button>
+        </div>
+        <div class="work-space-logo">
+            <a href="/home/index">
+                <img src="/assets/img/workspace-white.png">
+            </a>
+        </div>
+        <div class="select-project-dropdown">
+            <mat-form-field>
+                <!-- <mat-label>Select Project</mat-label> -->
+                <mat-select [formControl]="selectedProject" (selectionChange)="updateProject()" [placeholder]="'Select Project'">
+                    <mat-option *ngFor="let project of projects" [value]="project.projectId">
+                        {{ project.projectName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="alert-logo">
+            <a>
+                <img src="/assets/img/ic-alert.png">
+            </a>
+        </div>
+        <div class="profile-menu">
+            <button mat-button [matMenuTriggerFor]="belowMenu" aria-expanded="false" matTooltip="{{userInfo?.firstName}} {{userInfo?.lastName}}">
+                <!-- <span><img src="/assets/img/default-user-image.png" class="user-profile-img"></span> -->
+                <span><img src="{{userInfo?.profileImage}}" class="user-profile-img"
+                        onerror="this.src='/assets/img/default-user-image.png';" /></span>
+                <span class="user-name">{{userInfo?.firstName}} {{userInfo?.lastName}}</span>
+                <span class="mat-icon-arrow-drop-down"><mat-icon>arrow_drop_down</mat-icon></span>
+            </button>
+            <mat-menu #belowMenu="matMenu" yPosition="below">
+                <button mat-menu-item (click)="goToProfile()"><i class="fa fa-user fa-fw"></i>My Profile</button>
+                <button mat-menu-item (click)="goToProfile()"><i class="fa fa-cog fa-fw"></i>Widgets Settings</button>
+                <button mat-menu-item (click)="logout()"><i class="fa fa-sign-out fa-fw"></i>LogOut</button>
+            </mat-menu>
+        </div>
+    </mat-toolbar>
+    <div class="project-dropdown-hidden">
+        <div class="select-project-dropdown-hidden">
+            <mat-form-field>
+                <!-- <mat-label>Select Project</mat-label> -->
+                <mat-select [formControl]="selectedProject" (selectionChange)="updateProject()">
+                    <mat-option *ngFor="let project of projects" [value]="project.projectId">
+                        {{ project.projectName }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</header>

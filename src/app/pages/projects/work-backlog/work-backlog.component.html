@@ -1,0 +1,1562 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="loader" *ngIf="(loading$ | async)"><img src="/assets/img/1.gif"/></div>
+    <div class="projects-container" style="user-select: none;" *ngIf="!(loading$ | async)">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Work Backlog</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">Work Backlog <span><span class="strong">Work Group : </span>{{WorkGroup.title}}
+                ({{WorkGroup.startDate | date: 'dd-MMM-yyyy'}} - {{WorkGroup.endDate | date: 'dd-MMM-yyyy'}})</span>
+        </h2>
+        <div class="workBackLog-nav" [ngClass]="{'mb-4': !searchFilter}">
+            <a class="btn btn-default" href="project/new-work-item"><i class="fa fa-plus"></i>&nbsp;New</a>
+            <div class="tool-bar">
+                <span class="pt-lg-0 pt-2">
+                    <span *ngIf="viewType == 'listview' || viewType == 'dashboard' || viewType == 'boxview'">Group
+                        By</span>
+                    <button *ngIf="viewType == 'listview' || viewType == 'dashboard' || viewType == 'boxview'"
+                        class="btn btn-default ms-2" [ngClass]="{'active': groupBy == 'none'}"
+                        (click)="GroupBy('none')">None</button>
+                    <button *ngIf="viewType == 'listview' || viewType == 'boxview'" class="btn btn-default"
+                        [ngClass]="{'active': groupBy == 'workFlowType'}"
+                        (click)="GroupBy('workFlowType')">Type</button>
+                    <button *ngIf="viewType == 'listview' || viewType == 'boxview'" class="btn btn-default"
+                        [ngClass]="{'active': groupBy == 'workStatus'}" (click)="GroupBy('workStatus')">Status</button>
+                    <button *ngIf="viewType == 'listview' || viewType == 'boxview'" class="btn btn-default"
+                        [ngClass]="{'active': groupBy == 'workPriority'}"
+                        (click)="GroupBy('workPriority')">Priority</button>
+                    <button *ngIf="viewType == 'listview' || viewType == 'dashboard' || viewType == 'boxview'"
+                        class="btn btn-default me-2" [ngClass]="{'active': groupBy == 'assignedTo'}"
+                        (click)="GroupBy('assignedTo')">Assigned To</button>
+                </span>
+                <span class="pt-lg-0 pt-2">
+                    <button class="btn btn-default ms-2" [ngClass]="{'active': viewType == 'dashboard'}"
+                        (click)="ViewType('dashboard')" matTooltip="Dashboard"><i class="fa fa-dashboard"></i></button>
+                    <button class="btn btn-default" [ngClass]="{'active': viewType == 'listview'}"
+                        (click)="ViewType('listview')" matTooltip="List View"><i class="fa fa-list"></i></button>
+                    <button class="btn btn-default" [ngClass]="{'active': viewType == 'boxview'}"
+                        (click)="ViewType('boxview')" matTooltip="Box View"><i class="fa fa-th"></i></button>
+                    <button class="btn btn-default" [ngClass]="{'active': viewType == 'rosterdetail'}"
+                        (click)="ViewType('rosterdetail')" matTooltip="Team Roster Detail"><i
+                            class="fa fa-list-alt"></i></button>
+                    <button class="btn btn-default" [ngClass]="{'active': viewType == 'activity'}"
+                        (click)="ViewType('activity')" matTooltip="Activity Stream"><i
+                            class="fa fa-history"></i></button>
+                    <button class="btn btn-default" [ngClass]="{'active': viewType == 'worklog'}"
+                        (click)="searchLog(); ViewType('worklog');" matTooltip="Work Log"><i class="fa fa-clock-o"></i></button>
+                    <button class="btn btn-default" (click)="refershWithLoading(500)" matTooltip="Refresh"><i
+                            class="fa fa-refresh"></i></button>
+                    <button class="btn btn-default me-2" [ngClass]="{'active': searchFilter}"
+                        (click)="searchFilter = !searchFilter" matTooltip="Filter"><i class="fa fa-filter"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="mb-4" *ngIf="searchFilter">
+            <div *ngIf="viewType == 'activity'" class="p-3"
+                style="border-left: 1px solid #ddd; border-right: 1px solid #ddd;"></div>
+            <form [formGroup]="workLogForm" *ngIf="viewType != 'activity'">
+                <div class="p-2 projectfilter" style="border-left: 1px solid #ddd; border-right: 1px solid #ddd;">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Work Group</mat-label>
+                        <mat-select formControlName="workGroupId">
+                            <span *ngFor="let type of workGroup;">
+                                <mat-option [value]="type.keyId">
+                                    {{type.dataValue}}
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline"
+                        *ngIf="(viewType != 'worklog') && (viewType != 'rosterdetail')">
+                        <mat-label>Type</mat-label>
+                        <mat-select #multiSelectProjectType formControlName="projectType" multiple>
+                            <mat-option [value]="null" (click)="toggleAllSelectionProjectType()">Select All</mat-option>
+                            <span *ngFor="let project of workFlowType | keyvalue; let i = index; let max = count;">
+                                <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                    {{project.value}}
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline"
+                        *ngIf="(viewType != 'worklog') && (viewType != 'rosterdetail')">
+                        <mat-label>Status</mat-label>
+                        <mat-select #multiSelectProjectStatus formControlName="projectStatus" multiple>
+                            <mat-option [value]="null" (click)="toggleAllSelectionProjectStatus()">Select
+                                All</mat-option>
+                            <span *ngFor="let project of projectStatus | keyvalue; let i = index; let max = count;">
+                                <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                    {{project.value}}
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline"
+                        *ngIf="(viewType != 'worklog') && (viewType != 'rosterdetail')">
+                        <mat-label>Search</mat-label>
+                        <input matInput formControlName="searchText">
+                    </mat-form-field>
+                </div>
+            </form>
+            <div class="modal-footer workBackLog-nav-footer border-top p-2">
+                <button type="button" class="btn btn-primary theme-btn rounded-0 me-2" (click)="searchLog()">
+                    <i class="fa fa-search"></i>&nbsp;Search</button>
+                <button type="button" class="btn btn-default" (click)="resetForm()"><i
+                        class="fa fa-refresh"></i>&nbsp;Clear</button>
+            </div>
+        </div>
+        <div id="worklog-dashboard">
+            <div *ngIf="viewType == 'dashboard'" class="WorkBackLog-grid">
+                <div class="Wlg-title" style="background-color: #64a3e4;">New <span
+                        *ngIf="statusNew.length > 0 && groupBy == 'none'">({{statusNew.length}})</span></div>
+                <div class="Wlg-title" style="background-color: #f4b24c;">In-Progress <span
+                        *ngIf="statusInProgress.length > 0 && groupBy == 'none'">({{statusInProgress.length}})</span>
+                </div>
+                <div class="Wlg-title" style="background-color: #54bed9;">Dev Completed <span
+                        *ngIf="sattusDevCompleted.length > 0 && groupBy == 'none'">({{sattusDevCompleted.length}})</span>
+                </div>
+                <div class="Wlg-title" style="background-color: #9cc847;">Ready for Testing <span
+                        *ngIf="statusReadyforTesting.length > 0 && groupBy == 'none'">({{statusReadyforTesting.length}})</span>
+                </div>
+                <div class="Wlg-title" style="background-color: #64a3e4;">Closed <span
+                        *ngIf="statusClosed.length > 0 && groupBy == 'none'">({{statusClosed.length}})</span></div>
+            </div>
+            <div cdkDropListGroup *ngIf="viewType == 'dashboard' && (groupBy == 'none' || groupBy == 'workFlowType' || groupBy == 'workStatus' || groupBy == 'workPriority')"
+                class="WorkBackLog-grid Wlg-content-main">
+                <div cdkDropList [cdkDropListData]="statusNew" class="New Wlg-content"
+                    (cdkDropListDropped)="drop($event)">
+                    <div id="{{item.projectWorkId}}" class="workBackLog" *ngFor="let item of statusNew" cdkDrag>
+                        <div class="flex-between">
+                            <div class="ellipsis">
+                                <img class="imgPadding" src="/assets/img/task.png">
+                                <a class="worklog-title" href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                    placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                            </div>
+                            <span class="edit-log-clock">
+                                <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                            </span>
+                        </div>
+                        <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ') ? item.assignedTo :
+                            'Unassigned'}}</div>
+                        <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div cdkDropList [cdkDropListData]="statusInProgress" class="In-Progress Wlg-content"
+                    (cdkDropListDropped)="drop($event)">
+                    <div id="{{item.projectWorkId}}" class="workBackLog" *ngFor="let item of statusInProgress" cdkDrag>
+                        <div class="flex-between">
+                            <div class="ellipsis">
+                                <img class="imgPadding" src="/assets/img/task.png">
+                                <a class="worklog-title" href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                    placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                            </div>
+                            <span class="edit-log-clock">
+                                <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                            </span>
+                        </div>
+                        <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ') ? item.assignedTo :
+                            'Unassigned'}}</div>
+                        <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div cdkDropList [cdkDropListData]="sattusDevCompleted" class="DevCompleted Wlg-content"
+                    (cdkDropListDropped)="drop($event)">
+                    <div id="{{item.projectWorkId}}" class="workBackLog" *ngFor="let item of sattusDevCompleted"
+                        cdkDrag>
+                        <div class="flex-between">
+                            <div class="ellipsis">
+                                <img class="imgPadding" src="/assets/img/task.png">
+                                <a class="worklog-title" href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                    placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                            </div>
+                            <span class="edit-log-clock">
+                                <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                            </span>
+                        </div>
+                        <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ') ? item.assignedTo :
+                            'Unassigned'}}</div>
+                        <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div cdkDropList [cdkDropListData]="statusReadyforTesting" class="ReadyForTesting Wlg-content"
+                    (cdkDropListDropped)="drop($event)">
+                    <div id="{{item.projectWorkId}}" class="workBackLog" *ngFor="let item of statusReadyforTesting"
+                        cdkDrag>
+                        <div class="flex-between">
+                            <div class="ellipsis">
+                                <img class="imgPadding" src="/assets/img/task.png">
+                                <a class="worklog-title" href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                    placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                            </div>
+                            <span class="edit-log-clock">
+                                <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                            </span>
+                        </div>
+                        <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ') ? item.assignedTo :
+                            'Unassigned'}}</div>
+                        <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+                <div cdkDropList [cdkDropListData]="statusClosed" class="Closed Wlg-content"
+                    (cdkDropListDropped)="drop($event)">
+                    <div id="{{item.projectWorkId}}" class="workBackLog" *ngFor="let item of statusClosed" cdkDrag>
+                        <div class="flex-between">
+                            <div class="ellipsis">
+                                <img class="imgPadding" src="/assets/img/task.png">
+                                <a class="worklog-title" href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                    placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                            </div>
+                            <span class="edit-log-clock">
+                                <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                            </span>
+                        </div>
+                        <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ') ? item.assignedTo :
+                            'Unassigned'}}</div>
+                        <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                        <div class="progress">
+                            <div class="progress-bar"
+                                [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-head mb-0 mt-2" *ngIf="viewType == 'dashboard' && groupBy == 'assignedTo'">
+                <span>
+                    <i class="fa fa-chevron-down" *ngIf="unassignedLogToggel == true"
+                        (click)="toggelDiv('unassigned-toggel')"></i>
+                    <i class="fa fa-chevron-up" *ngIf="unassignedLogToggel == false"
+                        (click)="toggelDiv('unassigned-toggel')"></i> &nbsp; Unassigned
+                </span>
+            </div>
+            <div [@slideInOut]="(unassignedLogToggel == true) ? 'in' : 'out'">
+                <div cdkDropListGroup *ngIf="viewType == 'dashboard' && groupBy == 'assignedTo'"
+                    class="WorkBackLog-grid Wlg-content-main">
+                    <div cdkDropList [cdkDropListData]="statusNew" class="New Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusNew" cdkDrag>
+                            <div *ngIf="item.assignedTo == ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">Unassigned</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusInProgress" class="In-Progress Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusInProgress" cdkDrag>
+                            <div *ngIf="item.assignedTo == ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">Unassigned</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="sattusDevCompleted" class="DevCompleted Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of sattusDevCompleted" cdkDrag>
+                            <div *ngIf="item.assignedTo == ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">Unassigned</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusReadyforTesting" class="ReadyForTesting Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusReadyforTesting" cdkDrag>
+                            <div *ngIf="item.assignedTo == ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">Unassigned</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusClosed" class="Closed Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusClosed" cdkDrag>
+                            <div class="workBackLog" *ngIf="item.assignedTo == ' '">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">Unassigned</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-head mb-0" *ngIf="viewType == 'dashboard' && groupBy == 'assignedTo'">
+                <span>
+                    <i class="fa fa-chevron-down" *ngIf="assignedLogToggel == true"
+                        (click)="toggelDiv('assigned-toggel')"></i>
+                    <i class="fa fa-chevron-up" *ngIf="assignedLogToggel == false"
+                        (click)="toggelDiv('assigned-toggel')"></i> &nbsp; {{userInfo?.firstName ?? 'Assigned'}}
+                    {{userInfo?.lastName ?? ''}}
+                </span>
+            </div>
+            <div class="assignedTo" [@slideInOut]="(assignedLogToggel == true) ? 'in' : 'out'">
+                <div cdkDropListGroup *ngIf="viewType == 'dashboard' && groupBy == 'assignedTo'"
+                    class="WorkBackLog-grid Wlg-content-main">
+                    <div cdkDropList [cdkDropListData]="statusNew" class="New Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusNew" cdkDrag>
+                            <div *ngIf="item.assignedTo != ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{item.assignedTo}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusInProgress" class="In-Progress Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusInProgress" cdkDrag>
+                            <div *ngIf="item.assignedTo != ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{item.assignedTo}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="sattusDevCompleted" class="DevCompleted Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of sattusDevCompleted" cdkDrag>
+                            <div *ngIf="item.assignedTo != ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{item.assignedTo}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusReadyforTesting" class="ReadyForTesting Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusReadyforTesting" cdkDrag>
+                            <div *ngIf="item.assignedTo != ' '" class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{item.assignedTo}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div cdkDropList [cdkDropListData]="statusClosed" class="Closed Wlg-content"
+                        (cdkDropListDropped)="drop($event)">
+                        <div id="{{item.projectWorkId}}" *ngFor="let item of statusClosed" cdkDrag>
+                            <div class="workBackLog" *ngIf="item.assignedTo != ' '">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{item.assignedTo}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="worklog-listview">
+            <div *ngIf="viewType == 'listview' && groupBy == 'none'">
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short" *ngIf="'projectStatus' as sortVar" [ngClass]="{
+                            'sorting': sortBy != sortVar, 
+                            'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                            'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                        }" (click)="Sort(sortVar)"> </div>
+                            <div class="table-cell verylong" *ngIf="'title' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Title</div>
+                            <div class="table-cell medium" *ngIf="'projectStatus' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Status</div>
+                            <div class="table-cell medium" *ngIf="'workPriority' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Priority</div>
+                            <div class="table-cell long" *ngIf="'assignedTo' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Assigned To</div>
+                            <div class="table-cell medium" *ngIf="'startDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Start Date</div>
+                            <div class="table-cell medium" *ngIf="'endDate' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">End Date</div>
+                            <div class="table-cell medium" *ngIf="'originalEstTime' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Original Est</div>
+                            <div class="table-cell medium" *ngIf="'remainingEstTime' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Remaning Est</div>
+                            <div class="table-cell medium" *ngIf="'totalWorkDone' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Time Spent</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="table-row" *ngFor="let item of WorkLogs">
+                                <div class="table-cell short">
+                                    <div *ngIf="item.projectStatusId == 1"
+                                        style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                        matTooltip="New">
+                                    </div>
+                                    <div *ngIf="item.projectStatusId == 2"
+                                        style="background-color:#f4b24c !important;height:25px;width:3px"
+                                        matTooltip="In-Progress"></div>
+                                    <div *ngIf="item.projectStatusId == 3"
+                                        style="background-color:#54bed9 !important;height:25px;width:3px"
+                                        matTooltip="Dev. Completed"></div>
+                                    <div *ngIf="item.projectStatusId == 4"
+                                        style="background-color:#9cc847 !important;height:25px;width:3px"
+                                        matTooltip="Ready For Testing">
+                                    </div>
+                                    <div *ngIf="item.projectStatusId == 5"
+                                        style="background-color:#ababab !important;height:25px;width:3px"
+                                        matTooltip="Closed"></div>
+                                </div>
+                                <div class='table-cell verylong'><img src="/assets/img/task.png" class="imgPadding"><a
+                                        href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                        : {{item.title}}</a></div>
+                                <div class='table-cell medium'>{{projectStatus[item.projectStatusId - 1]}}</div>
+                                <div class='table-cell medium'>{{item.workPriority}}</div>
+                                <div class='table-cell long'>{{item.assignedTo}}</div>
+                                <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}</div>
+                                <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}</div>
+                                <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs</div>
+                                <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs</div>
+                                <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs</div>
+                                <div class='table-cell short text-center' style="font-size: large;"><i
+                                        class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'listview' && groupBy == 'workFlowType'">
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short"> </div>
+                            <div class="table-cell verylong">Title</div>
+                            <div class="table-cell medium">Status</div>
+                            <div class="table-cell medium">Priority</div>
+                            <div class="table-cell long">Assigned To</div>
+                            <div class="table-cell medium">Start Date</div>
+                            <div class="table-cell medium">End Date</div>
+                            <div class="table-cell medium">Original Est</div>
+                            <div class="table-cell medium">Remaning Est</div>
+                            <div class="table-cell medium">Time Spent</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="p-0" *ngFor="let itemKey of groupByKey(WorkLogs, 'workFlow', null).key">
+                                <span *ngIf="{ workFlowType : true } as variable">
+                                    <div class="sub-head mb-0"
+                                        style="min-width: 86.2vw; display: flex; align-items: center;">
+                                        <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                            (click)="variable.workFlowType = !variable.workFlowType"></i>
+                                        <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                            (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                                        {{workFlowType[+itemKey - 1]}}
+                                        {{groupByKey(WorkLogs, 'workFlow', itemKey).value[itemKey].length}} items
+                                        {{formatTime(groupByKey(WorkLogs, 'workFlow', itemKey).workDone)}} Hours worked,
+                                        {{formatTime(groupByKey(WorkLogs, 'workFlow', itemKey).remaningTime)}} Hours
+                                        remaining
+                                        <div class="progressWorkPriority">
+                                            <div class="progress-bar" role="progressbar"
+                                                [ngStyle]="{'width': groupByKey(WorkLogs, 'workFlow', itemKey).percentage + '%'}"
+                                                style="background-color:#208fc8"></div>
+                                        </div>
+                                    </div>
+                                    <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                                        <div class="table-row"
+                                            *ngFor="let item of groupByKey(WorkLogs, 'workFlow', itemKey).value[itemKey]">
+                                            <div class="table-cell short">
+                                                <div *ngIf="item.projectStatusId == 1"
+                                                    style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                    matTooltip="New">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 2"
+                                                    style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                    matTooltip="In-Progress"></div>
+                                                <div *ngIf="item.projectStatusId == 3"
+                                                    style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                    matTooltip="Dev. Completed"></div>
+                                                <div *ngIf="item.projectStatusId == 4"
+                                                    style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                    matTooltip="Ready For Testing">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 5"
+                                                    style="background-color:#ababab !important;height:25px;width:3px"
+                                                    matTooltip="Closed"></div>
+                                            </div>
+                                            <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                    class="imgPadding"><a
+                                                    href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                    : {{item.title}}</a></div>
+                                            <div class='table-cell medium'>{{projectStatus[item.projectStatusId - 1]}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.workPriority}}</div>
+                                            <div class='table-cell long'>{{item.assignedTo}}</div>
+                                            <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}</div>
+                                            <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs</div>
+                                            <div class='table-cell short text-center' style="font-size: large;"><i
+                                                    class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'listview' && groupBy == 'workStatus'">
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short"> </div>
+                            <div class="table-cell verylong">Title</div>
+                            <div class="table-cell medium">Status</div>
+                            <div class="table-cell medium">Priority</div>
+                            <div class="table-cell long">Assigned To</div>
+                            <div class="table-cell medium">Start Date</div>
+                            <div class="table-cell medium">End Date</div>
+                            <div class="table-cell medium">Original Est</div>
+                            <div class="table-cell medium">Remaning Est</div>
+                            <div class="table-cell medium">Time Spent</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="p-0" *ngFor="let itemKey of groupByKey(WorkLogs, 'projectStatusId', null).key">
+                                <span *ngIf="{ workFlowType : true } as variable">
+                                    <div class="sub-head mb-0"
+                                        style="min-width: 86.2vw; display: flex; align-items: center;">
+                                        <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                            (click)="variable.workFlowType = !variable.workFlowType"></i>
+                                        <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                            (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                                        {{projectStatus[+itemKey - 1]}}
+                                        {{groupByKey(WorkLogs, 'projectStatusId', itemKey).value[itemKey].length}} items
+                                        {{formatTime(groupByKey(WorkLogs, 'projectStatusId', itemKey).workDone)}} Hours
+                                        worked,
+                                        {{formatTime(groupByKey(WorkLogs, 'projectStatusId', itemKey).remaningTime)}}
+                                        Hours remaining
+                                        <div class="progressWorkPriority">
+                                            <div class="progress-bar" role="progressbar"
+                                                [ngStyle]="{'width': groupByKey(WorkLogs, 'projectStatusId', itemKey).percentage + '%'}"
+                                                style="background-color:#208fc8"></div>
+                                        </div>
+                                    </div>
+                                    <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                                        <div class="table-row"
+                                            *ngFor="let item of groupByKey(WorkLogs, 'projectStatusId', itemKey).value[itemKey]">
+                                            <div class="table-cell short">
+                                                <div *ngIf="item.projectStatusId == 1"
+                                                    style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                    matTooltip="New">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 2"
+                                                    style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                    matTooltip="In-Progress"></div>
+                                                <div *ngIf="item.projectStatusId == 3"
+                                                    style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                    matTooltip="Dev. Completed"></div>
+                                                <div *ngIf="item.projectStatusId == 4"
+                                                    style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                    matTooltip="Ready For Testing">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 5"
+                                                    style="background-color:#ababab !important;height:25px;width:3px"
+                                                    matTooltip="Closed"></div>
+                                            </div>
+                                            <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                    class="imgPadding"><a
+                                                    href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                    : {{item.title}}</a></div>
+                                            <div class='table-cell medium'>{{projectStatus[item.projectStatusId - 1]}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.workPriority}}</div>
+                                            <div class='table-cell long'>{{item.assignedTo}}</div>
+                                            <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}</div>
+                                            <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs</div>
+                                            <div class='table-cell short text-center' style="font-size: large;"><i
+                                                    class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'listview' && groupBy == 'workPriority'">
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short"> </div>
+                            <div class="table-cell verylong">Title</div>
+                            <div class="table-cell medium">Status</div>
+                            <div class="table-cell medium">Priority</div>
+                            <div class="table-cell long">Assigned To</div>
+                            <div class="table-cell medium">Start Date</div>
+                            <div class="table-cell medium">End Date</div>
+                            <div class="table-cell medium">Original Est</div>
+                            <div class="table-cell medium">Remaning Est</div>
+                            <div class="table-cell medium">Time Spent</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="p-0" *ngFor="let itemKey of groupByKey(WorkLogs, 'workPriority', null).key">
+                                <span *ngIf="{ workPriority : true } as variable">
+                                    <div class="sub-head mb-0"
+                                        style="min-width: 86.2vw; display: flex; align-items: center;">
+                                        <i class="fa fa-chevron-down" *ngIf="variable.workPriority == true"
+                                            (click)="variable.workPriority = !variable.workPriority"></i>
+                                        <i class="fa fa-chevron-up" *ngIf="variable.workPriority == false"
+                                            (click)="variable.workPriority = !variable.workPriority"></i> &nbsp;
+                                        {{itemKey}}
+                                        {{groupByKey(WorkLogs, 'workPriority', itemKey).value[itemKey].length}} items
+                                        {{formatTime(groupByKey(WorkLogs, 'workPriority', itemKey).workDone)}} Hours
+                                        worked,
+                                        {{formatTime(groupByKey(WorkLogs, 'workPriority', itemKey).remaningTime)}} Hours
+                                        remaining
+                                        <div class="progressWorkPriority">
+                                            <div class="progress-bar" role="progressbar"
+                                                [ngStyle]="{'width': groupByKey(WorkLogs, 'workPriority', itemKey).percentage + '%'}"
+                                                style="background-color:#208fc8"></div>
+                                        </div>
+                                    </div>
+                                    <div [@slideInOut]="(variable.workPriority == true) ? 'in' : 'out'">
+                                        <div class="table-row"
+                                            *ngFor="let item of groupByKey(WorkLogs, 'workPriority', itemKey).value[itemKey]">
+                                            <div class="table-cell short">
+                                                <div *ngIf="item.projectStatusId == 1"
+                                                    style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                    matTooltip="New">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 2"
+                                                    style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                    matTooltip="In-Progress"></div>
+                                                <div *ngIf="item.projectStatusId == 3"
+                                                    style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                    matTooltip="Dev. Completed"></div>
+                                                <div *ngIf="item.projectStatusId == 4"
+                                                    style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                    matTooltip="Ready For Testing">
+                                                </div>
+                                                <div *ngIf="item.projectStatusId == 5"
+                                                    style="background-color:#ababab !important;height:25px;width:3px"
+                                                    matTooltip="Closed"></div>
+                                            </div>
+                                            <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                    class="imgPadding"><a
+                                                    href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                    : {{item.title}}</a></div>
+                                            <div class='table-cell medium'>{{projectStatus[item.projectStatusId - 1]}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.workPriority}}</div>
+                                            <div class='table-cell long'>{{item.assignedTo}}</div>
+                                            <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                            </div>
+                                            <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}</div>
+                                            <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs
+                                            </div>
+                                            <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs</div>
+                                            <div class='table-cell short text-center' style="font-size: large;"><i
+                                                    class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="variable.workPriority == false" class="p-1"></div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'listview' && groupBy == 'assignedTo'">
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short"> </div>
+                            <div class="table-cell verylong">Title</div>
+                            <div class="table-cell medium">Status</div>
+                            <div class="table-cell medium">Priority</div>
+                            <div class="table-cell long">Assigned To</div>
+                            <div class="table-cell medium">Start Date</div>
+                            <div class="table-cell medium">End Date</div>
+                            <div class="table-cell medium">Original Est</div>
+                            <div class="table-cell medium">Remaning Est</div>
+                            <div class="table-cell medium">Time Spent</div>
+                            <div class="table-cell short text-center">Action</div>
+                        </div>
+                        <div class="table-body">
+                            <div class="p-0" *ngFor="let itemKey of groupByKey(WorkLogs, 'assignedTo', null).key">
+                                <span *ngIf="itemKey == ' '">
+                                    <span *ngIf="{ workPriority : true } as variable">
+                                        <div class="sub-head mb-0"
+                                            style="min-width: 86.2vw; display: flex; align-items: center;">
+                                            <i class="fa fa-chevron-down" *ngIf="variable.workPriority == true"
+                                                (click)="variable.workPriority = !variable.workPriority"></i>
+                                            <i class="fa fa-chevron-up" *ngIf="variable.workPriority == false"
+                                                (click)="variable.workPriority = !variable.workPriority"></i> &nbsp;
+                                            {{(itemKey == ' ') ? 'Unassigned' : itemKey}}
+                                            {{groupByKey(WorkLogs, 'assignedTo', itemKey).value[itemKey].length}} items
+                                            {{formatTime(groupByKey(WorkLogs, 'assignedTo', itemKey).workDone)}} Hours
+                                            worked,
+                                            {{formatTime(groupByKey(WorkLogs, 'assignedTo', itemKey).remaningTime)}}
+                                            Hours remaining
+                                            <div class="progressWorkPriority">
+                                                <div class="progress-bar" role="progressbar"
+                                                    [ngStyle]="{'width': groupByKey(WorkLogs, 'assignedTo', itemKey).percentage + '%'}"
+                                                    style="background-color:#208fc8"></div>
+                                            </div>
+                                        </div>
+                                        <div [@slideInOut]="(variable.workPriority == true) ? 'in' : 'out'">
+                                            <div class="table-row"
+                                                *ngFor="let item of groupByKey(WorkLogs, 'assignedTo', itemKey).value[' ']">
+                                                <div class="table-cell short">
+                                                    <div *ngIf="item.projectStatusId == 1"
+                                                        style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                        matTooltip="New">
+                                                    </div>
+                                                    <div *ngIf="item.projectStatusId == 2"
+                                                        style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                        matTooltip="In-Progress"></div>
+                                                    <div *ngIf="item.projectStatusId == 3"
+                                                        style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                        matTooltip="Dev. Completed"></div>
+                                                    <div *ngIf="item.projectStatusId == 4"
+                                                        style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                        matTooltip="Ready For Testing">
+                                                    </div>
+                                                    <div *ngIf="item.projectStatusId == 5"
+                                                        style="background-color:#ababab !important;height:25px;width:3px"
+                                                        matTooltip="Closed"></div>
+                                                </div>
+                                                <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                        class="imgPadding"><a
+                                                        href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                        : {{item.title}}</a></div>
+                                                <div class='table-cell medium'>{{projectStatus[item.projectStatusId -
+                                                    1]}}</div>
+                                                <div class='table-cell medium'>{{item.workPriority}}</div>
+                                                <div class='table-cell long'>{{item.assignedTo}}</div>
+                                                <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                                </div>
+                                                <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs
+                                                </div>
+                                                <div class='table-cell short text-center' style="font-size: large;"><i
+                                                        class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="variable.workPriority == false" class="p-1"></div>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="p-0" *ngFor="let itemKey of groupByKey(WorkLogs, 'assignedTo', null).key">
+                                <span *ngIf="itemKey != ' '">
+                                    <span *ngIf="{ workPriority : true } as variable">
+                                        <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                                            <i class="fa fa-chevron-down" *ngIf="variable.workPriority == true"
+                                                (click)="variable.workPriority = !variable.workPriority"></i>
+                                            <i class="fa fa-chevron-up" *ngIf="variable.workPriority == false"
+                                                (click)="variable.workPriority = !variable.workPriority"></i> &nbsp;
+                                            {{(itemKey == ' ') ? 'Unassigned' : itemKey}}
+                                            {{groupByKey(WorkLogs, 'assignedTo', itemKey).value[itemKey].length}} items
+                                            {{formatTime(groupByKey(WorkLogs, 'assignedTo', itemKey).workDone)}} Hours
+                                            worked,
+                                            {{formatTime(groupByKey(WorkLogs, 'assignedTo', itemKey).remaningTime)}}
+                                            Hours remaining
+                                            <div class="progressWorkPriority">
+                                                <div class="progress-bar" role="progressbar"
+                                                    [ngStyle]="{'width': groupByKey(WorkLogs, 'assignedTo', itemKey).percentage + '%'}"
+                                                    style="background-color:#208fc8"></div>
+                                            </div>
+                                        </div>
+                                        <div [@slideInOut]="(variable.workPriority == true) ? 'in' : 'out'">
+                                            <div class="table-row"
+                                                *ngFor="let item of groupByKey(WorkLogs, 'assignedTo', itemKey).value[itemKey]">
+                                                <div class="table-cell short">
+                                                    <div *ngIf="item.projectStatusId == 1"
+                                                        style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                                        matTooltip="New">
+                                                    </div>
+                                                    <div *ngIf="item.projectStatusId == 2"
+                                                        style="background-color:#f4b24c !important;height:25px;width:3px"
+                                                        matTooltip="In-Progress"></div>
+                                                    <div *ngIf="item.projectStatusId == 3"
+                                                        style="background-color:#54bed9 !important;height:25px;width:3px"
+                                                        matTooltip="Dev. Completed"></div>
+                                                    <div *ngIf="item.projectStatusId == 4"
+                                                        style="background-color:#9cc847 !important;height:25px;width:3px"
+                                                        matTooltip="Ready For Testing">
+                                                    </div>
+                                                    <div *ngIf="item.projectStatusId == 5"
+                                                        style="background-color:#ababab !important;height:25px;width:3px"
+                                                        matTooltip="Closed"></div>
+                                                </div>
+                                                <div class='table-cell verylong'><img src="/assets/img/task.png"
+                                                        class="imgPadding"><a
+                                                        href="project/project-backlog/workItem/{{item.projectWorkId}}">TA{{item.projectWorkId}}
+                                                        : {{item.title}}</a></div>
+                                                <div class='table-cell medium'>{{projectStatus[item.projectStatusId -
+                                                    1]}}</div>
+                                                <div class='table-cell medium'>{{item.workPriority}}</div>
+                                                <div class='table-cell long'>{{item.assignedTo}}</div>
+                                                <div class='table-cell medium'>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                                </div>
+                                                <div class='table-cell medium'>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.originalEstTime)}} Hrs
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.remainingEstTime)}} Hrs
+                                                </div>
+                                                <div class='table-cell medium'>{{formatTime(item.totalWorkDone)}} Hrs
+                                                </div>
+                                                <div class='table-cell short text-center' style="font-size: large;"><i
+                                                        class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="variable.workPriority == false" class="p-1"></div>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer">
+                        1 to {{WorkLogs.length}} of {{WorkLogs.length}} entries
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="worklog-boxview">
+            <div *ngIf="viewType == 'boxview' && groupBy == 'none'">
+                <div class="Wlg-content border"
+                    style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                    <div id="{{item.projectWorkId}}" *ngFor="let item of WorkLogs" style="width: 25%;">
+                        <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                            <div class="workBackLog">
+                                <div class="flex-between">
+                                    <div class="ellipsis">
+                                        <img class="imgPadding" src="/assets/img/task.png">
+                                        <a class="worklog-title"
+                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                    </div>
+                                    <span class="edit-log-clock">
+                                        <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                    </span>
+                                </div>
+                                <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ' )?
+                                    item.assignedTo : 'Unassigned'}}</div>
+                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                <div class="progress">
+                                    <div class="progress-bar"
+                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                        role="progressbar"></div>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'boxview' && groupBy == 'workFlowType'">
+                <div class="p-0 border" *ngFor="let itemKey of groupByKey(WorkLogs, 'workFlow', null).key">
+                    <span *ngIf="{ workFlowType : true } as variable">
+                        <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                            <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i>
+                            <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                            {{workFlowType[+itemKey - 1]}}
+                        </div>
+                        <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                            <div class="Wlg-content"
+                                style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                                <div id="{{item.projectWorkId}}"
+                                    *ngFor="let item of groupByKey(WorkLogs, 'workFlow', itemKey).value[itemKey]"
+                                    style="width: 25%;">
+                                    <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                                        <div class="workBackLog">
+                                            <div class="flex-between">
+                                                <div class="ellipsis">
+                                                    <img class="imgPadding" src="/assets/img/task.png">
+                                                    <a class="worklog-title"
+                                                        href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                                        placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                                </div>
+                                                <span class="edit-log-clock">
+                                                    <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                                </span>
+                                            </div>
+                                            <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ' )?
+                                                item.assignedTo : 'Unassigned'}}</div>
+                                            <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                            <div class="progress">
+                                                <div class="progress-bar"
+                                                    [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                                    role="progressbar"></div>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'boxview' && groupBy == 'workStatus'">
+                <div class="p-0 border" *ngFor="let itemKey of groupByKey(WorkLogs, 'projectStatusId', null).key">
+                    <span *ngIf="{ workFlowType : true } as variable">
+                        <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                            <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i>
+                            <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                            {{projectStatus[+itemKey - 1]}}
+                        </div>
+                        <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                            <div class="Wlg-content"
+                                style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                                <div id="{{item.projectWorkId}}"
+                                    *ngFor="let item of groupByKey(WorkLogs, 'projectStatusId', itemKey).value[itemKey]"
+                                    style="width: 25%;">
+                                    <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                                        <div class="workBackLog">
+                                            <div class="flex-between">
+                                                <div class="ellipsis">
+                                                    <img class="imgPadding" src="/assets/img/task.png">
+                                                    <a class="worklog-title"
+                                                        href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                                        placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                                </div>
+                                                <span class="edit-log-clock">
+                                                    <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                                </span>
+                                            </div>
+                                            <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ' )?
+                                                item.assignedTo : 'Unassigned'}}</div>
+                                            <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                            <div class="progress">
+                                                <div class="progress-bar"
+                                                    [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                                    role="progressbar"></div>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'boxview' && groupBy == 'workPriority'">
+                <div class="p-0 border" *ngFor="let itemKey of groupByKey(WorkLogs, 'workPriority', null).key">
+                    <span *ngIf="{ workFlowType : true } as variable">
+                        <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                            <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i>
+                            <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                            {{itemKey}}
+                        </div>
+                        <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                            <div class="Wlg-content"
+                                style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                                <div id="{{item.projectWorkId}}"
+                                    *ngFor="let item of groupByKey(WorkLogs, 'workPriority', itemKey).value[itemKey]"
+                                    style="width: 25%;">
+                                    <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                                        <div class="workBackLog">
+                                            <div class="flex-between">
+                                                <div class="ellipsis">
+                                                    <img class="imgPadding" src="/assets/img/task.png">
+                                                    <a class="worklog-title"
+                                                        href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                                        placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                                </div>
+                                                <span class="edit-log-clock">
+                                                    <i class="fa fa-clock-o" (click)="openUpdateWorklogMode(item)"></i>
+                                                </span>
+                                            </div>
+                                            <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != ' ' )?
+                                                item.assignedTo : 'Unassigned'}}</div>
+                                            <div style="padding-top: 5px;" class="strong">{{item.workPriority}}</div>
+                                            <div class="progress">
+                                                <div class="progress-bar"
+                                                    [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                                    role="progressbar"></div>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="viewType == 'boxview' && groupBy == 'assignedTo'">
+                <div class="p-0 border" *ngFor="let itemKey of groupByKey(WorkLogs, 'assignedTo', null).key">
+                    <span *ngIf="itemKey == ' '">
+                        <span *ngIf="{ workFlowType : true } as variable">
+                            <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                                <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                    (click)="variable.workFlowType = !variable.workFlowType"></i>
+                                <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                    (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                                {{(itemKey == ' ') ? 'Unassigned' : itemKey}}
+                            </div>
+                            <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                                <div class="Wlg-content"
+                                    style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                                    <div id="{{item.projectWorkId}}"
+                                        *ngFor="let item of groupByKey(WorkLogs, 'assignedTo', itemKey).value[itemKey]"
+                                        style="width: 25%;">
+                                        <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                                            <div class="workBackLog">
+                                                <div class="flex-between">
+                                                    <div class="ellipsis">
+                                                        <img class="imgPadding" src="/assets/img/task.png">
+                                                        <a class="worklog-title"
+                                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                                    </div>
+                                                    <span class="edit-log-clock">
+                                                        <i class="fa fa-clock-o"
+                                                            (click)="openUpdateWorklogMode(item)"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != '
+                                                    ' )?
+                                                    item.assignedTo : 'Unassigned'}}</div>
+                                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar"
+                                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                                        role="progressbar"></div>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                        </span>
+                    </span>
+                </div>
+                <div class="p-0 border" *ngFor="let itemKey of groupByKey(WorkLogs, 'assignedTo', null).key">
+                    <span *ngIf="itemKey != ' '">
+                        <span *ngIf="{ workFlowType : true } as variable">
+                            <div class="sub-head mb-0" style="display: flex; align-items: center;">
+                                <i class="fa fa-chevron-down" *ngIf="variable.workFlowType == true"
+                                    (click)="variable.workFlowType = !variable.workFlowType"></i>
+                                <i class="fa fa-chevron-up" *ngIf="variable.workFlowType == false"
+                                    (click)="variable.workFlowType = !variable.workFlowType"></i> &nbsp;
+                                {{(itemKey == ' ') ? 'Unassigned' : itemKey}}
+                            </div>
+                            <div [@slideInOut]="(variable.workFlowType == true) ? 'in' : 'out'">
+                                <div class="Wlg-content"
+                                    style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                                    <div id="{{item.projectWorkId}}"
+                                        *ngFor="let item of groupByKey(WorkLogs, 'assignedTo', itemKey).value[itemKey]"
+                                        style="width: 25%;">
+                                        <span [ngClass]="{
+                            'New': (item.projectStatusId == 1), 
+                            'In-Progress': (item.projectStatusId == 2), 
+                            'DevCompleted': (item.projectStatusId == 3), 
+                            'ReadyForTesting': (item.projectStatusId == 4), 
+                            'Closed': (item.projectStatusId == 5)
+                        }">
+                                            <div class="workBackLog">
+                                                <div class="flex-between">
+                                                    <div class="ellipsis">
+                                                        <img class="imgPadding" src="/assets/img/task.png">
+                                                        <a class="worklog-title"
+                                                            href="project/project-backlog/workItem/{{item.projectWorkId}}"
+                                                            placement="top" theme="light" contentType='html' tooltip="
+                            <div class='status-tooltip'>
+                                <div class='status-title'>TA{{item.projectWorkId}} : {{item.title}}</div>
+                                <div><span class='strong'>Start Date: </span>{{item.startDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>End Date: &nbsp;&nbsp;</span>{{item.endDate | date: 'dd-MMM-yyyy'}}
+                                <br/><span class='strong'>Orignal Estimation: <br/></span>{{formatTime(item.originalEstTime)}} Hours
+                                <br/><span class='strong'>Remaning Time: <br/></span>{{formatTime(item.remainingEstTime)}} Hours
+                                <br/><span class='strong'>Spent Time: </span>{{formatTime(item.totalWorkDone)}} Hours
+                            </div>
+                            </div>">TA{{item.projectWorkId}} : {{item.title}}</a>
+                                                    </div>
+                                                    <span class="edit-log-clock">
+                                                        <i class="fa fa-clock-o"
+                                                            (click)="openUpdateWorklogMode(item)"></i>
+                                                    </span>
+                                                </div>
+                                                <div class="ellipsis" style="padding-top: 5px;">{{(item.assignedTo != '
+                                                    ' )?
+                                                    item.assignedTo : 'Unassigned'}}</div>
+                                                <div style="padding-top: 5px;" class="strong">{{item.workPriority}}
+                                                </div>
+                                                <div class="progress">
+                                                    <div class="progress-bar"
+                                                        [ngStyle]="getProgressWidth(item.originalEstTime, item.remainingEstTime)"
+                                                        role="progressbar"></div>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="variable.workFlowType == false" class="p-1"></div>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="viewType == 'rosterdetail'">
+            <app-team-roster-details></app-team-roster-details>
+        </div>
+        <div *ngIf="viewType == 'activity'">
+            <app-activity-stream></app-activity-stream>
+        </div>
+        <div *ngIf="viewType == 'worklog'">
+            <app-project-work-group-logs-table [WorkGroupId] = "WorkGroupLogId"></app-project-work-group-logs-table>
+        </div>
+    </div>
+</app-side-bar>

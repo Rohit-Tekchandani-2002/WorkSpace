@@ -1,0 +1,15 @@
+<div class="updatelog-Dialog">
+    <div class="flex-between dialog-box-title">
+        <h2 class="m-0">Work Item</h2>
+        <button class="dialog-box-close" (click)="closeDialog()"><img src="/assets/img/btn_close.png" /></button>
+    </div>
+    <div class="dialog-box-content">
+        <p>Are You sure Want to Delete Selected Items?</p>
+        <div class="modal-footer mt-2">
+            <button type="button" class="btn btn-primary theme-btn rounded-0 me-2"
+                (click)="confirmSubmit()"><i class="fa fa-save"></i>&nbsp;Confirm</button>
+            <button type="button" class="btn btn-default" (click)="closeDialog()"><i
+                    class="fa fa-close"></i>&nbsp;Close</button>
+        </div>
+    </div>
+</div>

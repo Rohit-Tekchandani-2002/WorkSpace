@@ -1,0 +1,17 @@
+<div class="flex-between dialog-box-title">
+    <h2 class="m-0">Work History</h2>
+    <button class="dialog-box-close" (click)="closeDialog()"><img src="/assets/img/btn_close.png" /></button>
+</div>
+<div class="dialog-box-content">
+    <div style="max-height: 400px; width: auto; overflow-y: auto;">
+        <div class="list-item-group" *ngFor="let work of data.workLogs">
+            <div class="list-item">
+                <a href="javascript:void(0)" style="text-decoration: none; text-overflow: ellipsis;">
+                    <img src="/assets/img/task.png" class="imgPadding">
+                    TA{{work.projectWorkId}} : {{work.title}}
+                </a>
+                created by <b>{{work.assignedTo}} </b> on {{ work.createdAt | date:'short'}}
+            </div>
+        </div>
+    </div>
+</div>

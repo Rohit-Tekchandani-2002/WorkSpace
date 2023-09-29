@@ -1,0 +1,35 @@
+<app-login>
+    <form [formGroup]="loginFrom" (ngSubmit)="onSubmit()">
+        <div class="logincontent">
+            <h1 class="logintitle"><img src="/assets/img/workspace-black.png" alt=""></h1>
+
+            <h2 class="logintitle">Login to your account</h2>
+
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon nobg"><i class="fa fa-user fa-lg"></i></span>
+                    <input class="form-control valid" id="txtUserName" formControlName="userName" placeholder="Username"
+                        type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon nobg" style="padding-left: 13px; padding-right: 13px;">
+                        <i class="fa fa-lock fa-lg"></i></span>
+                    <input maxlength="50" class="form-control valid" formControlName="passWord" placeholder="Password"
+                        type="password">
+                </div>
+            </div>
+            <div class="chk">
+                <input tabindex="3" class="checkBox-remember" id="RememberMe" formControlName="rememberMe"
+                    type="checkbox">
+                <input name="RememberMe" type="hidden" [value]="rememberMe ? 'true' : 'false'">
+                Keep me signed in
+                <a href="/forgot-password" tabindex="4">Forgot Password?</a>
+            </div>
+
+
+            <input id="btnSave" value="Login" type="submit" class="btn btn-primary btn-lg theme-btn" [disabled]="!loginFrom.valid">
+        </div>
+    </form>
+</app-login>

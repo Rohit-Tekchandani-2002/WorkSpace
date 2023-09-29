@@ -1,0 +1,228 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container" style="user-select: none;">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Product Backlog</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0">Product Backlog</h2>
+        <form [formGroup]="searchProjectLogForm">
+            <div class="projectfilter">
+                <mat-form-field appearance="outline">
+                    <mat-label>Work Group</mat-label>
+                    <mat-select formControlName="workGroupId">
+                        <mat-option [value]="null">
+                            Select All
+                        </mat-option>
+                        <span *ngFor="let type of workGroup;">
+                            <mat-option [value]="type.keyId">
+                                {{type.dataValue}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Assigned To</mat-label>
+                    <mat-select #multiSelectAssignedTo formControlName="assignedPersonId" multiple>
+                        <mat-option [value]="null" (click)="toggleAllSelectionAssignedTo()">Select All</mat-option>
+                        <span *ngFor="let employee of employeeList;">
+                            <mat-option [value]="employee.keyId">
+                                {{employee.dataValue}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Type</mat-label>
+                    <mat-select #multiSelectProjectType formControlName="projectType" multiple>
+                        <mat-option [value]="null" (click)="toggleAllSelectionProjectType()">Select All</mat-option>
+                        <span *ngFor="let project of workFlowType | keyvalue; let i = index; let max = count;">
+                            <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                {{project.value}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Status</mat-label>
+                    <mat-select #multiSelectProjectStatus formControlName="projectStatus" multiple>
+                        <mat-option [value]="null" (click)="toggleAllSelectionProjectStatus()">Select All</mat-option>
+                        <span *ngFor="let project of projectStatus | keyvalue; let i = index; let max = count;">
+                            <mat-option *ngIf="i < max / 2" [value]="project.key">
+                                {{project.value}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Search</mat-label>
+                    <input matInput formControlName="searchText">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepicker]="startDate" formControlName="startDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
+                    <mat-datepicker #startDate></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>End Date</mat-label>
+                    <input matInput [matDatepicker]="endDate" formControlName="endDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="endDate"></mat-datepicker-toggle>
+                    <mat-datepicker #endDate></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Priority</mat-label>
+                    <mat-select formControlName="priority">
+                        <mat-option [value]="null">
+                            Select
+                        </mat-option>
+                        <mat-option [value]="'Medium'">
+                            Medium
+                        </mat-option>
+                        <mat-option [value]="'Low'">
+                            Low
+                        </mat-option>
+                        <mat-option [value]="'High'">
+                            High
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Reported By</mat-label>
+                    <mat-select formControlName="reportedPersonId">
+                        <mat-option [value]="null">
+                            Select
+                        </mat-option>
+                        <span *ngFor="let employee of employeeList;">
+                            <mat-option [value]="employee.keyId">
+                                {{employee.dataValue}}
+                            </mat-option>
+                        </span>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="projectfilter-actions">
+                <button class="btn btn-primary theme-btn me-2 rounded-0" (click)="updateResponce()"><i
+                        class="fa fa-search"></i> Search</button>
+                <button class="btn btn-default rounded-0" (click)="resetForm()"><i class="fa fa-refresh"></i>
+                    Reset</button>
+            </div>
+            <div class="project-responce">
+                <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                <div class="table">
+                    <div class="table-responsive">
+                        <div class="table-head">
+                            <div class="table-cell short"> </div>
+                            <div class="table-cell long" *ngIf="'workGroup' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Work Group</div>
+                            <div class="table-cell verylong" *ngIf="'title' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Title</div>
+                            <div class="table-cell" *ngIf="'ProjectStatus' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Project Status</div>
+                            <div class="table-cell" *ngIf="'projectPriority' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Project Priority</div>
+                            <div class="table-cell long" *ngIf="'assignedTo' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Assigned To</div>
+                            <div class="table-cell" *ngIf="'originalEst' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Original Est</div>
+                            <div class="table-cell" *ngIf="'remainingEst' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Remaining Est</div>
+                            <div class="table-cell" *ngIf="'timeSpent' as sortVar" [ngClass]="{
+                                'sorting': sortBy != sortVar, 
+                                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+                            }" (click)="Sort(sortVar)">Time Spent</div>
+                            <!-- <div class="table-cell long">Hrs Utilized(%)</div> -->
+                        </div>
+                        <div class="table-body">
+                            <div class="table-row" *ngFor="let project of projects">
+                                <div class="table-cell short">
+                                    <div *ngIf="project.projectStatusId == 5"
+                                        style="background-color:#ababab !important;height:25px;width:3px"
+                                        matTooltip="Closed"></div>
+                                    <div *ngIf="project.projectStatusId == 3"
+                                        style="background-color:#54bed9 !important;height:25px;width:3px"
+                                        matTooltip="Dev. Completed"></div>
+                                    <div *ngIf="project.projectStatusId == 2"
+                                        style="background-color:#f4b24c !important;height:25px;width:3px"
+                                        matTooltip="In-Progress"></div>
+                                    <div *ngIf="project.projectStatusId == 1"
+                                        style="background-color:#64a3e4 !important;height:25px;width:3px"
+                                        matTooltip="New"></div>
+                                    <div *ngIf="project.projectStatusId == 4"
+                                        style="background-color:#9cc847 !important;height:25px;width:3px"
+                                        matTooltip="Ready For Testing"></div>
+                                </div>
+                                <div class="table-cell long">{{project.workGroup}}</div>
+                                <div class="table-cell verylong" placement="bottom" theme="light" contentType='html'
+                                    tooltip="<div class='status-tooltip'><div class='status-title'>{{project.title}}</div><div>{{project.startDate | date: 'dd-MMM-yyyy'}} - {{project.endDate | date: 'dd-MMM-yyyy'}}</div></div>">
+                                    <img src="/assets/img/task.png" class="imgPadding pe-2"> <a
+                                        style="color: #2a6496; text-decoration: none;"
+                                        href="project/project-backlog/workItem/{{project.projectWorkId}}">TA:{{project.projectWorkId}} {{project.title}}</a>
+                                </div>
+                                <div class="table-cell">{{projectStatus[project.projectStatusId - 1]}}</div>
+                                <div class="table-cell">{{project.projectPriority}}</div>
+                                <div class="table-cell long">{{project.assignedTo}}</div>
+                                <div class="table-cell">{{formatTime(project.originalEst)}} Hrs</div>
+                                <div class="table-cell">{{formatTime(project.remainingEst)}} Hrs</div>
+                                <div class="table-cell">{{formatTime(project.totalWorkDone)}} Hrs</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-footer" style="user-select: none;">
+                        <span>
+                            Page Size:
+                            <select formControlName="pageSize" (change)="updateResponce()">
+                                <option *ngFor="let size of pageSizes;" [value]="size">
+                                    {{size}}
+                                </option>
+                            </select>
+                        </span>
+                        <span>Records {{1 + (searchProjectLogForm.value.pageSize ?? 1)*(currentpage-1)}} to
+                            {{(((searchProjectLogForm.value.pageSize ?? 1)*currentpage) < totalProjectCount ) ?
+                                ((searchProjectLogForm.value.pageSize ?? 1)*currentpage) : totalProjectCount}} of
+                                ({{totalProjectCount}}) </span>
+                                <!-- Pagination buttons -->
+                                <span class="pagination">
+                                    <button (click)="Previous(currentpage)">Previous</button>
+                                    <ng-container *ngFor="let item of visiblePages">
+                                        <button *ngIf="isPageNumber(item); else ellipsisButton"
+                                            [ngClass]="{'currentPage': item === currentpage}"
+                                            (click)="currentpage = item; updateResponce()">
+                                            {{ item }}
+                                        </button>
+                                        <ng-template #ellipsisButton>
+                                            <button disabled>...</button>
+                                        </ng-template>
+                                    </ng-container>
+                                    <button (click)="Next(currentpage)">Next</button>
+                                </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-side-bar>

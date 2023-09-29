@@ -1,0 +1,226 @@
+<app-header (toggleSidebar)="sidebar.toggleSidebar()"></app-header>
+<app-side-bar #sidebar>
+    <!-- Write your code here  -->
+    <div class="projects-container pb-0">
+        <div style="padding-bottom: 10px;">
+            <i class="navic icp"></i> Projects <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Projuct Backlog</span>&nbsp;
+            <i class="fa fa-angle-right"></i>
+            <span style="color: #999999;"> Work Item</span>
+        </div>
+        <app-alert></app-alert>
+        <h2 class="blue_border p-0 mb-0">Manage Work Item</h2>
+        <div class="loader" *ngIf="(loading$ | async)"><img src="/assets/img/1.gif" /></div>
+        <form *ngIf="!(loading$ | async)" [formGroup]="addWorkItemForm">
+            <div style="width: auto; overflow-y: auto;">
+                <div class="form-group row mx-sm-3">
+                    <label class="col-sm-2 control-label my-sm-3 addWorkItemMedia">Title</label>
+                    <div class="col-sm-10 addWorkItemMedia">
+                        <mat-form-field appearance="outline" class="me-2 w-100">
+                            <input matInput formControlName="title">
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Work Group</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="workGroupId">
+                                        <span *ngFor="let type of workGroup;">
+                                            <mat-option [value]="type.keyId">
+                                                {{type.dataValue}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Work Flow Type</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="workFlow">
+                                        <span
+                                            *ngFor="let project of workFlowType | keyvalue; let i = index; let max = count;">
+                                            <mat-option *ngIf="i < max / 2" [value]="i + 1">
+                                                {{project.value}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Priority</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="priority">
+                                        <mat-option [value]="'Medium'">
+                                            Medium
+                                        </mat-option>
+                                        <mat-option [value]="'Low'">
+                                            Low
+                                        </mat-option>
+                                        <mat-option [value]="'High'">
+                                            High
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Status</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="projectStatusId">
+                                        <span
+                                            *ngFor="let project of projectStatus | keyvalue; let i = index; let max = count;">
+                                            <mat-option *ngIf="i < max / 2" [value]="i + 1">
+                                                {{project.value}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Start Date</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <input matInput [matDatepicker]="startDate" formControlName="startDate">
+                                    <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #startDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">End Date</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <input matInput [matDatepicker]="endDate" formControlName="endDate">
+                                    <mat-datepicker-toggle matIconSuffix [for]="endDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #endDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Original Est</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <input matInput type="number" min="0" formControlName="originalEstTime"
+                                        (change)="updateOriginalEstTime()" placeholder="In Hours">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Assigned To</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <input matInput formControlName="assignedEmployee" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Remaining Est</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <input matInput type="number" formControlName="remainingEstTime">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Reported By</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="reportedEmployeeId">
+                                        <span *ngFor="let employee of employeeList;">
+                                            <mat-option [value]="employee.keyId">
+                                                {{employee.dataValue}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">SubProject</label>
+                            <div class="col-lg-8 col-sm-10">
+                                <mat-form-field appearance="outline" class="me-2 w-100">
+                                    <mat-select formControlName="subProjectId" placeholder="Select">
+                                        <span *ngFor="let subProjectof of subProjectList;">
+                                            <mat-option [value]="subProjectof.keyId">
+                                                {{subProjectof.dataValue}}
+                                            </mat-option>
+                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 p-0">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-sm-2 control-label my-sm-3">Released to Production</label>
+                            <div class="col-lg-8 col-sm-10 flex-between">
+                                <mat-checkbox formControlName="releasedToProduction" color="primary"></mat-checkbox>
+                                <mat-form-field appearance="outline" class="me-2 w-25">
+                                    <mat-label>RSI</mat-label>
+                                    <input matInput type="number" formControlName="rsi">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mx-sm-3">
+                    <label class="col-sm-2 control-label my-sm-3 addWorkItemMedia">Description</label>
+                    <div class="col-sm-10 addWorkItemMedia">
+                        <angular-editor  [config]="config1" formControlName="description"></angular-editor>
+                        <!-- <mat-form-field appearance="outline" class="me-2 w-100">
+                            <textarea matInput name="editor1" formControlName="description"></textarea>
+                            <script>
+                                CKEDITOR.replace('editor1');
+                            </script>
+                        </mat-form-field> -->
+                    </div>
+                </div>
+                <div class="modal-footer my-3 mx-sm-4">
+                    <button type="button" class="btn btn-primary theme-btn rounded-0 me-2" (click)="submitForm()"><i
+                            class="fa fa-save"></i>&nbsp;Save</button>
+                    <button type="button" class="btn btn-default" (click)="cancelSubmitForm()"><i
+                            class="fa fa-close"></i>&nbsp;Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</app-side-bar>

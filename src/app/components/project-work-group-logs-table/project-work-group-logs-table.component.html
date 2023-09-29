@@ -1,0 +1,82 @@
+<form [formGroup]="searchProjectLogForm">
+    <div class="table">
+        <div class="table-responsive">
+            <div class="table-head">
+                <div class="table-cell short"> </div>
+                <div class="table-cell long" *ngIf="'title' as sortVar" [ngClass]="{
+                'sorting': sortBy != sortVar, 
+                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+            }" (click)="Sort(sortVar)">Title</div>
+                <div class="table-cell long" *ngIf="'Employee' as sortVar" [ngClass]="{
+                'sorting': sortBy != sortVar, 
+                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+            }" (click)="Sort(sortVar)">Employee</div>
+                <div class="table-cell long" *ngIf="'WorkDoneOn' as sortVar" [ngClass]="{
+                'sorting': sortBy != sortVar, 
+                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+            }" (click)="Sort(sortVar)">Work Done On</div>
+                <div class="table-cell long" *ngIf="'WorkedHours' as sortVar" [ngClass]="{
+                'sorting': sortBy != sortVar, 
+                'sorting_asc' : isSortByAsc && sortBy == sortVar, 
+                'sorting_desc' : !isSortByAsc && sortBy == sortVar
+            }" (click)="Sort(sortVar)">Worked Hours</div>
+            </div>
+            <div class="table-body">
+                <div class="table-row" *ngFor="let project of responce">
+                    <div class="table-cell short">
+                        <div *ngIf="project.projectStatusId == 5"
+                            style="background-color:#ababab !important;height:25px;width:3px"
+                            matTooltip="Closed"></div>
+                        <div *ngIf="project.projectStatusId == 3"
+                            style="background-color:#54bed9 !important;height:25px;width:3px"
+                            matTooltip="Dev. Completed"></div>
+                        <div *ngIf="project.projectStatusId == 2"
+                            style="background-color:#f4b24c !important;height:25px;width:3px"
+                            matTooltip="In-Progress"></div>
+                        <div *ngIf="project.projectStatusId == 1"
+                            style="background-color:#64a3e4 !important;height:25px;width:3px"
+                            matTooltip="New"></div>
+                        <div *ngIf="project.projectStatusId == 4"
+                            style="background-color:#9cc847 !important;height:25px;width:3px"
+                            matTooltip="Ready For Testing"></div>
+                    </div>
+                    <div class="table-cell long">{{project.title}}</div>
+                    <div class="table-cell long">{{project.employee}}</div>
+                    <div class="table-cell long">{{project.workDoneOn | date: 'dd-MMM-yyyy'}}</div>
+                    <div class="table-cell long">{{formatTime(project.workedHours)}} Hrs</div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="responce.length != 0" class="table-footer" style="user-select: none;">
+            <span>
+                Page Size:
+                <select formControlName="pageSize" (change)="checkAuthentication()">
+                    <option *ngFor="let size of pageSizes;" [value]="size">
+                        {{size}}
+                    </option>
+                </select>
+            </span>
+            <span>Records {{1 + (searchProjectLogForm.value.pageSize ?? 1)*(currentpage-1)}}
+                to
+                {{(((searchProjectLogForm.value.pageSize ?? 1)*currentpage) < totalPages ) ?
+                    ((searchProjectLogForm.value.pageSize ?? 1)*currentpage) : totalPages}} of ({{totalPages}}) </span>
+                    <span class="pagination">
+                        <button (click)="Previous(currentpage)">Previous</button>
+                        <ng-container *ngFor="let item of visiblePages">
+                            <button *ngIf="isPageNumber(item); else ellipsisButton"
+                                [ngClass]="{'currentPage': item === currentpage}"
+                                (click)="currentpage = item; checkAuthentication()">
+                                {{ item }}
+                            </button>
+                            <ng-template #ellipsisButton>
+                                <button disabled>...</button>
+                            </ng-template>
+                        </ng-container>
+                        <button (click)="Next(currentpage)">Next</button>
+                    </span>
+        </div>
+    </div>
+</form>

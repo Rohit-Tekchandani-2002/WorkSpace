@@ -1,0 +1,39 @@
+<div class="updatelog-Dialog">
+  <div class="flex-between dialog-box-title">
+    <h2 class="m-0">Work Log</h2>
+    <button class="dialog-box-close" (click)="closeDialog()"><img src="/assets/img/btn_close.png" /></button>
+  </div>
+  <div class="dialog-box-content">
+    <form [formGroup]="attchfileForm">
+      <div class="form-horizontal">
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Attachment</label>
+            <div class="col-sm-9">
+                <div class="input-group q_padbot">
+                    <input #file type="file" class="form-control" accept=".docx,.txt,.xls,.pdf,.jpeg,.jpg,.png,.bmp,.gif" required="required"/>
+                    <span id="btnhelp2" class="input-group-addon">
+                      <i class="fa fa-question-circle" placement="right" theme="light" contentType='html'
+                      tooltip="<div class='status-tooltip'><div class='status-title'>Valid file extensions</div><div>Only .docx, .txt, .xls, .pdf, .jpeg, .jpg, .png, .bmp, .gif, allowed.</div></div>"></i>
+                    </span>
+                    <!-- <div class="progress p-0 my-2">
+                      <div class="progress-bar bg-success" role="progressbar" [style.width.%]="progress"></div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 control-label">Description</label>
+            <div class="col-sm-9">
+                <textarea formControlName="description" class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    </form>
+  </div>
+  <div class="modal-footer border-top m-2 pt-2">
+    <button type="button" class="btn btn-primary theme-btn rounded-0 me-2" (click)="upload(file.files)">
+      <i class="fa fa-save"></i>&nbsp;Save</button>
+    <button type="button" class="btn btn-default" (click)="closeDialog()"><i
+        class="fa fa-close"></i>&nbsp;Close</button>
+  </div>
+</div>
