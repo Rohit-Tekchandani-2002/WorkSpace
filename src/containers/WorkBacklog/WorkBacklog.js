@@ -16,13 +16,15 @@ import AlertComponent from '../../components/AlertComponent/AlertComponent';
 import Tooltip from '@mui/material/Tooltip';
 import ModualLoader from '../../components/ModualLoader/ModualLoader';
 import MultipleSelect from '../../components/MultipleSelect/MultipleSelect';
+import DashBoard from './children/DashBoard/DashBoard';
+import ToolBar from './children/ToolBar/ToolBar';
 
 class WorkBacklog extends Component {
     static contextType = RootContext;
     state = {
         refershModule: false,
         workGroupId: localStorage.getItem('workGroupId'),
-        undoState: false,
+        // undoState: false,
         originalWorkLogState: null,
         alertMessage: '',
         activeWindow: 'dashboard',
@@ -52,24 +54,24 @@ class WorkBacklog extends Component {
             this.getWorkGroupInfoData();
             this.getWorkLogData();
         }
-        if ((_.get(this.state, 'undoState') !== _.get(prevState, 'undoState'))) {
-            const { setGlobal, handleError } = this.context;
-            if (_.get(this.state, 'undoState')) {
-                let workLog = _.map(_.get(this.context, 'workBacklog.workLog', {}),
-                    (data) => {
-                        if (_.get(data, 'projectWorkId') === _.get(this.state, 'originalWorkLogState.projectWorkId')) {
-                            _.set(data, 'projectStatusId', _.get(this.state, 'originalWorkLogState.projectStatusId'));
-                            updateWorkLog(data).catch(handleError);
-                        }
-                        return data;
-                    }
-                )
-                _.set(this.context, 'workBacklog.workLog', workLog);
-                setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
-                this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-            }
-            this.setState({ undoState: false });
-        }
+        // if ((_.get(this.state, 'undoState') !== _.get(prevState, 'undoState'))) {
+        //     const { setGlobal, handleError } = this.context;
+        //     if (_.get(this.state, 'undoState')) {
+        //         let workLog = _.map(_.get(this.context, 'workBacklog.workLog', {}),
+        //             (data) => {
+        //                 if (_.get(data, 'projectWorkId') === _.get(this.state, 'originalWorkLogState.projectWorkId')) {
+        //                     _.set(data, 'projectStatusId', _.get(this.state, 'originalWorkLogState.projectStatusId'));
+        //                     updateWorkLog(data).catch(handleError);
+        //                 }
+        //                 return data;
+        //             }
+        //         )
+        //         _.set(this.context, 'workBacklog.workLog', workLog);
+        //         setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
+        //         this.setState({ refershModule: !_.get(this.state, 'refershModule') });
+        //     }
+        //     this.setState({ undoState: false });
+        // }
         if ((_.get(this.state, 'alertMessage') !== _.get(prevState, 'alertMessage')) && (_.get(this.state, 'alertMessage') !== '')) {
             // alert(_.get(this.state, 'alertMessage'));
             const { setGlobal } = this.context;
@@ -128,140 +130,140 @@ class WorkBacklog extends Component {
         }
     }
 
-    onDragStart = (event, workLogId) => {
-        event.dataTransfer.setData("workLogId", workLogId);
-    }
+    // onDragStart = (event, workLogId) => {
+    //     event.dataTransfer.setData("workLogId", workLogId);
+    // }
 
-    onDragOver = (event) => {
-        event.preventDefault();
-    }
+    // onDragOver = (event) => {
+    //     event.preventDefault();
+    // }
 
-    onDrop = (event, newStatus) => {
-        const { setGlobal, handleError } = this.context;
-        let { modalData } = this.context;
-        let id = event.dataTransfer.getData("workLogId");
-        //Change Data Accoding to dropLocation
-        let workLog = _.map(_.get(this.context, 'workBacklog.workLog'), (workLog) => {
-            if (workLog.projectWorkId === _.toNumber(id)) {
-                this.setState({ originalWorkLogState: _.cloneDeep(workLog) });
-                const statusId = _.find(_.keys(projectStatus), key => projectStatus[key] === newStatus);
-                if (id && (_.get(workLog, 'projectStatusId') !== _.toNumber(statusId))) {
-                    //Open UndoState modal
-                    modalData = {
-                        modalType: 'UndoStatusModal',
-                        show: true,
-                        handleConfirm: () => {
-                            this.setState({ undoState: true });
-                            setGlobal('modalData', { show: false });
-                        },
-                        handleClose: async () => {
-                            const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
-                            this.setState({ alertMessage: updateWorklogMessage });
-                            setGlobal('modalData', { show: false });
-                        }
-                    };
-                    setGlobal('modalData', modalData);
-                    //Auto close UndoState modal
-                    setTimeout(async () => {
-                        _.set(modalData, 'show', false);
-                        setGlobal('modalData', modalData);
-                        this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-                        const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
-                        this.setState({ alertMessage: updateWorklogMessage });
-                    }, 2000);
-                    clearTimeout();
-                }
-                _.set(workLog, 'projectStatusId', _.toNumber(statusId));
-            }
-            return workLog;
-        });
-        _.set(this.context, 'workBacklog.workLog', workLog);
-        setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
-        this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-    }
+    // onDrop = (event, newStatus) => {
+    //     const { setGlobal, handleError } = this.context;
+    //     let { modalData } = this.context;
+    //     let id = event.dataTransfer.getData("workLogId");
+    //     //Change Data Accoding to dropLocation
+    //     let workLog = _.map(_.get(this.context, 'workBacklog.workLog'), (workLog) => {
+    //         if (workLog.projectWorkId === _.toNumber(id)) {
+    //             this.setState({ originalWorkLogState: _.cloneDeep(workLog) });
+    //             const statusId = _.find(_.keys(projectStatus), key => projectStatus[key] === newStatus);
+    //             if (id && (_.get(workLog, 'projectStatusId') !== _.toNumber(statusId))) {
+    //                 //Open UndoState modal
+    //                 modalData = {
+    //                     modalType: 'UndoStatusModal',
+    //                     show: true,
+    //                     handleConfirm: () => {
+    //                         this.setState({ undoState: true });
+    //                         setGlobal('modalData', { show: false });
+    //                     },
+    //                     handleClose: async () => {
+    //                         const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
+    //                         this.setState({ alertMessage: updateWorklogMessage });
+    //                         setGlobal('modalData', { show: false });
+    //                     }
+    //                 };
+    //                 setGlobal('modalData', modalData);
+    //                 //Auto close UndoState modal
+    //                 setTimeout(async () => {
+    //                     _.set(modalData, 'show', false);
+    //                     setGlobal('modalData', modalData);
+    //                     this.setState({ refershModule: !_.get(this.state, 'refershModule') });
+    //                     const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
+    //                     this.setState({ alertMessage: updateWorklogMessage });
+    //                 }, 2000);
+    //                 clearTimeout();
+    //             }
+    //             _.set(workLog, 'projectStatusId', _.toNumber(statusId));
+    //         }
+    //         return workLog;
+    //     });
+    //     _.set(this.context, 'workBacklog.workLog', workLog);
+    //     setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
+    //     this.setState({ refershModule: !_.get(this.state, 'refershModule') });
+    // }
 
-    addWorkLogtime = (workLog) => {
-        let { modalData, setGlobal } = this.context;
-        if (workLog) {
-            modalData = {
-                modalType: 'AddWorkLogModal',
-                show: true,
-                data: workLog,
-                handleConfirm: (message) => {
-                    this.getWorkLogData();
-                    setGlobal('modalData', { show: false });
-                    this.setState({ alertMessage: message });
-                }
-            };
-            setGlobal('modalData', modalData);
-            this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-        }
-    }
+    // addWorkLogtime = (workLog) => {
+    //     let { modalData, setGlobal } = this.context;
+    //     if (workLog) {
+    //         modalData = {
+    //             modalType: 'AddWorkLogModal',
+    //             show: true,
+    //             data: workLog,
+    //             handleConfirm: (message) => {
+    //                 this.getWorkLogData();
+    //                 setGlobal('modalData', { show: false });
+    //                 this.setState({ alertMessage: message });
+    //             }
+    //         };
+    //         setGlobal('modalData', modalData);
+    //         this.setState({ refershModule: !_.get(this.state, 'refershModule') });
+    //     }
+    // }
 
-    workItemPopover = (workLog) => {
-        return (
-            <Popover title="Popover" className='worklog-popover'>
-                <Popover.Header as="h3" className='ellipsis'>TA{workLog.projectWorkId}: {workLog.title}</Popover.Header>
-                <Popover.Body>
-                    <div className='row'>
-                        <div className='col strong'>Start Date:</div>
-                        <div className='col'>{formatDate(workLog.startDate)}</div>
-                    </div>
-                    <div className='row'>
-                        <div className='col strong'>End Date:</div>
-                        <div className='col'>{formatDate(workLog.endDate)}</div>
-                    </div>
-                    <div className='row'>
-                        <div className='col strong'>Orignal Estimation:</div>
-                        <div className='col'>{formatTime(workLog.originalEstTime)} Hours</div>
-                    </div>
-                    <div className='row'>
-                        <div className='col strong'>Remaning Time:</div>
-                        <div className='col'>{formatTime(workLog.remainingEstTime)} Hours</div>
-                    </div>
-                    <div className='row'>
-                        <div className='col strong'>Spent Time:</div>
-                        <div className='col'>{formatTime(workLog.totalWorkDone)} Hours</div>
-                    </div>
-                </Popover.Body>
-            </Popover>
-        );
-    }
+    // workItemPopover = (workLog) => {
+    //     return (
+    //         <Popover title="Popover" className='worklog-popover'>
+    //             <Popover.Header as="h3" className='ellipsis'>TA{workLog.projectWorkId}: {workLog.title}</Popover.Header>
+    //             <Popover.Body>
+    //                 <div className='row'>
+    //                     <div className='col strong'>Start Date:</div>
+    //                     <div className='col'>{formatDate(workLog.startDate)}</div>
+    //                 </div>
+    //                 <div className='row'>
+    //                     <div className='col strong'>End Date:</div>
+    //                     <div className='col'>{formatDate(workLog.endDate)}</div>
+    //                 </div>
+    //                 <div className='row'>
+    //                     <div className='col strong'>Orignal Estimation:</div>
+    //                     <div className='col'>{formatTime(workLog.originalEstTime)} Hours</div>
+    //                 </div>
+    //                 <div className='row'>
+    //                     <div className='col strong'>Remaning Time:</div>
+    //                     <div className='col'>{formatTime(workLog.remainingEstTime)} Hours</div>
+    //                 </div>
+    //                 <div className='row'>
+    //                     <div className='col strong'>Spent Time:</div>
+    //                     <div className='col'>{formatTime(workLog.totalWorkDone)} Hours</div>
+    //                 </div>
+    //             </Popover.Body>
+    //         </Popover>
+    //     );
+    // }
 
-    showWorkBacklogList = (projectStatusId, title) => {
-        let workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
-            data => _.get(data, 'projectStatusId', '') === _.toNumber(projectStatusId));
-        return (
-            <>
-                <div className={'drag-column-title' + ' ' + bgStatus[projectStatusId]}>
-                    {title} {(_.get(workBacklogList, 'length', 0) !== 0) && <span>({_.get(workBacklogList, 'length')})</span>}
-                </div>
-                {
-                    _.map(workBacklogList,
-                        (item, index) => (
-                            <div className={'work-backlog' + ' ' + 'border-' + bgStatus[projectStatusId]}
-                                onDragStart={(event) => this.onDragStart(event, _.get(item, 'projectWorkId', ''))}
-                                draggable
-                                key={index}>
-                                <div className='d-flex justify-content-between'>
-                                    <div className='d-flex align-items-center ellipsis'>
-                                        <img className='imgPadding' src={taskImg} />
-                                        <OverlayTrigger trigger={['hover', 'focus']} overlay={this.workItemPopover(item)}>
-                                            <a href=''>{_.get(item, 'title', '')}</a>
-                                        </OverlayTrigger>
-                                    </div>
-                                    <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.addWorkLogtime(item)} />
-                                </div>
-                                <div>{_.trim(_.get(item, 'assignedTo', '')) === '' ? 'Unassigned' : _.get(item, 'assignedTo', '')}</div>
-                                <div className='strong'>{_.get(item, 'workPriority', '')}</div>
-                                <ProgressBar now={(_.toNumber(_.get(item, 'totalWorkDone', 0)) / _.toNumber(_.get(item, 'originalEstTime', 1))) * 100} />
-                            </div>
-                        )
-                    )
-                }
-            </>
-        )
-    }
+    // showWorkBacklogList = (projectStatusId, title) => {
+    //     let workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
+    //         data => _.get(data, 'projectStatusId', '') === _.toNumber(projectStatusId));
+    //     return (
+    //         <>
+    //             <div className={'drag-column-title' + ' ' + bgStatus[projectStatusId]}>
+    //                 {title} {(_.get(workBacklogList, 'length', 0) !== 0) && <span>({_.get(workBacklogList, 'length')})</span>}
+    //             </div>
+    //             {
+    //                 _.map(workBacklogList,
+    //                     (item, index) => (
+    //                         <div className={'work-backlog' + ' ' + 'border-' + bgStatus[projectStatusId]}
+    //                             onDragStart={(event) => this.onDragStart(event, _.get(item, 'projectWorkId', ''))}
+    //                             draggable
+    //                             key={index}>
+    //                             <div className='d-flex justify-content-between'>
+    //                                 <div className='d-flex align-items-center ellipsis'>
+    //                                     <img className='imgPadding' src={taskImg} />
+    //                                     <OverlayTrigger trigger={['hover', 'focus']} overlay={this.workItemPopover(item)}>
+    //                                         <a href=''>{_.get(item, 'title', '')}</a>
+    //                                     </OverlayTrigger>
+    //                                 </div>
+    //                                 <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.addWorkLogtime(item)} />
+    //                             </div>
+    //                             <div>{_.trim(_.get(item, 'assignedTo', '')) === '' ? 'Unassigned' : _.get(item, 'assignedTo', '')}</div>
+    //                             <div className='strong'>{_.get(item, 'workPriority', '')}</div>
+    //                             <ProgressBar now={(_.toNumber(_.get(item, 'totalWorkDone', 0)) / _.toNumber(_.get(item, 'originalEstTime', 1))) * 100} />
+    //                         </div>
+    //                     )
+    //                 )
+    //             }
+    //         </>
+    //     )
+    // }
 
     getActiveWindowClass = (windowName) => {
         if (_.get(this.state, 'activeWindow', '') === windowName) {
@@ -337,9 +339,17 @@ class WorkBacklog extends Component {
                         </span>
                     }
                     </h4>
-                    <AlertPopUp />
-                    <AlertComponent show={_.get(this.state, 'alertMessage') !== ''} alertMessage={_.get(this.state, 'alertMessage')} type={'success'} />
-                    <div className='workbacklog-nav'>
+                    {/* <AlertPopUp /> */}
+                    <AlertComponent
+                        show={_.get(this.state, 'alertMessage') !== ''}
+                        alertMessage={_.get(this.state, 'alertMessage')}
+                        type={'success'} />
+                    <ToolBar
+                        setActiveWindow={(value) => this.setState({ activeWindow: value })}
+                        toggleFilter={toggleFilter}
+                        getActiveWindowClass={this.getActiveWindowClass}
+                        reloadData={this.reloadData} />
+                    {/* <div className='workbacklog-nav'>
                         <button className='btn btn-default'><FontAwesomeIcon icon={faPlus} /> New</button>
                         <div className='tool-bar'>
                             <Tooltip title="Dashboard">
@@ -389,7 +399,7 @@ class WorkBacklog extends Component {
                                 </button>
                             </Tooltip>
                         </div>
-                    </div>
+                    </div> */}
                     {
                         _.get(this.state, 'filterWindowActive', false) &&
                         <div>
@@ -461,7 +471,7 @@ class WorkBacklog extends Component {
                             </div>
                         </div>
                     }
-                    {
+                    {/* {
                         !_.get(this.state, 'reload', false) && <div className='work-group-container mt-2'>
                             {_.map(_.entries(projectStatus), ([key, value]) => (
                                 <div key={key} className='drag-column'
@@ -472,6 +482,11 @@ class WorkBacklog extends Component {
                                 </div>
                             ))}
                         </div>
+                    } */}
+                    { 
+                    !_.get(this.state, 'reload', false) && 
+                    <DashBoard getWorkLogData={this.getWorkLogData}
+                    setAlertMessage = {(message) => {this.setState({ alertMessage: message })}}/> 
                     }
                     {
                         _.get(this.state, 'reload', false) &&
