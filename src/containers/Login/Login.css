@@ -1,0 +1,138 @@
+/************************************************ LOGIN DASHBOARD ******************************************************/
+.login-page {
+    width: 100%;
+    height: 100vh;
+    background: #e9e9e9 url(../../assets/img/dashbg.png) top center no-repeat;
+    overflow: hidden;
+}
+
+.loginarea {
+    width: 950px;
+    margin: 110px auto 0 auto;
+    background: #FFF;
+    padding: 9px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    position: relative;
+}
+
+.loginbg1 {
+    float: left;
+    width: 541px;
+}
+
+.logincontent {
+    float: left;
+    width: 318px;
+    margin: 15px 0 0 42px;
+}
+
+.logincopyright {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    color: #9d9d9d;
+    font-size: 12px;
+}
+
+h1.logintitle {
+    font-size: 48px;
+    font-weight: normal !important;
+    color: #208fc8;
+    padding: 0 0 30px 0 !important;
+    margin: 0 !important;
+    font-family: "Segoe UI", arial !important;
+    line-height: 1;
+}
+
+h2.logintitle {
+    font-size: 20px;
+    font-weight: normal !important;
+    color: #727272;
+    padding: 0 0 15px 0 !important;
+    margin: 0 !important;
+    font-family: "Segoe UI", arial !important;
+    line-height: 1;
+}
+
+.chk {
+    padding-bottom: 20px;
+    position: relative;
+    font-size: 13px !important;
+}
+
+.chk a {
+    position: absolute;
+    top: 0;
+    right: 0;
+    white-space: nowrap;
+}
+
+.nobg {
+    background: #FFF;
+    border-color: #ddd;
+}
+
+.nobg .fa {
+    color: #888 !important;
+}
+
+input[type="submit"] {
+    cursor: pointer;
+}
+
+.theme-btn {
+    background: #208fc8;
+    border: 1px solid #208fc8;
+}
+
+.btn-lg {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 0px;
+}
+
+.login-carousel c-carousel-control {
+    opacity: 0;
+}
+
+.login-carousel:hover c-carousel-control {
+    opacity: 100;
+}
+
+.logout-btn{
+    float: right;
+}
+
+.theme-btn:hover {
+    background-color: #1080b9 !important;
+    border: 1px solid #1080b9;
+}
+
+.btn:hover,
+.btn:focus {
+    color: #fff;
+    text-decoration: none;
+    outline: none;
+}
+
+.btn-default {
+    text-decoration: none;
+    border-radius: 0;
+    background-color: #e1e1e1;
+    border-color: #e1e1e1;
+    color: #494949 !important;
+}
+
+h6.logintitle {
+    margin: 10px 0;
+    font-size: 12px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
+}
+.select-project-dropdown .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: transparent;
+}

@@ -1,0 +1,14 @@
+.sub-head {
+    padding: 8px 10px;
+    background: #f4f4f4;
+    position: relative;
+    color: #333;
+    margin-bottom: 20px;
+    z-index: -1;
+}
+.user-Profile-img{
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    padding: 15px;
+}

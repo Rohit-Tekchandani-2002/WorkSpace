@@ -1,0 +1,55 @@
+.sideBar {
+    border-top: none !important;
+    width: 250px;
+    height: calc(100vh - 60px);
+    background-color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: 0.5s ease-in-out;
+    user-select: none;
+    background-color: #e7e7e7;
+    z-index: 10; /* 10 z-index needed for some input feilds*/
+}
+
+.sideBar.sidebar-close {
+    margin-left: -250px;
+}
+
+.main-content {
+    float: right;
+    transition: width 0.5s ease-in-out;
+    width: 100%;
+    overflow: auto;
+    height: calc(100vh - 60px);
+}
+
+.main-content.sidebar-open {
+    width: calc(100% - 250px);
+}
+
+.overlay-content{
+    position: fixed;
+}
+
+@media (max-width: 576px) {
+    .sideBar{
+        position: fixed;
+    }
+    .main-container{
+        display: flex;
+    }
+    .main-content {
+        padding-top: 50px;
+    }
+    .main-content.sidebar-open {
+        width: 100%;
+    }
+    .overlay-content{
+       width: 100%;
+    }
+    .overlay-content.overlay{   
+        z-index: 100;
+        background-color: #00000073;
+        height: 100%;
+    }
+}

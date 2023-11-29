@@ -1,0 +1,27 @@
+.undo-dialog {
+    padding: 5px 30px;
+    background-color: #ffda6b75;
+    border: 2px dotted #b18706;
+    font-weight: 700;
+    color: #e8ae00;
+    width: 100%;
+    text-align: center;
+    border-radius: 0;
+}
+
+.undo-dialog .modal-title{
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+}
+
+.undo-dialog .close{
+    color: #a4a2a2;
+    font-weight: 300;
+}
+
+.undo-link {
+    color: #208fc8;
+    font-weight: 600;
+    cursor: pointer;
+}

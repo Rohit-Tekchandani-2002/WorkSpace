@@ -1,0 +1,18 @@
+.workGroupHeading{
+    color: #333333;
+    background-color: #f5f5f5;
+}
+
+.workGroupContent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tag-status{
+    height: 70px;
+}
+
+.tag-status-count{
+    font-size: 24px;
+}

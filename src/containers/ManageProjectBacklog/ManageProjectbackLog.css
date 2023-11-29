@@ -1,0 +1,15 @@
+.manageproject-backlog .col-lg-1, .manageproject-backlog .col-lg-2, .manageproject-backlog .col-lg-3{
+    text-align: end;
+    padding: 5px;
+}
+.manageproject-backlog .footer-end{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+@media(max-width: 992px){
+    .manageproject-backlog .col-lg-1, .manageproject-backlog .col-lg-2, .manageproject-backlog .col-lg-3{
+        text-align:start;
+        padding: 0;
+    }
+}

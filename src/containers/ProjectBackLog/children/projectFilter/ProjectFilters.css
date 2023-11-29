@@ -1,0 +1,42 @@
+.projectfilter {
+    border: 1px solid #e7e7e7;
+    padding: 15px;
+}
+
+.projectfilter>.form-group {
+    /* width: 23%;
+    min-width: 250px; */
+    padding: 10px !important;
+}
+
+.projectfilter-actions {
+    background: #f9f9f9;
+    padding: 7px;
+    border: 1px solid #ccc;
+    text-align: right;
+}
+
+.filter {
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+    padding: 5px 15px;
+}
+
+.addprojectBacklog {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 15px;
+}
+
+.form-group label {
+    float: left;
+}
+
+.projectfilter-footer {
+    padding: 5px 0;
+    display: flex;
+    justify-content: flex-end;
+    border: 1px solid #e7e7e7;
+    border-top: none;
+}

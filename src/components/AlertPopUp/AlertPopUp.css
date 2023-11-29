@@ -1,0 +1,16 @@
+.alert-div .alert{
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.alert-div{
+    transition: max-height 1.5s ease-in-out;
+    overflow: hidden;
+    margin-bottom: 10px;
+    height: auto;
+    max-height: 500px;
+}
+
+.alert-close{
+    max-height: 0;
+}

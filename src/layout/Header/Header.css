@@ -1,0 +1,106 @@
+.heading {
+    user-select: none;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #208fc8 !important;
+    box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.hamburgerIcon {
+    font-size: 26px;
+    padding: 0 0 0 25px;
+}
+
+.heading .dropdown-menu.show {
+    z-index: 1000;
+}
+
+.border-left-btn {
+    height: 100%;
+    border-left: 1px solid #ffffff4d;
+}
+
+.heading .dropdown-toggle {
+    padding: 13px;
+    margin: 0px;
+    width: 190px;
+    text-overflow: ellipsis;
+}
+
+.dropdown-toggle span {
+    text-overflow: ellipsis;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 110px;
+    vertical-align: -5px;
+    padding-right: 5px;
+}
+
+.userimg {
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle !important;
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.dropdown-toggle,
+.dropdown-toggle:hover,
+.dropdown-toggle:focus,
+.dropdown-toggle:active,
+.dropdown-toggle:focus-visible {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.dropdown-item:active {
+    background-color: #f8f9fa;
+    color: black;
+}
+
+.progile-btn-dropdown-icon {
+    font-size: medium;
+    padding: 0px 5px 0px 0;
+}
+
+@media (max-width: 768px) {
+    .logo_images{
+        width: 50%;
+    }
+}
+
+@media (max-width: 576px) {
+    .heading .dropdown-toggle {
+        padding: 13px 0px;
+        width: 80px;
+    }
+
+    .dropdown-toggle span {
+        display: none;
+    }
+
+    .small-project-drop-down {
+        position: absolute;
+        top: 70px;
+        width: 150px;
+        right: 15px;
+        height: auto;
+        background-color: #e4e4e4;
+    }
+
+    .small-project-drop-down .dropdown-toggle span {
+        display: inline-block;
+    }
+
+    .small-project-drop-down .dropdown-toggle {
+        padding: 10px 0px;
+        width: auto;
+        color: #444;
+    }
+
+}

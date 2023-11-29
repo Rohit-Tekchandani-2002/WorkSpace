@@ -1,0 +1,12 @@
+.modal-content{
+    border-radius: 0px !important;
+}
+.modal-header{
+    padding: 8px 16px;
+}
+.modal-footer{
+    padding: 6px 12px;
+}
+.modal-header .btn-close:focus{
+    box-shadow: none;
+}

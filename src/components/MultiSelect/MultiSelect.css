@@ -1,0 +1,17 @@
+.custom-multiselect{
+    text-align: start;
+    min-height: 38px;
+}
+.multi-select-ul{
+    max-height: 250px;
+    overflow: auto;
+}
+.multi-select-ul li{
+    padding: 5px 10px;
+}
+.multi-select-ul li:hover{
+    background-color: #e7e7e7;
+}
+.multi-checkbox{
+    margin: 5px;
+}

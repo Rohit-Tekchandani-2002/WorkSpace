@@ -1,0 +1,97 @@
+.work-group-lbl {
+    float: right;
+}
+
+.work-group-container {
+    display: flex;
+    justify-content: space-between;
+    min-height: 450px;
+    height: fit-content;
+    border: 1px solid #dddd;
+    border-right: 2px solid #dddd;
+}
+
+.work-group-container>.drag-column {
+    width: 20%;
+}
+
+.workbacklog-nav {
+    background-color: #f6f6f6;
+    border: 1px solid #ddd;
+    padding: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tool-bar .btn-default,
+.tool-bar .btn-default:active {
+    background: #FFF;
+    border: 1px solid #ddd;
+}
+
+.tool-bar .btn-default:hover {
+    background: #e1e1e1;
+}
+
+.tool-bar .btn-default.active {
+    background: #e1e1e1;
+}
+
+.drag-column {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    border-left: 1px solid #dddd;
+}
+
+.drag-column-title {
+    border-bottom: 1px solid #dddd;
+    text-align: center;
+    font-size: 16px;
+    color: white;
+    padding: 10px;
+    font-weight: 600 !important;
+}
+
+.work-backlog {
+    display: block;
+    padding: 4px;
+    margin: 10px;
+    text-align: left;
+    background-color: #eeeeee !important;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.work-backlog .progress {
+    height: 8px;
+    background-color: white;
+}
+
+.worklog-popover {
+    max-width: 310px;
+}
+
+.worklog-loader {
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+}
+
+.filter-body {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.filter-footer {
+    background-color: #f6f6f6;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+}

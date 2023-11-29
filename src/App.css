@@ -1,38 +1,535 @@
-.App {
-  text-align: center;
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+    font-family: "Segoe UI", arial, tahoma !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/************************************************ FORM GROUP ******************************************************/
+.form-group {
+    margin-bottom: 15px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.input-group .form-control {
+    width: 100%;
+    margin-bottom: 0;
+    z-index: 2;
+    position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+.input-group-addon,
+.input-group .form-control {
+    display: table-cell;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input-group-addon {
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.input-group-addon {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1;
+    color: #555555;
+    text-align: center;
+    background-color: #eeeeee;
+    border: 1px solid #cccccc;
+    border-radius: 0px;
+}
+
+.input-group-addon:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group-addon:first-child {
+    border-right: 0;
+}
+
+.input-group .form-control:last-child {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+.form-group .control-label {
+    text-align: right;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: black;
+}
+
+/************************************************ COMMON ******************************************************/
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text-red {
+    color: red;
+}
+
+.blue_border {
+    padding: 0 10px;
+    border-bottom: 5px solid #208fc8 !important;
+    display: flex;
+    align-items: flex-end;
+}
+
+.blue_border>span {
+    margin-left: auto;
+    padding-top: 12px;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    color: #333;
+}
+
+.full_width {
+    width: 100%;
+}
+
+.no-border-radius {
+    border-radius: 0 !important;
+}
+
+.strong {
+    font-weight: 600;
+    color: #444 !important;
+}
+
+.normal {
+    font-weight: 400;
+    color: #444 !important;
+}
+
+.error-message {
+    background-color: maroon !important;
+    color: white !important;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.alert {
+    padding: 5px 10px;
+    border-radius: 0;
+    transition: all ease-in-out 0.5s;
+}
+
+.alert .close {
+    padding: 0px 7px 3px 7px;
+    border-radius: 0;
+}
+
+.btn:hover,
+.btn:focus {
+    color: #fff;
+    text-decoration: none;
+    outline: none;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.open .dropdown-toggle.btn-default {
+    text-decoration: none;
+    border-radius: 0;
+    color: #494949 !important;
+    background-color: #cfcfcf;
+    border-color: #cfcfcf;
+}
+
+.ellipsis {
+    display: block !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.imgPadding {
+    margin-right: 3px;
+    vertical-align: -3px;
+    height: 16px;
+}
+
+.dialog-box-close:focus-visible {
+    outline: none !important;
+}
+
+.progress-bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #ffffff;
+    text-align: center;
+    background-color: #428bca;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    -webkit-transition: width 0.6s ease;
+    transition: width 0.6s ease;
+}
+
+.btn-default-page,
+.btn-default-page:hover,
+.btn-default-page:focus,
+.btn-default-page.focus {
+    color: #333 !important;
+    background-color: #f5f5f5 !important;
+    border-color: #CCC !important;
+    border-radius: 0 !important;
+}
+
+.work-title {
+    margin-top: 30px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500 !important;
+    line-height: 1.1 !important;
+    color: #333333 !important;
+    font-size: 24px !important;
+    margin-top: 10px !important;
+}
+
+a, .color-blue {
+    color: #428bca;
+    text-decoration: none;
+}
+
+.nav-link {
+    color: #428bca;
+}
+
+.table-row:hover {
+    background-color: #F5F5F5;
+}
+
+ngb-popover-window {
+    padding: 0 !important;
+}
+
+ngb-popover-window .popover-header {
+    margin: 0 !important;
+}
+
+.popover {
+    max-width: 700px;
+}
+
+.disable .mat-mdc-text-field-wrapper.mdc-text-field.mdc-text-field--outlined {
+    background-color: #eeeeee;
+}
+
+.text-select-none {
+    user-select: none !important;
+}
+
+table.table-fit {
+    width: auto !important;
+    table-layout: auto !important;
+}
+
+table.table-fit thead th,
+table.table-fit tbody td,
+table.table-fit tfoot th,
+table.table-fit tfoot td {
+    width: auto !important;
+}
+
+.bg-new{
+    background-color: #64a3e4 !important;
+}
+.bg-dev-completed{
+    background-color: #54bed9 !important;
+}
+.bg-ready-for-testing{
+    background-color: #9cc847 !important; 
+}
+.bg-in-progress{
+    background-color: #f4b24c !important; 
+}
+.bg-closed{
+    background-color: #ababab !important; 
+}
+
+.border-bg-new{
+    border-left: 3px solid #64a3e4 !important;
+}
+.border-bg-dev-completed{
+    border-left: 3px solid #54bed9 !important;
+}
+.border-bg-ready-for-testing{
+    border-left: 3px solid #9cc847 !important; 
+}
+.border-bg-in-progress{
+    border-left: 3px solid #f4b24c !important;
+}
+.border-bg-closed{
+    border-left: 3px solid #ababab !important; 
+}
+
+.color-new{
+    color: #64a3e4 !important;
+}
+.color-dev-completed{
+    color: #54bed9 !important;
+}
+.color-ready-for-testing{
+    color: #9cc847 !important; 
+}
+.color-in-progress{
+    color: #f4b24c !important; 
+}
+.color-closed{
+    color: #ababab !important; 
+}
+
+/************************************************ MEDIA QUERY ******************************************************/
+@media (max-width: 1499px) and (min-width: 980px) {
+
+    .col.news_events,
+    .col.monthly_average,
+    .col.my_leave,
+    .col.my_assignment {
+        min-width: 290px;
+        max-width: 290px;
+        margin: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .popover {
+        max-width: 500px;
+    }
+
+    .loginarea {
+        width: 730px;
+        padding: 7px;
+    }
+
+    .loginbg1 {
+        width: 414px;
+    }
+
+    .loginbg1 img {
+        width: 100%;
+    }
+
+    .logincontent {
+        width: 260px;
+        margin: 20px 0 0 25px;
+    }
+
+    .logincopyright {
+        bottom: 21px;
+        right: 21px;
+    }
+
+    h1.logintitle {
+        font-size: 38px;
+        padding: 0 0 15px 0 !important;
+    }
+
+    .employeeinfo {
+        display: block;
+    }
+
+    .employeeinfo-container {
+        display: block;
+    }
+
+    .changepassword-form .from-group {
+        width: 70% !important;
+    }
+
+    .workGroupStatus .count-tag {
+        font-size: 15px;
+    }
+
+    .workGroupStatus>div .count-status {
+        padding: 10px;
+    }
+
+    .projectfilter>mat-form-field {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .popover {
+        max-width: 276px;
+    }
+
+    .login-page {
+        background: none;
+    }
+
+    .loginarea {
+        width: auto;
+        margin: 0;
+        padding: 15px 15px 15px 15px;
+        box-shadow: none;
+        position: static;
+    }
+
+    .loginbg1 {
+        display: none;
+    }
+
+    .logincontent {
+        float: none;
+        width: auto;
+        margin: 0px;
+    }
+
+    .logincopyright {
+        display: none;
+    }
+
+    .side-bar {
+        height: auto;
+        width: 100%;
+        padding: 0px;
+        position: relative;
+        left: 0;
+        overflow: hidden;
+        transition: transform 0.5s ease;
+    }
+
+    .side-bar.open {
+        Top: 0;
+        height: 1px;
+        transform: translateY(-100px);
+    }
+
+    .side-bar ul {
+        margin: 0;
+    }
+
+    .main-content.open {
+        width: 100%;
+    }
+
+    .main-content {
+        padding-top: 0px;
+    }
+
+    .footer.open {
+        width: 100%;
+    }
+
+    .footer img {
+        width: 80px;
+    }
+
+    .footer .copyright {
+        margin-left: auto;
+        font-size: smaller;
+    }
+
+    .select-project-dropdown-hidden .mdc-text-field,
+    .select-project-dropdown-hidden .mat-mdc-select,
+    .select-project-dropdown-hidden .mat-mdc-select-arrow,
+    .select-project-dropdown-hidden .mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+        color: #5f5f5f !important;
+    }
+
+    .changepassword-form .input-group {
+        margin: 5px 0;
+    }
+
+    .changepassword-form .changepassword-control {
+        margin: 5px;
+    }
+
+    .notification-section .mat-mdc-checkbox {
+        width: auto !important;
+    }
+
+    .table-scroll {
+        width: 90vw;
+        overflow-x: scroll;
+    }
+
+    .table .table-footer {
+        padding: 8px 10px;
+    }
+
+    .attendancefilter>mat-form-field {
+        min-width: 200px;
+    }
+
+    .projectfilter>mat-form-field {
+        padding: 10px;
+    }
+
+    .updatelog-Dialog {
+        width: 500px;
+    }
+}
+
+@media (max-width: 575px) {
+    .news_content {
+        width: auto;
+    }
+
+    .attendance-calender-title .totalAttendance {
+        display: none;
+    }
+
+    .attendancefilter>mat-form-field,
+    .projectfilter>mat-form-field {
+        width: 100%;
+    }
+
+    .workGroupStatus .count-tag {
+        font-size: 13px;
+    }
+
+    .table .table-footer button {
+        padding: 3px 8px;
+        font-size: small;
+    }
+
+    .table .table-footer .pagination {
+        margin-left: auto;
+    }
+
+    .updatelog-Dialog {
+        width: auto;
+    }
+
+    .form-group .control-label {
+        text-align: left;
+        padding-bottom: 5px;
+    }
+
+    .addWorkItemMedia {
+        margin: 0 10px;
+        width: 96%;
+    }
 }

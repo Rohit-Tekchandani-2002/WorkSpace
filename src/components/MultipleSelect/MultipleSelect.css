@@ -1,0 +1,45 @@
+.custom-multiselect{
+    display: flex;
+    align-items: center;
+    text-align: start;
+    height: 38px;
+    overflow: hidden;
+}
+.multi-select-ul{
+    max-height: 250px;
+    overflow: auto;
+}
+.multi-select-ul li{
+    padding: 5px 10px;
+}
+.multi-select-ul li:hover{
+    background-color: #e7e7e7;
+}
+.multi-checkbox{
+    margin: 5px;
+}
+.selectedLable{
+    display: block;
+    padding: 3px 5px;
+    background-color: #e7e7e7;
+    margin: 0 5px 0 0;
+    font-size: 15px;
+    max-width: 45%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.dropdown-menu{
+    z-index: 10;
+}
+.multi-select-search{
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    margin: 5px 10px;
+}
+.multi-select-search > input, .multi-select-search > input:focus, .multi-select-search > input:focus-visible {
+    border: none;
+    outline: none;
+}
