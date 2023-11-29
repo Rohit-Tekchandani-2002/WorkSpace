@@ -1,0 +1,13 @@
+.smallWidth {
+    display: block;
+    width: 100px !important;
+}
+.t-footer{
+    padding: 8px 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}

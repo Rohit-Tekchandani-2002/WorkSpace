@@ -1,30 +1,31 @@
 import './WorkBacklog.css';
-import { faAngleRight, faClock, faDashboard, faFilter, faHistory, faList, faListAlt, faPlus, faRefresh, faSearch, faTh } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faRefresh, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react';
 import RootContext from '../../context/RootContext/RootContext';
 import { workBacklogDefaultContext } from '../../constants/workBackLogConstants';
-import { getProjectWorkgroup, getWorkGroupInfo, getWorkLog, updateWorkLog } from '../../services/Project/project.service'
+import { getProjectWorkgroup, getWorkGroupInfo, getWorkLog } from '../../services/Project/project.service'
 import _ from 'lodash';
-import { formatDate, formatTime } from '../../config/utility';
-import { projectStatus, bgStatus, workFlowTypeOptions, projectStatusOptions } from "../../constants/constants";
-import taskImg from "../../assets/img/task.png";
-import { OverlayTrigger, Popover, ProgressBar } from 'react-bootstrap';
+import { formatDate } from '../../config/utility';
+import { workFlowTypeOptions, projectStatusOptions } from "../../constants/constants";
 import AlertPopUp from '../../components/AlertPopUp/AlertPopUp';
 import { alertPopUpDefaultContext } from '../../constants/alertPopupDefaultContext';
 import AlertComponent from '../../components/AlertComponent/AlertComponent';
-import Tooltip from '@mui/material/Tooltip';
 import ModualLoader from '../../components/ModualLoader/ModualLoader';
 import MultipleSelect from '../../components/MultipleSelect/MultipleSelect';
 import DashBoard from './children/DashBoard/DashBoard';
 import ToolBar from './children/ToolBar/ToolBar';
+import ActivityStream from './children/ActivityStream/ActivityStream';
+import BoxView from './children/BoxView/BoxView';
+import ListView from './children/ListView/ListView';
+import TeamRooster from './children/TeamRooster/TeamRooster';
+import WorkLog from './children/WorkLog/WorkLog';
 
 class WorkBacklog extends Component {
     static contextType = RootContext;
     state = {
         refershModule: false,
         workGroupId: localStorage.getItem('workGroupId'),
-        // undoState: false,
         originalWorkLogState: null,
         alertMessage: '',
         activeWindow: 'dashboard',
@@ -54,24 +55,6 @@ class WorkBacklog extends Component {
             this.getWorkGroupInfoData();
             this.getWorkLogData();
         }
-        // if ((_.get(this.state, 'undoState') !== _.get(prevState, 'undoState'))) {
-        //     const { setGlobal, handleError } = this.context;
-        //     if (_.get(this.state, 'undoState')) {
-        //         let workLog = _.map(_.get(this.context, 'workBacklog.workLog', {}),
-        //             (data) => {
-        //                 if (_.get(data, 'projectWorkId') === _.get(this.state, 'originalWorkLogState.projectWorkId')) {
-        //                     _.set(data, 'projectStatusId', _.get(this.state, 'originalWorkLogState.projectStatusId'));
-        //                     updateWorkLog(data).catch(handleError);
-        //                 }
-        //                 return data;
-        //             }
-        //         )
-        //         _.set(this.context, 'workBacklog.workLog', workLog);
-        //         setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
-        //         this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-        //     }
-        //     this.setState({ undoState: false });
-        // }
         if ((_.get(this.state, 'alertMessage') !== _.get(prevState, 'alertMessage')) && (_.get(this.state, 'alertMessage') !== '')) {
             // alert(_.get(this.state, 'alertMessage'));
             const { setGlobal } = this.context;
@@ -114,12 +97,7 @@ class WorkBacklog extends Component {
     getWorkLogData = async () => {
         const { setGlobal, handleError } = this.context;
         if (_.get(this.state, 'workGroupId')) {
-            let request = {
-                workGroupId: _.get(this.context, 'workBacklog.filter.workGroupId', _.get(this.state, 'workGroupId')),
-                projectType: _.get(this.context, 'workBacklog.filter.projectType', null),
-                projectStatus: _.get(this.context, 'workBacklog.filter.projectStatus', null),
-                searchText: _.get(this.context, 'workBacklog.filter.searchText', null)
-            }
+            let request = _.get(this.context, 'workBacklog.filter', {workGroupId: _.get(this.state, 'workGroupId')});
             let tempData = await getWorkLog(request).catch(handleError);
             if (tempData) {
                 // console.log('workLog', tempData);
@@ -130,140 +108,23 @@ class WorkBacklog extends Component {
         }
     }
 
-    // onDragStart = (event, workLogId) => {
-    //     event.dataTransfer.setData("workLogId", workLogId);
-    // }
-
-    // onDragOver = (event) => {
-    //     event.preventDefault();
-    // }
-
-    // onDrop = (event, newStatus) => {
-    //     const { setGlobal, handleError } = this.context;
-    //     let { modalData } = this.context;
-    //     let id = event.dataTransfer.getData("workLogId");
-    //     //Change Data Accoding to dropLocation
-    //     let workLog = _.map(_.get(this.context, 'workBacklog.workLog'), (workLog) => {
-    //         if (workLog.projectWorkId === _.toNumber(id)) {
-    //             this.setState({ originalWorkLogState: _.cloneDeep(workLog) });
-    //             const statusId = _.find(_.keys(projectStatus), key => projectStatus[key] === newStatus);
-    //             if (id && (_.get(workLog, 'projectStatusId') !== _.toNumber(statusId))) {
-    //                 //Open UndoState modal
-    //                 modalData = {
-    //                     modalType: 'UndoStatusModal',
-    //                     show: true,
-    //                     handleConfirm: () => {
-    //                         this.setState({ undoState: true });
-    //                         setGlobal('modalData', { show: false });
-    //                     },
-    //                     handleClose: async () => {
-    //                         const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
-    //                         this.setState({ alertMessage: updateWorklogMessage });
-    //                         setGlobal('modalData', { show: false });
-    //                     }
-    //                 };
-    //                 setGlobal('modalData', modalData);
-    //                 //Auto close UndoState modal
-    //                 setTimeout(async () => {
-    //                     _.set(modalData, 'show', false);
-    //                     setGlobal('modalData', modalData);
-    //                     this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-    //                     const updateWorklogMessage = await updateWorkLog(workLog).catch(handleError);
-    //                     this.setState({ alertMessage: updateWorklogMessage });
-    //                 }, 2000);
-    //                 clearTimeout();
-    //             }
-    //             _.set(workLog, 'projectStatusId', _.toNumber(statusId));
-    //         }
-    //         return workLog;
-    //     });
-    //     _.set(this.context, 'workBacklog.workLog', workLog);
-    //     setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
-    //     this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-    // }
-
-    // addWorkLogtime = (workLog) => {
-    //     let { modalData, setGlobal } = this.context;
-    //     if (workLog) {
-    //         modalData = {
-    //             modalType: 'AddWorkLogModal',
-    //             show: true,
-    //             data: workLog,
-    //             handleConfirm: (message) => {
-    //                 this.getWorkLogData();
-    //                 setGlobal('modalData', { show: false });
-    //                 this.setState({ alertMessage: message });
-    //             }
-    //         };
-    //         setGlobal('modalData', modalData);
-    //         this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-    //     }
-    // }
-
-    // workItemPopover = (workLog) => {
-    //     return (
-    //         <Popover title="Popover" className='worklog-popover'>
-    //             <Popover.Header as="h3" className='ellipsis'>TA{workLog.projectWorkId}: {workLog.title}</Popover.Header>
-    //             <Popover.Body>
-    //                 <div className='row'>
-    //                     <div className='col strong'>Start Date:</div>
-    //                     <div className='col'>{formatDate(workLog.startDate)}</div>
-    //                 </div>
-    //                 <div className='row'>
-    //                     <div className='col strong'>End Date:</div>
-    //                     <div className='col'>{formatDate(workLog.endDate)}</div>
-    //                 </div>
-    //                 <div className='row'>
-    //                     <div className='col strong'>Orignal Estimation:</div>
-    //                     <div className='col'>{formatTime(workLog.originalEstTime)} Hours</div>
-    //                 </div>
-    //                 <div className='row'>
-    //                     <div className='col strong'>Remaning Time:</div>
-    //                     <div className='col'>{formatTime(workLog.remainingEstTime)} Hours</div>
-    //                 </div>
-    //                 <div className='row'>
-    //                     <div className='col strong'>Spent Time:</div>
-    //                     <div className='col'>{formatTime(workLog.totalWorkDone)} Hours</div>
-    //                 </div>
-    //             </Popover.Body>
-    //         </Popover>
-    //     );
-    // }
-
-    // showWorkBacklogList = (projectStatusId, title) => {
-    //     let workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
-    //         data => _.get(data, 'projectStatusId', '') === _.toNumber(projectStatusId));
-    //     return (
-    //         <>
-    //             <div className={'drag-column-title' + ' ' + bgStatus[projectStatusId]}>
-    //                 {title} {(_.get(workBacklogList, 'length', 0) !== 0) && <span>({_.get(workBacklogList, 'length')})</span>}
-    //             </div>
-    //             {
-    //                 _.map(workBacklogList,
-    //                     (item, index) => (
-    //                         <div className={'work-backlog' + ' ' + 'border-' + bgStatus[projectStatusId]}
-    //                             onDragStart={(event) => this.onDragStart(event, _.get(item, 'projectWorkId', ''))}
-    //                             draggable
-    //                             key={index}>
-    //                             <div className='d-flex justify-content-between'>
-    //                                 <div className='d-flex align-items-center ellipsis'>
-    //                                     <img className='imgPadding' src={taskImg} />
-    //                                     <OverlayTrigger trigger={['hover', 'focus']} overlay={this.workItemPopover(item)}>
-    //                                         <a href=''>{_.get(item, 'title', '')}</a>
-    //                                     </OverlayTrigger>
-    //                                 </div>
-    //                                 <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.addWorkLogtime(item)} />
-    //                             </div>
-    //                             <div>{_.trim(_.get(item, 'assignedTo', '')) === '' ? 'Unassigned' : _.get(item, 'assignedTo', '')}</div>
-    //                             <div className='strong'>{_.get(item, 'workPriority', '')}</div>
-    //                             <ProgressBar now={(_.toNumber(_.get(item, 'totalWorkDone', 0)) / _.toNumber(_.get(item, 'originalEstTime', 1))) * 100} />
-    //                         </div>
-    //                     )
-    //                 )
-    //             }
-    //         </>
-    //     )
-    // }
+    addWorkLogtime = (workLog) => {
+        let { modalData, setGlobal } = this.context;
+        if (workLog) {
+            modalData = {
+                modalType: 'AddWorkLogModal',
+                show: true,
+                data: workLog,
+                handleConfirm: (message) => {
+                    this.getWorkLogData();
+                    setGlobal('modalData', { show: false });
+                    this.setState({ alertMessage: message })
+                }
+            };
+            setGlobal('modalData', modalData);
+            this.setState({ refershModule: !_.get(this.state, 'refershModule') });
+        }
+    }
 
     getActiveWindowClass = (windowName) => {
         if (_.get(this.state, 'activeWindow', '') === windowName) {
@@ -320,6 +181,45 @@ class WorkBacklog extends Component {
         this.reloadData();
     }
 
+    showActiveWindow = () => {
+        const activeWindow = _.get(this.state, 'activeWindow');
+        let content = null;
+        switch (activeWindow) {
+            case 'dashboard':
+                let dashBoardProps = {
+                    addWorkLogtime: this.addWorkLogtime,
+                    setAlertMessage: (message) => { this.setState({ alertMessage: message }) }
+                }
+                content = <DashBoard {...dashBoardProps}/>
+                break;
+            case 'listView':
+                let listViewProps = {
+                    addWorkLogtime: this.addWorkLogtime,
+                }
+                content = <ListView {...listViewProps}/>
+                break;
+            case 'boxView':
+                let boxViewProps = {
+                    addWorkLogtime: this.addWorkLogtime,
+                }
+                content = <BoxView {...boxViewProps}/>
+                break;
+            case 'teamRooster':
+                content = <TeamRooster />
+                break;
+            case 'activityStream':
+                content = <ActivityStream />
+                break;
+            case 'workLog':
+                content = <WorkLog />
+                break;
+            default:
+                break;
+        }
+
+        return content;
+    }
+
     render() {
         const projectName = localStorage.getItem('projectName');
         const title = _.get(this.context, 'workBacklog.workGroupInfo.title', '');
@@ -343,63 +243,14 @@ class WorkBacklog extends Component {
                     <AlertComponent
                         show={_.get(this.state, 'alertMessage') !== ''}
                         alertMessage={_.get(this.state, 'alertMessage')}
-                        type={'success'} />
+                        type={'success'}
+                    />
                     <ToolBar
                         setActiveWindow={(value) => this.setState({ activeWindow: value })}
                         toggleFilter={toggleFilter}
                         getActiveWindowClass={this.getActiveWindowClass}
-                        reloadData={this.reloadData} />
-                    {/* <div className='workbacklog-nav'>
-                        <button className='btn btn-default'><FontAwesomeIcon icon={faPlus} /> New</button>
-                        <div className='tool-bar'>
-                            <Tooltip title="Dashboard">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('dashboard')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'dashboard' }) }}>
-                                    <FontAwesomeIcon icon={faDashboard} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="List View">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('listView')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'listView' }) }}>
-                                    <FontAwesomeIcon icon={faList} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Box View">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('boxView')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'boxView' }) }} >
-                                    <FontAwesomeIcon icon={faTh} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Team Rooster Details">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('teamRooster')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'teamRooster' }) }} >
-                                    <FontAwesomeIcon icon={faListAlt} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Activity Stream">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('activityStream')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'activityStream' }) }} >
-                                    <FontAwesomeIcon icon={faHistory} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Work Log">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('workLog')}`}
-                                    onClick={() => { this.setState({ activeWindow: 'workLog' }) }}>
-                                    <FontAwesomeIcon icon={faClock} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Refresh">
-                                <button className='btn btn-default' onClick={this.reloadData}>
-                                    <FontAwesomeIcon icon={faRefresh} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip title="Filter">
-                                <button className={`btn btn-default ${this.getActiveWindowClass('filterWindowActive')}`} onClick={toggleFilter}>
-                                    <FontAwesomeIcon icon={faFilter} />
-                                </button>
-                            </Tooltip>
-                        </div>
-                    </div> */}
+                        reloadData={this.reloadData}
+                    />
                     {
                         _.get(this.state, 'filterWindowActive', false) &&
                         <div>
@@ -471,22 +322,8 @@ class WorkBacklog extends Component {
                             </div>
                         </div>
                     }
-                    {/* {
-                        !_.get(this.state, 'reload', false) && <div className='work-group-container mt-2'>
-                            {_.map(_.entries(projectStatus), ([key, value]) => (
-                                <div key={key} className='drag-column'
-                                    onDragOver={(event) => this.onDragOver(event)}
-                                    onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
-                                >
-                                    {this.showWorkBacklogList(key, value)}
-                                </div>
-                            ))}
-                        </div>
-                    } */}
-                    { 
-                    !_.get(this.state, 'reload', false) && 
-                    <DashBoard getWorkLogData={this.getWorkLogData}
-                    setAlertMessage = {(message) => {this.setState({ alertMessage: message })}}/> 
+                    {
+                        !_.get(this.state, 'reload', false) && this.showActiveWindow()
                     }
                     {
                         _.get(this.state, 'reload', false) &&

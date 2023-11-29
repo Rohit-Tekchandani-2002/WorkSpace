@@ -143,26 +143,8 @@ class DashBoard extends Component {
         );
     }
 
-    addWorkLogtime = (workLog) => {
-        let { modalData, setGlobal } = this.context;
-        if (workLog) {
-            modalData = {
-                modalType: 'AddWorkLogModal',
-                show: true,
-                data: workLog,
-                handleConfirm: (message) => {
-                    this.props.getWorkLogData();
-                    setGlobal('modalData', { show: false });
-                    this.props.setAlertMessage(message);
-                }
-            };
-            setGlobal('modalData', modalData);
-            this.setState({ refershModule: !_.get(this.state, 'refershModule') });
-        }
-    }
-
     showWorkBacklogList = (projectStatusId, title) => {
-        let workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
+        const workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
             data => _.get(data, 'projectStatusId', '') === _.toNumber(projectStatusId));
         return (
             <>
@@ -183,7 +165,7 @@ class DashBoard extends Component {
                                             <a href=''>{_.get(item, 'title', '')}</a>
                                         </OverlayTrigger>
                                     </div>
-                                    <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.addWorkLogtime(item)} />
+                                    <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.props.addWorkLogtime(item)} />
                                 </div>
                                 <div>{_.trim(_.get(item, 'assignedTo', '')) === '' ? 'Unassigned' : _.get(item, 'assignedTo', '')}</div>
                                 <div className='strong'>{_.get(item, 'workPriority', '')}</div>

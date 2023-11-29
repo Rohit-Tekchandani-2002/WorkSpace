@@ -12,5 +12,7 @@ export const workBacklogDefaultContext = {
         searchText: null,
         projectType: null,
         projectStatus: null,
+        expression: 'projectWorkId',
+        isSortByAsc: true
     }
 }
