@@ -2,6 +2,7 @@ import './Layout.css';
 import Header from "./Header/Header";
 import SideBar from "./SideBar/SideBar";
 import { useState } from 'react';
+import tatvaLogo from '../assets/img/tatvalogo.png';
 
 const Layout = props => {
     const { children } = props;
@@ -24,6 +25,9 @@ const Layout = props => {
             </div>
             <div className={'main-content' + ' ' + (isSideBarOpen ? 'sidebar-open' : 'sidebar-close')}>
                 {children}
+            </div>
+            <div className={'footer border p-2' + ' ' + (isSideBarOpen ? 'open' : 'close')}>
+                <img src={tatvaLogo}/> <span className='copyright'>Version : 2.0 | Copyright © TatvaSoft All rights reserved.</span>
             </div>
         </div>
     </>);

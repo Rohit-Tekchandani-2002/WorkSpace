@@ -1,0 +1,50 @@
+.user-char-img {
+    height: 40px;
+    margin: 10px;
+}
+
+.show-more-btn {
+    width: 100%;
+    border-radius: 4px;
+    color: #428bca;
+    border: 1px solid #CCC;
+    display: block;
+    margin: 2em 0.2em 0 0.2em;
+    overflow: hidden;
+    padding: 0.35em;
+    text-align: center;
+    background: #f6f6f6;
+    font-size: 14px;
+}
+
+.title-date {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28px;
+    font-family: Roboto, sans-serif;
+    letter-spacing: .009375em;
+    margin: 10px 0 16px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.activity-container{
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.activity-container .activties{
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.activties > div{
+    padding: 5px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.activties .media-heading{
+    display: inline-block;
+    font-size: 0.8em;
+    color: #c4c4c4;
+    margin-left: 5px;
+}

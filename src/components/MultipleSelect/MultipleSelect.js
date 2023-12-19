@@ -1,5 +1,5 @@
 import './MultipleSelect.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import _ from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +10,19 @@ const MultipleSelect = (props) => {
     const [openMenu, setOpenMenu] = useState(false);
     const [seletedValue, setSeletedValue] = useState([]);
     const [Options, setOptions] = useState(props.Options);
+    const selectAll = useRef();
+    const dropdownRef = useRef();
+    
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpenMenu(false);
+            }
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+    
 
     const handleSearch = (e) => {
         let value = _.get(e, 'target.value');
@@ -26,7 +39,7 @@ const MultipleSelect = (props) => {
         }
     }
 
-    const handelSelect = (e) => {
+    const handelSelect = (e) => {    
         let isChecked = _.get(e, 'target.checked');
         let checkedVal = _.get(e, 'target.value');
         let tempcheckboxValue = [];
@@ -52,9 +65,13 @@ const MultipleSelect = (props) => {
     useEffect(() => {
         if (value === null) {
             setSeletedValue([]);
+            if (_.get(selectAll, 'current')) {
+                _.set(selectAll, 'current.checked', false);
+            }
+            console.log('selectAll', selectAll);
         }
     }, [value])
-    
+
     const getOptions = () => {
         return (
             <>
@@ -69,7 +86,8 @@ const MultipleSelect = (props) => {
                             key={'select all'}
                             value={"selectAll"}
                             onChange={handelSelect}
-                            type='checkBox' />
+                            type='checkBox'
+                            ref={selectAll} />
                         Select All
                     </li>
                     {_.map(Options, (e) =>
@@ -105,7 +123,7 @@ const MultipleSelect = (props) => {
                 tempContent = <span className='selectedLable'>{_.get(tempseletedValue, 'length')} Items</span>
             }
         };
-        if (_.get(tempContent, 'length', 0) === 0) {
+        if (_.get(tempseletedValue, 'length', 0) === 0) {
             tempContent = 'None Selected';
         }
         return tempContent;
@@ -117,14 +135,14 @@ const MultipleSelect = (props) => {
     }, [seletedValue])
 
     return (
-        <>
+        <div ref={dropdownRef}>
             <button className="form-select custom-multiselect" onClick={() => setOpenMenu(!openMenu)} type='button'>
                 {getButtonContent()}
             </button>
             <Dropdown.Menu show={openMenu}>
                 {getOptions()}
             </Dropdown.Menu>
-        </>
+        </div>
     );
 }
 

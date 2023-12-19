@@ -53,3 +53,56 @@ export const priority = {
     "Medium": "Medium",
     "High": "High"
 }
+
+export const systemType = {
+    1: "Motherboard",
+    2: "Keyboard",
+    3: "Mouse",
+    4: "SMPS",
+    5: "HardDisk",
+    6: "Processor",
+    7: "RAM",
+    8: "Monitor",
+    9: "Head Phone"
+}
+
+export const month = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "May",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December"
+}
+
+export const attendanceOptions = {
+    1: 'P',
+    2: 'A',
+    3: 'H'
+}
+
+export const projectType = {
+    0: 'Fixed Cost',
+    1: 'Hourly',
+    2: 'Monthly',
+}
+
+export const leaveStatus = ['Approved', 'Cancelled', 'Pending', 'Rejected'];
+
+export const serviceStatus = {
+    1: 'Approved',
+    2: 'Pending',
+    3: 'Closed',
+    4: 'Rejected',
+    5: 'Hold',
+    6: 'Acknowledged',
+    7: 'Cancel',
+    8: 'Reopen',
+    9: 'WorkStarted'
+}

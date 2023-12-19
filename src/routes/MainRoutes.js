@@ -9,6 +9,13 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from '../layout/Layout';
 import RouteWrapper from "./RouteWrapper";
 import WorkBacklog from '../containers/WorkBacklog/WorkBacklog';
+import Attendance from '../containers/Workspace/Attendance/Attendance';
+import LeaveRequest from '../containers/Workspace/LeaveRequest/LeaveRequest';
+import Projects from '../containers/Workspace/Projects/Projects';
+import ServiceRequest from '../containers/Workspace/ServiceRequest/ServiceRequest';
+import TimeLogs from '../containers/Workspace/TimeLogs/TimeLogs';
+import Timesheets from '../containers/Workspace/Timesheets/Timesheets';
+import WorkItems from '../containers/Workspace/WorkItems/WorkItems';
 
 const MainRoutes = () => {
     return (
@@ -24,6 +31,13 @@ const MainRoutes = () => {
                 <Route exact path="/work-group" element={<RouteWrapper Component={WorkGroup} Layout={Layout} />} />
                 <Route exact path="/work-backlog" element={<RouteWrapper Component={WorkBacklog} Layout={Layout} />} />
                 <Route exact path="/my-profile" element={<RouteWrapper Component={UserProfile} Layout={Layout} />} />
+                <Route exact path='/Attendance' element={<RouteWrapper Component={Attendance} Layout={Layout} />}/>
+                <Route exact path='/LeaveRequest' element={<RouteWrapper Component={LeaveRequest} Layout={Layout} />}/>
+                <Route exact path='/Projects' element={<RouteWrapper Component={Projects} Layout={Layout} />}/>
+                <Route exact path='/ServiceRequest' element={<RouteWrapper Component={ServiceRequest} Layout={Layout} />}/>
+                <Route exact path='/TimeLogs' element={<RouteWrapper Component={TimeLogs} Layout={Layout} />}/>
+                <Route exact path='/Timesheets' element={<RouteWrapper Component={Timesheets} Layout={Layout} />}/>
+                <Route exact path='/WorkItems' element={<RouteWrapper Component={WorkItems} Layout={Layout} />}/>
             </Routes>
         </>
     );

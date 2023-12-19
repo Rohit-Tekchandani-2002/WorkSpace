@@ -49,6 +49,7 @@ const ProjectBackLog = () => {
                     Projects <FontAwesomeIcon icon={faAngleRight} />
                     <span className='font-weight-normal'> Product Backlog</span>
                 </div>
+                <h4 className='blue_border px-0'>Project Backlog</h4>
             </div>
             <ProjectFilters getListData={getListData} />
             {apiData && <div className='px-3'>Total {totalTableEntry ?? 0} Records Found</div>}

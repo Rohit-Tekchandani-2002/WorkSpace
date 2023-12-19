@@ -72,8 +72,8 @@ const TeamWorkItemWidget = () => {
                             <div className="table">
                                 <div className="table-responsive">
                                     <div className="table-head">
-                                        <div className="table-cell medium">Name</div>
-                                        <div className="table-cell medium">Project</div>
+                                        <div className="table-cell">Name</div>
+                                        <div className="table-cell">Project</div>
                                         <div className="table-cell short">Work Items</div>
                                     </div>
                                     <div className="table-body">
@@ -81,8 +81,8 @@ const TeamWorkItemWidget = () => {
                                             teamWorkItemsData && _.get(teamWorkItemsData, 'length', 0) > 0 && _.map(teamWorkItemsData, 
                                                 ((data, Index) =>
                                                 <div key={Index} className="table-row">
-                                                    <div className="table-cell medium">{data.name}</div>
-                                                    <div className="table-cell medium">{data.projectName}</div>
+                                                    <div className="table-cell">{data.name}</div>
+                                                    <div className="table-cell">{data.projectName}</div>
                                                     <div className="table-cell short">{data.workItems}</div>
                                                 </div>
                                             ))

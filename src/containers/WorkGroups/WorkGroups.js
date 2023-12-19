@@ -22,11 +22,6 @@ const WorkGroup = () => {
     const [isModuleRefersh, setIsModuleRefersh] = useState(false);
 
     useEffect(() => {
-        getWorkGroupData();
-        getStatusCount();
-    }, [projectId]);
-
-    useEffect(() => {
         if (workGroup) {
             let data = _.get(workGroup, 'workGroupList', []);
             setWorkGroupProgressBar([]);
@@ -47,7 +42,9 @@ const WorkGroup = () => {
             });
             console.log('workGroupProgressBar', workGroupProgressBar);
         }
-    }, [workGroup]);
+        getWorkGroupData();
+        getStatusCount();
+    }, [projectId]);
 
     const getWorkGroupData = async () => {
         if (!workGroup) {
@@ -116,6 +113,7 @@ const WorkGroup = () => {
                 {projectName ?? 'Project'} <FontAwesomeIcon icon={faAngleRight} />
                 <span className='font-weight-normal'> Work Groups</span>
             </div>
+            <h4 className='blue_border px-0 pt-2'>Work Groups</h4>
             <div className='d-flex justify-content-end py-2'>
                 <button className='btn btn-primary rounded-0' onClick={handalBackButton}>Back</button>
             </div>

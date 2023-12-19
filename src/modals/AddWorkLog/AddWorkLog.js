@@ -17,7 +17,6 @@ const AddWorkLogModal = () => {
     let originalEst = _.toNumber(_.get(data, 'originalEstTime', 0));
     let remainingEst = _.toNumber(_.get(data, 'remainingEstTime', 0));
     let totalWorkDone = Math.abs(originalEst - remainingEst);
-
     const resetForm = () => {
         _.set(addWorkLogContext, 'workDoneOn', adjustDateTime(new Date()));
         _.set(addWorkLogContext, 'workTimeHours', 0);
@@ -43,6 +42,8 @@ const AddWorkLogModal = () => {
             setGlobal('addWorkLogContext', addWorkLogContext);
             setRefershModule(!refershModule);
         }
+        console.log('addWorkLogContext', addWorkLogContext);
+        _.set(addWorkLogContext, 'workDoneOn', _.get(data, 'workDoneOn'));
         _.set(addWorkLogContext, 'originalEst', originalEst);
         _.set(addWorkLogContext, 'remainingEst', remainingEst);
         _.set(addWorkLogContext, 'totalWorkDone', totalWorkDone);

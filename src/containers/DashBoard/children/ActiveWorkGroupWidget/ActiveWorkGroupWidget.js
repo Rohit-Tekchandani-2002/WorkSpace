@@ -72,16 +72,16 @@ const ActiveWorkGroupWidget = () => {
                             <div className="table">
                                 <div className="table-responsive">
                                     <div className="table-head">
-                                        <div className="table-cell medium">Project</div>
-                                        <div className="table-cell medium">Work Group</div>
+                                        <div className="table-cell">Project</div>
+                                        <div className="table-cell">Work Group</div>
                                     </div>
                                     <div className="table-body">
                                         {
                                             activeWorkGroupData && _.get(activeWorkGroupData, 'length', 0) > 0 
                                             &&  _.map(activeWorkGroupData,((data) =>
                                                 <div key={data.workGroupId} className="table-row">
-                                                    <div className="table-cell medium">{_.get(data, 'projectName', '')}</div>
-                                                    <div className="table-cell medium">{_.get(data, 'workGroupName', '')}</div>
+                                                    <div className="table-cell">{_.get(data, 'projectName', '')}</div>
+                                                    <div className="table-cell">{_.get(data, 'workGroupName', '')}</div>
                                                 </div>
                                             ))
                                         }

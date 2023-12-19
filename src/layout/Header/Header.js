@@ -81,6 +81,7 @@ const Header = props => {
             ...userProjects,
             projects: tempData
         });
+        setGlobal('projectsList', tempData);
         localStorage.getItem('projects', JSON.stringify(tempData));
     }
 
@@ -230,7 +231,7 @@ const Header = props => {
             <div className='h-100'>
                 <div className='d-flex align-items-center h-100'>
                     {
-                        (_.get(userProjects, 'projects', []) !== []) &&
+                        (_.get(userProjects, 'projects.length', 0) !== 0) &&
                         <div className='border-left-btn p-1 small-project-drop-down'>
                             <Dropdown>
                                 <Dropdown.Toggle id="dropdown-basic" value={_.get(userProjects, 'projectId', null)}>

@@ -8,6 +8,7 @@ import ErrorModal from '../Error/Error';
 import { modalDefaultContext } from '../../constants/modalConstants';
 import { useEffect, useContext } from "react";
 import _ from 'lodash';
+import EditWorkLogModal from '../EditWorkLog/EditWorkLog';
 
 const Modal = () => {
     let modal = null;
@@ -22,7 +23,6 @@ const Modal = () => {
     }, []);
 
     let { modalType } = modalData || modalDefaultContext;
-
     switch (modalType) {
         case 'InformationModal':
             modal = <InformationModal />
@@ -39,7 +39,9 @@ const Modal = () => {
         case 'AddWorkLogModal':
             modal = <AddWorkLogModal />
             break;
-
+        case 'EditWorkLogModal':
+            modal = <EditWorkLogModal />
+            break;
         default:
             break;
     }

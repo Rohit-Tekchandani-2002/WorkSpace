@@ -1,0 +1,9 @@
+.toolbar-container{
+    display: flex;
+    align-items: center;
+}
+.group-by{
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+}

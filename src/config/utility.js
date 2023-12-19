@@ -140,9 +140,10 @@ export const formatTime = (decimalValue) => {
 
 export const formatDate = (date) => {
     let tempDate = new Date(date);
-    let formattedDate = tempDate.toLocaleDateString('en-GB', {
-        day: 'numeric', month: 'short', year: 'numeric'
-    }).replace(/ /g, '-');
+    let day = tempDate.getDate().toString().padStart(2, '0'); 
+    let month = tempDate.toLocaleDateString('en-GB', {month: 'short'}); 
+    let year = tempDate.getFullYear();
+    let formattedDate = day + '-' + month + '-' + year;
     return formattedDate;
 }
 

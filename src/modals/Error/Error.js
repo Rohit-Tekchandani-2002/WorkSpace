@@ -5,7 +5,7 @@ import RootContext from '../../context/RootContext/RootContext';
 import { useContext } from 'react';
 import _ from 'lodash';
 
-const ErrorModal = (props) => {
+const ErrorModal = () => {
     const [refershModule, setRefershModule] = useState(false);
     const rootContext = useContext(RootContext);
     let { modalData, setGlobal } = rootContext;

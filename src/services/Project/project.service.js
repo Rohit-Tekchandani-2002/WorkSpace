@@ -60,3 +60,23 @@ export const addWorkLog = (payload) => {
 export const updateProjectWorkItemTime = (payload) => {
     return axiosInstance.put('api/Project/UpdateProjectWorkItemTime', payload);
 }
+
+export const getTeamRoosterDetails = (id) => {
+    return axiosInstance.get(`api/Project/GetProjectTeamRosterDetail?projectId=${id}`);
+}
+
+export const getActivityStream = (payload) => {
+    return axiosInstance.post('api/Project/GetProjectActivityStreamRequest', payload);
+}
+
+export const getWorkBackLogWithPagination = (payload) => {
+    return axiosInstance.post('api/Project/GetWorkGroupLogWithPagination', payload);
+}
+
+export const updateProjectWorkLog = (payload) => {
+    return axiosInstance.put('api/Project/UpdateWorkLog', payload);
+}
+
+export const deleteWorkLog = (id) => {
+    return axiosInstance.delete('api/Project/DeleteWorkLog?WorkLogId=' + id);
+}

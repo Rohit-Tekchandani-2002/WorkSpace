@@ -34,3 +34,10 @@ export const addWorkLogDefaultContext = {
     totalWorkDone: 0,
     progressBarValue: 0
 };
+
+export const editWorkLogDefaultContext = {
+    workDoneOn: adjustDateTime(new Date()),
+    workTimeHours: 0,
+    workTimeMinutes: 0,
+    description: null
+};

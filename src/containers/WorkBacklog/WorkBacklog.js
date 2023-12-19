@@ -30,7 +30,8 @@ class WorkBacklog extends Component {
         alertMessage: '',
         activeWindow: 'dashboard',
         reload: false,
-        filterWindowActive: false
+        filterWindowActive: false,
+        groupBy: 'none'
     };
 
     componentDidMount = () => {
@@ -54,6 +55,9 @@ class WorkBacklog extends Component {
         if ((_.get(this.state, 'workGroupId') !== _.get(prevState, 'workGroupId'))) {
             this.getWorkGroupInfoData();
             this.getWorkLogData();
+        }
+        if ((_.get(this.state, 'activeWindow') !== _.get(prevState, 'activeWindow'))) {
+            this.handleClear();
         }
         if ((_.get(this.state, 'alertMessage') !== _.get(prevState, 'alertMessage')) && (_.get(this.state, 'alertMessage') !== '')) {
             // alert(_.get(this.state, 'alertMessage'));
@@ -96,8 +100,20 @@ class WorkBacklog extends Component {
 
     getWorkLogData = async () => {
         const { setGlobal, handleError } = this.context;
-        if (_.get(this.state, 'workGroupId')) {
-            let request = _.get(this.context, 'workBacklog.filter', {workGroupId: _.get(this.state, 'workGroupId')});
+        const workGroupId = _.get(this.state, 'workGroupId');
+        if (workGroupId) {
+            let request = _.get(this.context, 'workBacklog.filter', {workGroupId: workGroupId});
+            const searchText = _.trim(_.get(request, 'searchText'));
+            if (!_.get(request, 'workGroupId')) {
+                _.set(request, 'workGroupId', workGroupId);
+            }
+            if (_.isString(searchText)) {
+                if(searchText !== ''){
+                    _.set(request, 'searchText', searchText);
+                }else{
+                    _.unset(request, 'searchText');
+                }
+            }
             let tempData = await getWorkLog(request).catch(handleError);
             if (tempData) {
                 // console.log('workLog', tempData);
@@ -138,13 +154,20 @@ class WorkBacklog extends Component {
         return '';
     }
 
+    getGroupByClass = (groupBy) => {
+        if (_.get(this.state, 'groupBy', '') === groupBy) {
+            return 'active';
+        }
+        return '';
+    }
+
     reloadData = () => {
         this.setState({ reload: true });
         setTimeout(() => {
             this.setState({ workGroupId: _.get(this.context, 'workBacklog.filter.workGroupId', localStorage.getItem('workGroupId')) });
             this.getWorkLogData();
             this.setState({ reload: false });
-        }, 1500);
+        }, 500);
         clearTimeout();
     }
 
@@ -188,19 +211,24 @@ class WorkBacklog extends Component {
             case 'dashboard':
                 let dashBoardProps = {
                     addWorkLogtime: this.addWorkLogtime,
-                    setAlertMessage: (message) => { this.setState({ alertMessage: message }) }
+                    setAlertMessage: (message) => { this.setState({ alertMessage: message }) },
+                    groupBy: _.get(this.state, 'groupBy', 'none'),
+                    isFilterActive: _.get(this.state, 'filterWindowActive')
                 }
                 content = <DashBoard {...dashBoardProps}/>
                 break;
             case 'listView':
                 let listViewProps = {
                     addWorkLogtime: this.addWorkLogtime,
+                    reloadData: () => this.reloadData(),
+                    groupBy: _.get(this.state, 'groupBy', 'none')
                 }
                 content = <ListView {...listViewProps}/>
                 break;
             case 'boxView':
                 let boxViewProps = {
                     addWorkLogtime: this.addWorkLogtime,
+                    groupBy: _.get(this.state, 'groupBy', 'none')
                 }
                 content = <BoxView {...boxViewProps}/>
                 break;
@@ -211,7 +239,10 @@ class WorkBacklog extends Component {
                 content = <ActivityStream />
                 break;
             case 'workLog':
-                content = <WorkLog />
+                let workLogProps = {
+                    setAlertMessage: (message) => { this.setState({ alertMessage: message }) }
+                }
+                content = <WorkLog {...workLogProps}/>
                 break;
             default:
                 break;
@@ -250,6 +281,9 @@ class WorkBacklog extends Component {
                         toggleFilter={toggleFilter}
                         getActiveWindowClass={this.getActiveWindowClass}
                         reloadData={this.reloadData}
+                        activeWindow={_.get(this.state, 'activeWindow', 'dashboard')}
+                        getGroupByClass={this.getGroupByClass}
+                        setGroupBy={(value) => this.setState({ groupBy: value })}
                     />
                     {
                         _.get(this.state, 'filterWindowActive', false) &&

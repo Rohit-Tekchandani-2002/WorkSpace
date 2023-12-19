@@ -1,15 +1,22 @@
 import './Conform.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Button } from "react-bootstrap";
 import RootContext from '../../context/RootContext/RootContext';
 import { useContext } from 'react';
+import _ from 'lodash';
 
-const ConformModal = (props) => {
-
+const ConformModal = () => {
+  const [refershModule, setRefershModule] = useState(false);
   const rootContext = useContext(RootContext);
-  let { modalData } = rootContext;
+  let { modalData, setGlobal } = rootContext;
 
-  const { title, body, show, handleClose, handleConfirm, handalCancle } = modalData;
+  const { title, body, show, handleConfirm, handalCancle } = modalData;
+
+  const handleClose = () => {
+    _.set(modalData, 'show', false);
+    setGlobal('modalData', modalData);
+    setRefershModule(!refershModule);
+  }
 
   return (
     <Modal show={show} onHide={handleClose}>

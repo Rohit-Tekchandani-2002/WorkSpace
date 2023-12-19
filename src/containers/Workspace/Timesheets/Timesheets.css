@@ -1,0 +1,93 @@
+.CurrentDateBox{
+    background-color: #e6e6e6;
+    background-color: #D1E4F8;
+    border: 1px solid #00612E;
+}
+.timesheet-header{
+    text-align: center;
+    background: #e6e6e6;
+    color: #333;
+    font-size: 16px;
+    margin: 10px 0 0 0;
+    padding: 10px 12px 10px 12px;
+}
+.timesheet-body{
+    border: 1px solid #e6e6e6;
+    overflow: auto;
+}
+.timesheet .cell-long{
+    display: flex;
+    align-items: center;
+    min-width: 425px;
+    width: 425px;
+    padding: 5px;
+}
+.timesheet .cell-short{
+    display: flex;
+    align-items: center;
+    min-width: 36px;
+    width: 36px;
+    font-size: 12px;
+    min-height: 36px;
+}
+.timesheet .calender{
+    width: 130px;
+}
+.timesheet-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.timesheet-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e6e6e6;
+}
+.calender-cell{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-width: 36px;
+    width: 36px;
+    text-align: center;
+    font-size: 12px;
+    min-height: 36px;
+    border-left: 1px solid #e6e6e6;
+}
+.border-right {
+    border-right: 1px solid black !important;
+}
+.border-right-light {
+    border-right: 1px solid #e6e6e6 !important;
+}
+.status-height{
+    min-height: 36px;
+}
+.bg-grey{
+    background-color: #f4f4f4;
+}
+.accordian-container{
+    width: fit-content;
+    min-width: 100%;
+}
+.accrodian {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+}
+.accrodian.accrodian-open {
+    max-height: 1000px;
+    transition: max-height 1s ease-in-out;
+}
+.hover-pen:hover {
+    background: url(../../../assets/img/pen.png) no-repeat right top !important;
+    background-color: #FFFF;
+}
+.holiday {
+    background-color: #5564d033 !important;
+}
+.current-date{
+    background-color: #D1E4F8 !important;
+}

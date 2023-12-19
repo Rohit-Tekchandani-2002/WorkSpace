@@ -1,9 +1,8 @@
 import './SideBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faDashboard, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
-import { useState, useEffect, useContext } from 'react';
+import { faAngleDown, faAngleRight, faBriefcase, faChalkboardTeacher, faDesktop, faGears, faMobileAlt } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import _ from 'lodash';
 
 const SideBar = props => {
     const { isSideBarOpen } = props;
@@ -35,18 +34,43 @@ const SideBar = props => {
                 <ul className='sidebar-dropdown'>
                     <li className={dropdownActivePage('dashboard') ? 'active' : ''} onClick={() => handalActiveMenuClick('dashboard', '/dashboard')}>
                         <span>
-                            <FontAwesomeIcon icon={faDashboard} />
+                            <FontAwesomeIcon icon={faDesktop} />
                         </span> Dashboard
+                    </li>
+                    <li className={dropdownActivePage('workSpace') ? 'active dropdown' : 'dropdown'}>
+                        <div onClick={() => handalActiveMenuClick('workSpace')}>
+                            <span>
+                                <FontAwesomeIcon icon={faBriefcase} />
+                            </span> My Workspace
+                            {
+                                <span><FontAwesomeIcon className='icon' icon={dropdownActivePage('workSpace') ? faAngleDown : faAngleRight} /></span>
+                            }
+                        </div>
+                        {
+                            dropdownActivePage('workSpace') &&
+                            <ul>
+                                <li onClick={() => handelSubMenuClick('/Attendance')}>Attendance</li>
+                                <li onClick={() => handelSubMenuClick('/Projects')}>Projects</li>
+                                <li onClick={() => handelSubMenuClick('/WorkItems')}>Work Items</li>
+                                <li onClick={() => handelSubMenuClick('/Timesheets')}>Timesheets</li>
+                                <li onClick={() => handelSubMenuClick('/TimeLogs')}>Time Logs</li>
+                                <li onClick={() => handelSubMenuClick('/LeaveRequest')}>Leave Request</li>
+                                <li onClick={() => handelSubMenuClick('/ServiceRequest')}>Service Request</li>
+                                <li>Library</li>
+                                <li>Documents</li>
+                                <li>Knowledge Repository</li>
+                            </ul>
+                        }
                     </li>
                     {
                         (localStorage.getItem('projectId') !== null) &&
                         <li className={dropdownActivePage('project') ? 'active dropdown' : 'dropdown'}>
                             <div onClick={() => handalActiveMenuClick('project')}>
                                 <span>
-                                    <FontAwesomeIcon icon={faProjectDiagram} />
+                                    <FontAwesomeIcon icon={faGears} />
                                 </span> Project
                                 {
-                                    <span><FontAwesomeIcon className='icon' icon={dropdownActivePage('project') ? faAngleUp : faAngleDown} /></span>
+                                    <span><FontAwesomeIcon className='icon' icon={dropdownActivePage('project') ? faAngleDown : faAngleRight} /></span>
                                 }
                             </div>
                             {
@@ -59,6 +83,32 @@ const SideBar = props => {
                             }
                         </li>
                     }
+                    <li className={dropdownActivePage('traning') ? 'active dropdown' : 'dropdown'}>
+                        <div onClick={() => handalActiveMenuClick('traning')}>
+                            <span>
+                                <FontAwesomeIcon icon={faChalkboardTeacher} />
+                            </span> Traning
+                            {
+                                <span><FontAwesomeIcon className='icon' icon={dropdownActivePage('traning') ? faAngleDown : faAngleRight} /></span>
+                            }
+                        </div>
+                        {
+                            dropdownActivePage('traning') &&
+                            <ul>
+                                <li>My Traning As Fqaculty</li>
+                                <li>My Traning As Trainee</li>
+                                <li>Upcoming Traning</li>
+                                <li>Completed Traning</li>
+                                <li>Download Material</li>
+                                <li>eLearning</li>
+                            </ul>
+                        }
+                    </li>
+                    <li className={dropdownActivePage('deviceManagement') ? 'active' : ''} onClick={() => handalActiveMenuClick('deviceManagement', '/dashboard')}>
+                        <span>
+                            <FontAwesomeIcon className='px-1' icon={faMobileAlt} />
+                        </span> Device Management
+                    </li>
                 </ul>
             </div>
         </>

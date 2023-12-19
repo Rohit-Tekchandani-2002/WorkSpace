@@ -50,13 +50,16 @@
 
 .table-responsive .table-cell.short {
     border: 1px solid #ddd;
-    width: 80px !important;
-    min-width: 80px !important;
+    width: 65px !important;
+    min-width: 65px !important;
 }
-
+.medium-long{
+    width: auto !important;
+    min-width: 150px !important;
+}
 .table-responsive .table-cell.medium {
     border: 1px solid #ddd;
-    min-width: 120px !important;
+    min-width: 130px !important;
 }
 
 .table-responsive .table-cell.long {

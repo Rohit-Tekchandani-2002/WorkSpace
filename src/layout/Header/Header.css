@@ -86,9 +86,9 @@
 
     .small-project-drop-down {
         position: absolute;
-        top: 70px;
-        width: 150px;
-        right: 15px;
+        top: 60px;
+        width: 100%;
+        right: 0px;
         height: auto;
         background-color: #e4e4e4;
     }

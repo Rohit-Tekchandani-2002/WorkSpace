@@ -75,16 +75,16 @@ const PendingTraningFeedbackWidget = () => {
                                 <div className="table">
                                     <div className="table-responsive">
                                         <div className="table-head">
-                                            <div className="table-cell medium">Title</div>
-                                            <div className="table-cell medium">Date</div>
+                                            <div className="table-cell">Title</div>
+                                            <div className="table-cell">Date</div>
                                         </div>
                                         <div className="table-body">
                                             {
                                                 pendingTraningFeedBackData && _.get(pendingTraningFeedBackData, 'length', 0) > 0 
                                                 && _.map( pendingTraningFeedBackData, ((data) =>
                                                     <div key={data.title} className="table-row">
-                                                        <div className="table-cell medium">{data.title}</div>
-                                                        <div className="table-cell medium">{formatDate(data.date)}</div>
+                                                        <div className="table-cell">{data.title}</div>
+                                                        <div className="table-cell">{formatDate(data.date)}</div>
                                                     </div>
                                                 ))
                                             }

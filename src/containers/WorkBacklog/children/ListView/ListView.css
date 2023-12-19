@@ -1,8 +1,9 @@
-.smallWidth {
+.small-width {
     display: block;
     width: 100px !important;
 }
-.t-footer{
+
+.t-footer {
     padding: 8px 20px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
@@ -10,4 +11,59 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+}
+
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root.Mui-expanded {
+    margin: 0 !important;
+}
+
+/* table css */
+.custom-table {
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    overflow: auto;
+    width: fit-content;
+}
+
+.table-head {
+    background-color: #f5f5f5;
+    display: flex;
+    width: fit-content;
+}
+
+.table-body .table-row {
+    display: flex;
+    width: fit-content;
+}
+
+.table-cell {
+    width: 100%;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    border-left: 0;
+}
+
+.table-cell.short {
+    width: 100px;
+    padding: 10px;
+}
+
+.table-cell.medium {
+    width: 250px;
+    padding: 10px;
+}
+.accrodian {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height, ease-in-out, 0.5s;
+}
+.accrodian.accrodian-open {
+    max-height: 150px;
+}
+.accrodian-content{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    border-left: 0;
 }

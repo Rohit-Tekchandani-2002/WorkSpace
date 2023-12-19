@@ -1,0 +1,14 @@
+.worklog-title-container{
+    display: flex;
+    justify-content: space-between;
+    height: -moz-fit-content;
+    height: fit-content;
+    border: 1px solid #dddd;
+    border-right: 2px solid #dddd;
+}
+.css-sh22l5-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expanded {
+    min-height: 0px !important;
+}
+.css-o4b71y-MuiAccordionSummary-content.Mui-expanded {
+    margin: 10px 0 !important;
+}

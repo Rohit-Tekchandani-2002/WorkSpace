@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { assign } from 'lodash';
 import './DashBoard.css';
 import { Component } from 'react';
 import { bgStatus, projectStatus } from '../../../../constants/constants';
@@ -7,9 +7,11 @@ import taskImg from "../../../../assets/img/task.png";
 import { OverlayTrigger, Popover, ProgressBar } from 'react-bootstrap';
 import { formatDate, formatTime } from '../../../../config/utility';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faClock } from '@fortawesome/free-solid-svg-icons';
 import { updateWorkLog } from '../../../../services/Project/project.service';
 import { workBacklogDefaultContext } from '../../../../constants/workBackLogConstants';
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
+import AuthContext from '../../../../context/AuthContext/AuthContext';
 
 class DashBoard extends Component {
     static contextType = RootContext;
@@ -108,7 +110,7 @@ class DashBoard extends Component {
         setGlobal('workBacklog', _.get(this.context, 'workBacklog'));
         this.setState({ refershModule: !_.get(this.state, 'refershModule') });
     }
-    
+
     onDragStart = (event, workLogId) => {
         event.dataTransfer.setData("workLogId", workLogId);
     }
@@ -178,17 +180,120 @@ class DashBoard extends Component {
         )
     }
 
-    render() {
+    showWorkLogForAssignedTo = (projectStatusId, Unassigned) => {
+        const workBacklogList = _.filter(_.get(this.context, 'workBacklog.workLog', []),
+            data => (_.get(data, 'projectStatusId', '') === _.toNumber(projectStatusId)) && ((_.trim(_.get(data, 'assignedTo', '')) === '') === Unassigned));
         return (
-            <div className='work-group-container mt-2'>
-                {_.map(_.entries(projectStatus), ([key, value]) => (
-                    <div key={key} className='drag-column'
-                        onDragOver={(event) => this.onDragOver(event)}
-                        onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
-                    >
-                        {this.showWorkBacklogList(key, value)}
+            <>
+                {
+                    _.map(workBacklogList,
+                        (item, index) => (
+                            <div className={'work-backlog' + ' ' + 'border-' + bgStatus[projectStatusId]}
+                                onDragStart={(event) => this.onDragStart(event, _.get(item, 'projectWorkId', ''))}
+                                draggable
+                                key={index}>
+                                <div className='d-flex justify-content-between'>
+                                    <div className='d-flex align-items-center ellipsis'>
+                                        <img className='imgPadding' src={taskImg} />
+                                        <OverlayTrigger trigger={['hover', 'focus']} overlay={this.workItemPopover(item)}>
+                                            <a href=''>{_.get(item, 'title', '')}</a>
+                                        </OverlayTrigger>
+                                    </div>
+                                    <FontAwesomeIcon className='p-1 color-blue' icon={faClock} onClick={() => this.props.addWorkLogtime(item)} />
+                                </div>
+                                <div>{_.trim(_.get(item, 'assignedTo', '')) === '' ? 'Unassigned' : _.get(item, 'assignedTo', '')}</div>
+                                <div className='strong'>{_.get(item, 'workPriority', '')}</div>
+                                <ProgressBar now={(_.toNumber(_.get(item, 'totalWorkDone', 0)) / _.toNumber(_.get(item, 'originalEstTime', 1))) * 100} />
+                            </div>
+                        )
+                    )
+                }
+            </>
+        )
+    }
+
+    getDashBoardContent = () => {
+        let isAssignedTo = _.get(this.props, 'groupBy', 'none') === 'assignedTo';
+        if (isAssignedTo) {
+            return (
+                <div>
+                    <div className='worklog-title-container'>
+                        {_.map(_.entries(projectStatus), ([key, value]) => (
+                            <div key={key} className='drag-column'
+                                onDragOver={(event) => this.onDragOver(event)}
+                                onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
+                            >
+                                <div className={'drag-column-title' + ' ' + bgStatus[key]}> {value} </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                    <Accordion className='w-100' defaultExpanded={true}>
+                        <AccordionSummary className='border' expandIcon={<FontAwesomeIcon icon={faAngleDown} />}>
+                            <Typography>Unassigned</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails className='p-0'>
+                            <div className='work-group-container border-0'>
+                                {_.map(_.entries(projectStatus), ([key, _value]) => (
+                                    <div key={key} className='drag-column'
+                                        onDragOver={(event) => this.onDragOver(event)}
+                                        onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
+                                    >
+                                        {this.showWorkLogForAssignedTo(key, true)}
+                                    </div>
+                                ))}
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion className='w-100' defaultExpanded={true}>
+                        <AccordionSummary className='border' expandIcon={<FontAwesomeIcon icon={faAngleDown} />}>
+                            <AuthContext.Consumer>
+                                {
+                                    authContext => {
+                                        const userName = _.get(authContext, 'userData.firstName', 'Assigned') + ' ' + _.get(authContext, 'userData.lastName', '');
+                                        return (<Typography>{userName}</Typography>);
+                                    }
+                                }
+                            </AuthContext.Consumer>
+                        </AccordionSummary>
+                        <AccordionDetails className='p-0'>
+                            <div className='work-group-container border-0'>
+                                {_.map(_.entries(projectStatus), ([key, _value]) => (
+                                    <div key={key} className='drag-column'
+                                        onDragOver={(event) => this.onDragOver(event)}
+                                        onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
+                                    >
+                                        {this.showWorkLogForAssignedTo(key, false)}
+                                    </div>
+                                ))}
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                </div>
+            );
+        } 
+        else {
+            return (
+                <div className='work-group-container'>
+                    {_.map(_.entries(projectStatus), ([key, value]) => (
+                        <div key={key} className='drag-column'
+                            onDragOver={(event) => this.onDragOver(event)}
+                            onDrop={(event) => { this.onDrop(event, projectStatus[key]) }}
+                        >
+                            {this.showWorkBacklogList(key, value)}
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+    }
+
+    render() {
+        const isFilterActive = _.get(this.props, 'isFilterActive', false);
+        return (
+            <div className={isFilterActive ? 'work-container-scroll' : 'mt-2'}>
+                {
+                    this.getDashBoardContent()
+                }
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import RootContext from '../../context/RootContext/RootContext';
 import Modal from '../../modals/Modal/Modal';
 import _ from "lodash";
@@ -11,21 +11,26 @@ const RootContextWrapper = props => {
 
     const setGlobal = (index, newData) => {
         const { [index]: oldData } = state;
-        if (oldData !== newData) {
-            setState({
-                ...state,
-                [index]: newData
-            });
+        let contextState = state;
+        if (!_.isEqual(oldData, newData)) {
+            _.set(contextState, [index], newData);
+            setState(contextState);
         }
+        setRefershModule(!refershModule);
     }
 
     const handleError = error => {
         console.log('handalerror', error, state);
         let { modalData = modalDefaultContext } = state;
+        const errorMessage = _.get(error, 'response.data');
         if (modalData) {
             _.set(modalData, 'modalType', 'ErrorModal');
-            _.set(modalData, 'title', _.get(error, 'code', ''));
-            _.set(modalData, 'body', _.get(error, 'message', ''));
+            _.set(modalData, 'title', _.get(error, 'code', '')); 
+            if (errorMessage && _.isString(errorMessage)) {
+                _.set(modalData, 'body', errorMessage);
+            }else{
+                _.set(modalData, 'body', _.get(error, 'message', ''));
+            }
             _.set(modalData, 'show', true);
             setGlobal('modalData', modalData);
             setRefershModule(!refershModule);
