@@ -83,3 +83,29 @@ export const serviceDetailsDefaultContext = {
         sortOrder: true
     }
 }
+
+export const serviceDefaultContext = {
+    serviceGroupList: [],
+    categoriList: [],
+    subCategoriList: [],
+    updateServiceRequestData: [],
+    addServiceRequest: {
+        employeeId: localStorage.getItem('employeeId'),
+        serviceGroupId: '',
+        categoryId: '',
+        subCategoryId: '',
+        serviceRequestPriority: 'Low',
+        serviceDetails: ''
+    },
+    updateServiceRequest: {
+        serviceRequestId: '',
+        requestedDate: new Date(),
+        status: 2,
+        serviceGroupId: '',
+        categoryId: '',
+        subCategoryId: '',
+        serviceRequestPriority: 'Low',
+        serviceDetails: '',
+        comments: ''
+    }
+}

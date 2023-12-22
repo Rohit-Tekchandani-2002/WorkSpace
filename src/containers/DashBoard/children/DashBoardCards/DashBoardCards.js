@@ -151,7 +151,7 @@ const DashBoardCards = () => {
                     <div className='p-2 col-12 col-md-6 col-xl-3'>
                         <div className='top-box my_leave'>
                             {!_.get(dashBoardInfo, 'isAttendanceAdded', false) &&
-                                <a href='/Attendance'><span className='fill-attendance'><span>Fill Attendance</span></span></a>}
+                                <a href='/attendance'><span className='fill-attendance'><span>Fill Attendance</span></span></a>}
                             <h3 className="db_title">My Monthly Leaves</h3>
                             <table>
                                 <tbody>

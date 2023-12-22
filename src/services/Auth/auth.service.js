@@ -1,5 +1,5 @@
-import { apiEndpoint } from "../../config/config.js";
-import { HandelError } from "../../config/utility.js";
+// import { apiEndpoint } from "../../config/config.js";
+// import { HandelError } from "../../config/utility.js";
 import _ from "lodash";
 import axiosInstance from "../../config/axios.js";
 

@@ -47,3 +47,39 @@ export const getLeaveRequestDetails = (payload) => {
 export const getServiceDetails = (payload) => {
     return axiosInstance.post('api/WorkSpace/GetServiceDetails', payload);
 }
+
+export const getleaveRequestEmployeeInfo = (payload) => {
+    return axiosInstance.post('api/WorkSpace/GetLeaveRequestEmployeeInfo', payload);
+}
+
+export const deleteLeaveRequest = (employeeId, leaverequestId) => {
+    return axiosInstance.delete(`api/WorkSpace/DeleteLeaveRequest?EmployeeId=${employeeId}&LeaveRequestId=${leaverequestId}`);
+}
+
+export const addLeaveRequest = (payload) => {
+    return axiosInstance.post('/api/WorkSpace/AddLeaveRequest', payload);
+}
+
+export const getAddedLeaveRequest = (id) => {
+    return axiosInstance.get(`api/WorkSpace/GetUpdateLeaveRequest?LeaveRequestId=${id}`);
+}
+
+export const updateAddedLeaveRequest = (payload) => {
+    return axiosInstance.put('api/WorkSpace/UpdateLeaveRequest', payload);
+}
+
+export const serviceRequestDropDown = (payload) => {
+    return axiosInstance.post('api/WorkSpace/ServiceRequestDropDown', payload);
+}
+
+export const addServiceRequest = (payload) => {
+    return axiosInstance.post('api/WorkSpace/AddServiceRequest', payload);
+}
+
+export const getUpdateServiceRequest = (id) => {
+    return axiosInstance.get(`api/WorkSpace/GetServiceRequestUpdateDetails?ServiceRequestId=${id}`);
+}
+
+export const updateServiceRequest = (payload) => {
+    return axiosInstance.put('api/WorkSpace/UpdateServiceRequest', payload);
+}

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './ServiceRequest.css';
 import { Component } from 'react';
-import { faAngleRight, faGears, faPlus, faRefresh, faSearch, faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faEdit, faGears, faPlus, faRefresh, faSearch, faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 import { serviceStatus } from '../../../constants/constants';
 import _ from 'lodash';
 import { serviceDetailsDefaultContext } from '../../../constants/workspaceConstants';
@@ -11,6 +11,7 @@ import AlertComponent from '../../../components/AlertComponent/AlertComponent';
 import ModualLoader from '../../../components/ModualLoader/ModualLoader';
 import { formatDate } from '../../../config/utility';
 import { Table } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 class ServiceRequest extends Component {
     static contextType = RootContext;
@@ -131,6 +132,27 @@ class ServiceRequest extends Component {
         this.setState({ reload: true });
     }
 
+    addServiceRequest = () => {
+        let { modalData, setGlobal } = this.context;
+        modalData = {
+            modalType: 'AddServiceRequest',
+            show: true,
+            handleConfirm: (message) => {
+                if (message) {
+                    this.setState({ alertMessage: message });
+                }
+            }
+        };
+        setGlobal('modalData', modalData);
+        this.setState({ reload: true });
+    }
+
+    updateServiceRequest = (id) => {
+        if (id) {
+            this.props.history('/service-request-form', { state: {id: id}});
+        }
+    }
+
     render() {
         const reload = _.get(this.state, 'reload');
         const serviceDetailsContext = _.get(this.context, 'serviceDetailsContext', serviceDetailsDefaultContext);
@@ -148,7 +170,9 @@ class ServiceRequest extends Component {
                 <h4 className='blue_border flex-between px-0 pt-2'>
                     My Service Request
                     <span>
-                        <button className='btn btn-primary rounded-0'>
+                        <button
+                            className='btn btn-primary rounded-0'
+                            onClick={this.addServiceRequest}>
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </span>
@@ -299,7 +323,7 @@ class ServiceRequest extends Component {
                                                 <td>{_.get(data, 'status') ? serviceStatus[_.get(data, 'status')] : '--'}</td>
                                                 <td>{_.get(data, 'closedBy') ? _.get(data, 'closedBy') : '--'}</td>
                                                 <td>{_.get(data, 'closedAt') ? _.get(data, 'closedAt') : '--'}</td>
-                                                <td></td>
+                                                <td className='text-center'><FontAwesomeIcon icon={faEdit} onClick={() => this.updateServiceRequest(_.get(data, 'ticket', null))} /></td>
                                             </tr>
                                         )
                                     })
@@ -360,4 +384,6 @@ class ServiceRequest extends Component {
     }
 }
 
-export default ServiceRequest;
+export default () => (
+    <ServiceRequest history={useNavigate()} />
+);

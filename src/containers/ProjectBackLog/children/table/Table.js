@@ -145,7 +145,7 @@ const Table = props => {
         setConform(true);
         setShowModal(false);
     };
-    const handalCancle = () => {
+    const handleCancle = () => {
         setConform(false);
         setShowModal(false);
     };
@@ -163,7 +163,7 @@ const Table = props => {
             show: show,
             handleClose: handleClose,
             handleConfirm: handleConfirm,
-            handalCancle: handalCancle
+            handleCancle: handleCancle
         };
         setGlobal('modalData', modalData);
     }, [show])

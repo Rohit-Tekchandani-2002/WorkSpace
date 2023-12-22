@@ -6,11 +6,12 @@ import _ from 'lodash';
 import { leaveStatus } from '../../../constants/constants';
 import { leaveRequestDefaultContext } from '../../../constants/workspaceConstants';
 import RootContext from '../../../context/RootContext/RootContext';
-import { getLeaveRequestDetails } from '../../../services/Workspace/workspace.service';
+import { deleteLeaveRequest, getLeaveRequestDetails } from '../../../services/Workspace/workspace.service';
 import AlertComponent from '../../../components/AlertComponent/AlertComponent';
 import ModualLoader from '../../../components/ModualLoader/ModualLoader';
 import { Table } from 'react-bootstrap';
 import { formatDate } from '../../../config/utility';
+import { useNavigate } from 'react-router-dom';
 
 class LeaveRequest extends Component {
     static contextType = RootContext;
@@ -138,6 +139,13 @@ class LeaveRequest extends Component {
         this.setState({ reload: true });
     }
 
+    deleteLeaveRequest = async(id) => {
+        const { handleError } = this.context;
+        const employeeId = localStorage.getItem('employeeId');
+        const message = await deleteLeaveRequest(employeeId, id).catch(handleError);
+        this.setState({alertMessage: message});
+    }
+
     cancelLeaveRequest = (id) => {
         let { modalData, setGlobal } = this.context;
         if (id) {
@@ -148,10 +156,11 @@ class LeaveRequest extends Component {
                 show: true,
                 handleConfirm: () => {
                     //Function on conformation
+                    this.deleteLeaveRequest(id);
                     setGlobal('modalData', { show: false });
                     this.setState({ reload: true });
                 },
-                handalCancle: () => {
+                handleCancle: () => {
                     setGlobal('modalData', { show: false });
                     this.setState({ refershModule: !_.get(this.state, 'refershModule') });
                 }
@@ -159,6 +168,14 @@ class LeaveRequest extends Component {
             setGlobal('modalData', modalData);
             this.setState({ refershModule: !_.get(this.state, 'refershModule') });
         }
+    }
+
+    addNewLeaveRequest = () => {
+        this.props.history('/leave-request-form', { state: {type: 'add', id: null}});
+    }
+
+    updateLeaveRequest = (id) => {
+        this.props.history('/leave-request-form', { state: {type: 'update', id: id}});
     }
 
     render() {
@@ -179,7 +196,7 @@ class LeaveRequest extends Component {
                 <h4 className='blue_border flex-between px-0 pt-2'>
                     My Leave Request
                     <span>
-                        <button className='btn btn-primary rounded-0'>
+                        <button className='btn btn-primary rounded-0' onClick={this.addNewLeaveRequest}>
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </span>
@@ -305,8 +322,8 @@ class LeaveRequest extends Component {
                                                 {
                                                     (_.get(data, 'leaveRequestStatus', '') === 'Pending') &&
                                                     <td>
-                                                        <FontAwesomeIcon icon={faEdit} className='me-2'/>
-                                                        <FontAwesomeIcon icon={faBan} onClick={() => this.cancelLeaveRequest(_.get(data, 'leaveRequestId'))}/>
+                                                        <FontAwesomeIcon icon={faEdit} className='me-2' onClick={() => this.updateLeaveRequest(_.get(data, 'leaveRequestId'))} />
+                                                        <FontAwesomeIcon icon={faBan} onClick={() => this.cancelLeaveRequest(_.get(data, 'leaveRequestId'))} />
                                                     </td>
                                                 }
                                                 {
@@ -373,4 +390,6 @@ class LeaveRequest extends Component {
     }
 }
 
-export default LeaveRequest;
+export default () => (
+    <LeaveRequest history={useNavigate()} />
+);

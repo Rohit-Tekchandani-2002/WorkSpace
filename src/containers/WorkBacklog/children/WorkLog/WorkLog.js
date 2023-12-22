@@ -187,7 +187,7 @@ class WorkLog extends Component {
                 this.setState({ refershModule: !_.get(this.state, 'refershModule') });
                 this.deleteProjectWorkLog(id);
             },
-            handalCancle: () => {
+            handleCancle: () => {
                 _.set(modalData, 'show', false);
                 setGlobal('modalData', modalData);
                 this.setState({ refershModule: !_.get(this.state, 'refershModule') });

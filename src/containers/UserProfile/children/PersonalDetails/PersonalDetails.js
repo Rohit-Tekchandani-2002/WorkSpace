@@ -43,7 +43,7 @@ class PersonalDetails extends Component {
         const tempData = await getTravelInfo(employeeId).catch(handleError);
         if (tempData) {
             let employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
-            _.set(employeeInfoContext, 'employeeInfoContext.personalInfoContext.travelInfo', tempData);
+            _.set(employeeInfoContext, 'personalInfoContext.travelInfo', tempData);
             setGlobal('employeeInfoContext', employeeInfoContext);
             this.setState({ referashModule: !_.get(this.state, 'referashModule') });
         }
@@ -152,23 +152,28 @@ class PersonalDetails extends Component {
 
     addTravelInfo = () => {
         const { setGlobal } = this.context;
-        const travelInfo = _.get(this.context, 'personalInfoContext.travelInfo', _.get(employeeInfoDefaultContext, 'travelInfo'));
-        const newEntry = {
-            countryName: '',
-            visaType: '',
-            visaValidFor: adjustDateTime(new Date())
+        const travelInfo = _.get(this.context, 'employeeInfoContext.personalInfoContext.travelInfo', _.get(employeeInfoDefaultContext, 'personalInfoContext.travelInfo'));
+        var isFeildAlreadyExist = _.some(travelInfo, (element) => {
+            return !_.has(element, 'visaId');
+        });
+        if(!isFeildAlreadyExist){
+            const newEntry = {
+                countryName: '',
+                visaType: '',
+                visaValidFor: adjustDateTime(new Date())
+            }
+            let employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
+            _.set(employeeInfoContext, 'personalInfoContext.travelInfo', [...travelInfo, newEntry]);
+            setGlobal('employeeInfoContext', employeeInfoContext);
+            this.setState({ referashModule: _.get(this.state, 'referashModule') });
         }
-        let employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
-        _.set(employeeInfoContext, 'personalInfoContext.travelInfo', [...travelInfo, newEntry]);
-        setGlobal('employeeInfoContext', employeeInfoContext);
-        this.setState({ referashModule: _.get(this.state, 'referashModule') });
     }
 
     handleTravelInfoChange = (event, feild, index) => {
         const { setGlobal } = this.context;
         const value = _.get(event, 'target.value', '');
-        let employeeInfoContext = _.get(this.context, 'employeeInfoContext');
-        _.set(employeeInfoContext, `employeeInfoContext.travelInfo[${index}].${feild}`, value);
+        let employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
+        _.set(employeeInfoContext, `personalInfoContext.travelInfo[${index}].${feild}`, value);
         setGlobal('employeeInfoContext', employeeInfoContext);
         this.setState({ referashModule: _.get(this.state, 'referashModule') });
     }
@@ -177,6 +182,7 @@ class PersonalDetails extends Component {
         const { alertSuccess } = this.props;
         const { handleError } = this.context;
         const employeeId = localStorage.getItem('employeeId');
+        const employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
         const request = {
             ...travelInfo,
             employeeId: employeeId
@@ -192,6 +198,7 @@ class PersonalDetails extends Component {
                 alertSuccess(message);
             }
         }
+        this.getTravelInfoData();
     }
 
     deleteTravelInfo = async (selectedIndex, visaId) => {
@@ -246,7 +253,8 @@ class PersonalDetails extends Component {
     }
 
     render() {
-        const personalInfo = _.get(this.context, 'employeeInfoContext.personalInfoContext.personalInfo', _.get(employeeInfoDefaultContext, 'personalInfoContext.personalInfo'));
+        const employeeInfoContext = _.get(this.context, 'employeeInfoContext', employeeInfoDefaultContext);
+        const personalInfo = _.get(employeeInfoContext, 'personalInfoContext.personalInfo');
         const {
             dateOfBirth,
             gender,
@@ -270,7 +278,7 @@ class PersonalDetails extends Component {
             nameInPassport,
             validUpto
         } = personalInfo;
-        const travelInfo = _.get(this.context, 'employeeInfoContext.personalInfoContext.travelInfo', _.get(employeeInfoDefaultContext, 'personalInfoContext.travelInfo'));
+        const travelInfo = _.get(employeeInfoContext, 'personalInfoContext.travelInfo');
         return (
             <>
                 <div className='mt-2'>

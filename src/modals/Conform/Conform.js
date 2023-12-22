@@ -10,12 +10,22 @@ const ConformModal = () => {
   const rootContext = useContext(RootContext);
   let { modalData, setGlobal } = rootContext;
 
-  const { title, body, show, handleConfirm, handalCancle } = modalData;
+  const { title, body, show, handleConfirm, handleCancle } = modalData;
 
   const handleClose = () => {
     _.set(modalData, 'show', false);
     setGlobal('modalData', modalData);
     setRefershModule(!refershModule);
+  }
+ 
+  const handleConfirmOption = () => {
+    handleConfirm();
+    handleClose();
+  }
+ 
+  const handleCancleOption = () => {
+    handleCancle();
+    handleClose();
   }
 
   return (
@@ -25,8 +35,8 @@ const ConformModal = () => {
       </Modal.Header>
       <Modal.Body> {body} </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" className='rounded-0' onClick={handleConfirm}> Yes </Button>
-        <Button variant="secondary" className='rounded-0' onClick={handalCancle}> No </Button>
+        <Button variant="primary" className='rounded-0' onClick={handleConfirmOption}> Yes </Button>
+        <Button variant="secondary" className='rounded-0' onClick={handleCancleOption}> No </Button>
       </Modal.Footer>
     </Modal>
   );

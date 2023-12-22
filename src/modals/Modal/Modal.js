@@ -7,8 +7,8 @@ import AddWorkLogModal from '../../modals/AddWorkLog/AddWorkLog';
 import ErrorModal from '../Error/Error';
 import { modalDefaultContext } from '../../constants/modalConstants';
 import { useEffect, useContext } from "react";
-import _ from 'lodash';
 import EditWorkLogModal from '../EditWorkLog/EditWorkLog';
+import AddServiceRequest from '../AddServiceRequest/AddServiceRequest';
 
 const Modal = () => {
     let modal = null;
@@ -41,6 +41,9 @@ const Modal = () => {
             break;
         case 'EditWorkLogModal':
             modal = <EditWorkLogModal />
+            break;
+        case 'AddServiceRequest':
+            modal = <AddServiceRequest />
             break;
         default:
             break;

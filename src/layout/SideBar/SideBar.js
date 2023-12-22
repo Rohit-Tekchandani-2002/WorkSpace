@@ -49,13 +49,13 @@ const SideBar = props => {
                         {
                             dropdownActivePage('workSpace') &&
                             <ul>
-                                <li onClick={() => handelSubMenuClick('/Attendance')}>Attendance</li>
-                                <li onClick={() => handelSubMenuClick('/Projects')}>Projects</li>
-                                <li onClick={() => handelSubMenuClick('/WorkItems')}>Work Items</li>
-                                <li onClick={() => handelSubMenuClick('/Timesheets')}>Timesheets</li>
-                                <li onClick={() => handelSubMenuClick('/TimeLogs')}>Time Logs</li>
-                                <li onClick={() => handelSubMenuClick('/LeaveRequest')}>Leave Request</li>
-                                <li onClick={() => handelSubMenuClick('/ServiceRequest')}>Service Request</li>
+                                <li onClick={() => handelSubMenuClick('/attendance')}>Attendance</li>
+                                <li onClick={() => handelSubMenuClick('/projects')}>Projects</li>
+                                <li onClick={() => handelSubMenuClick('/work-items')}>Work Items</li>
+                                <li onClick={() => handelSubMenuClick('/time-sheets')}>Timesheets</li>
+                                <li onClick={() => handelSubMenuClick('/time-logs')}>Time Logs</li>
+                                <li onClick={() => handelSubMenuClick('/leave-request')}>Leave Request</li>
+                                <li onClick={() => handelSubMenuClick('/service-request')}>Service Request</li>
                                 <li>Library</li>
                                 <li>Documents</li>
                                 <li>Knowledge Repository</li>
@@ -96,7 +96,7 @@ const SideBar = props => {
                             dropdownActivePage('traning') &&
                             <ul>
                                 <li>My Traning As Fqaculty</li>
-                                <li>My Traning As Trainee</li>
+                                <li onClick={() => handelSubMenuClick('/trainee-traning/my')}>My Traning As Trainee</li>
                                 <li>Upcoming Traning</li>
                                 <li>Completed Traning</li>
                                 <li>Download Material</li>

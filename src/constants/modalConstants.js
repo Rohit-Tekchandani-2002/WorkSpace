@@ -11,7 +11,7 @@ export const modalDefaultContext = {
     show: false,
     handleClose: initialFunction,
     handleConfirm: initialFunction,
-    handalCancle: initialFunction
+    handleCancle: initialFunction
 };
 
 export const addRemoveWidgetContext = {
